@@ -286,7 +286,7 @@
     <p>
         {%- if is_granted('ROLE_ADMIN') -%}
             {{ button(path('jury_contest_edit', {'contestId': contest.cid}), 'Edit', 'primary', 'edit') }}
-            {{ button(path('jury_contest_delete', {'contestId': contest.cid}), 'Delete', 'danger', 'trash-alt', true) }}
+            {{ button(path('jury_contest_delete', {'contestIds': contest.cid}), 'Delete', 'danger', 'trash-alt', true) }}
         {% endif %}
         {% if contest.finalizetime %}
             {{ button(path('jury_contest_finalize', {'contestId': contest.cid}), 'Update finalization', 'secondary', 'lock') }}
