@@ -203,7 +203,7 @@ class TeamController extends BaseController
                     'icon' => 'trash-alt',
                     'title' => 'delete this team',
                     'link' => $this->generateUrl('jury_team_delete', [
-                        'teamId' => $t->getTeamId(),
+                        'teamIds' => $t->getTeamId(),
                     ]),
                     'ajaxModal' => true,
                 ];
@@ -263,7 +263,7 @@ class TeamController extends BaseController
                 'cssclass' => "category" . $t->getCategory()->getCategoryId() .
                     ($t->getEnabled() ? '' : ' disabled'),
                 'multiAction' => $t->getTeamId(),
-                'multiActionUrl' => $this->generateUrl('jury_team_delete', ['teamId' => 0]),
+                'multiActionUrl' => $this->generateUrl('jury_team_delete', ['teamIds' => 0]),
             ];
         }
         return $this->render('jury/teams.html.twig', [
@@ -409,23 +409,26 @@ class TeamController extends BaseController
     }
 
     /**
-     * @Route("/{teamId<\d+>}/delete", name="jury_team_delete")
+     * @Route("/{teamIds<[\d,]*\d+>}/delete", name="jury_team_delete")
      * @IsGranted("ROLE_ADMIN")
      * @param Request $request
-     * @param int     $teamId
+     * @param string $teamIds
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function deleteAction(Request $request, int $teamId)
+    public function deleteActions(Request $request, string $teamIds)
     {
-        /** @var Team $team */
-        $team = $this->em->getRepository(Team::class)->find($teamId);
-        if (!$team) {
-            throw new NotFoundHttpException(sprintf('Team with ID %s not found', $teamId));
+        /** @var Team[] $teams */
+        foreach (explode(',', $teamIds) as $teamId) {
+            $team = $this->em->getRepository(Team::class)->find($teamId);
+            if (!$team) {
+                throw new NotFoundHttpException(sprintf('Team with ID %s not found', $teamId));
+            }
+            $teams[] = $team;
         }
 
-        return $this->deleteEntity($request, $this->em, $this->dj, $this->eventLogService, $this->kernel,
-                                   $team, $team->getShortDesc(), $this->generateUrl('jury_teams'));
+        return $this->deleteEntities($request, $this->em, $this->dj, $this->eventLogService, $this->kernel,
+                                     $teams, $this->generateUrl('jury_teams'));
     }
 
     /**

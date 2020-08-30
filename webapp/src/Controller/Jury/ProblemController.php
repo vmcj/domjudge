@@ -276,7 +276,7 @@ class ProblemController extends BaseController
                     'icon' => 'trash-alt',
                     'title' => 'delete this problem',
                     'link' => $this->generateUrl('jury_problem_delete', [
-                        'probId' => $p->getProbid(),
+                        'probIds' => $p->getProbid(),
                     ]),
                     'ajaxModal' => true,
                 ];
@@ -310,7 +310,7 @@ class ProblemController extends BaseController
                 'actions' => $problemactions,
                 'link' => $this->generateUrl('jury_problem', ['probId' => $p->getProbid()]),
                 'multiAction' => $p->getProbid(),
-                'multiActionUrl' => $this->generateUrl('jury_problem_delete', ['probId' => 0]),
+                'multiActionUrl' => $this->generateUrl('jury_problem_delete', ['probIds' => 0]),
             ];
         }
         $data = [
@@ -1049,16 +1049,40 @@ class ProblemController extends BaseController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws Exception
      */
-    public function deleteAction(Request $request, int $probId)
+    /*public function deleteAction(Request $request, int $probId)
     {
         /** @var Problem $problem */
-        $problem = $this->em->getRepository(Problem::class)->find($probId);
+        /*$problem = $this->em->getRepository(Problem::class)->find($probId);
         if (!$problem) {
             throw new NotFoundHttpException(sprintf('Problem with ID %s not found', $probId));
         }
 
         return $this->deleteEntity($request, $this->em, $this->dj, $this->eventLogService, $this->kernel,
                                    $problem, $problem->getShortDesc(), $this->generateUrl('jury_problems'));
+    }*/
+
+    /**
+     * @Route("/{probIds<[\d,]*\d+>}/delete", name="jury_problem_delete")
+     * @IsGranted("ROLE_ADMIN")
+     * @param Request $request
+     * @param string $probIds
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @throws Exception
+     */
+    public function deleteActions(Request $request, string $probIds)
+    {
+        /** @var Problem[] $problems */
+        foreach (explode(',', $probIds) as $probId) {
+            /** @var Problem $problem */
+            $problem = $this->em->getRepository(Problem::class)->find($probId);
+            if (!$problem) {
+                throw new NotFoundHttpException(sprintf('Problem with ID %s not found', $probId));
+            }
+            $problems[] = $problem;
+        }
+
+        return $this->deleteEntities($request, $this->em, $this->dj, $this->eventLogService, $this->kernel,
+                                     $problems, $this->generateUrl('jury_problems'));
     }
 
     /**

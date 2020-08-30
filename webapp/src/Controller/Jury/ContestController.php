@@ -300,7 +300,7 @@ class ContestController extends BaseController
                     'icon' => 'trash-alt',
                     'title' => 'delete this contest',
                     'link' => $this->generateUrl('jury_contest_delete', [
-                        'contestId' => $contest->getCid(),
+                        'contestIds' => $contest->getCid(),
                     ]),
                     'ajaxModal' => true,
                 ];
@@ -370,7 +370,7 @@ class ContestController extends BaseController
                 'link' => $this->generateUrl('jury_contest', ['contestId' => $contest->getCid()]),
                 'cssclass' => implode(' ', $styles),
                 'multiAction' => $contest->getCid(),
-                'multiActionUrl' => $this->generateUrl('jury_contest_delete', ['contestId' => 0]),
+                'multiActionUrl' => $this->generateUrl('jury_contest_delete', ['contestIds' => 0]),
             ];
         }
 
@@ -592,23 +592,26 @@ class ContestController extends BaseController
     }
 
     /**
-     * @Route("/{contestId<\d+>}/delete", name="jury_contest_delete")
+     * @Route("/{contestIds<[\d,]*\d+>}/delete", name="jury_contest_delete")
      * @IsGranted("ROLE_ADMIN")
      * @param Request $request
-     * @param int     $contestId
+     * @param string $contestIds
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function deleteAction(Request $request, int $contestId)
+    public function deleteActions(Request $request, string $contestIds)
     {
-        /** @var Contest $contest */
-        $contest = $this->em->getRepository(Contest::class)->find($contestId);
-        if (!$contest) {
-            throw new NotFoundHttpException(sprintf('Contest with ID %s not found', $contestId));
+        /** @var Contest[] $contests */
+        foreach (explode(',', $contestIds) as $contestId) {
+            $contest = $this->em->getRepository(Contest::class)->find($contestId);
+            if (!$contest) {
+                throw new NotFoundHttpException(sprintf('Contest with ID %s not found', $contestId));
+            }
+            $contests[] = $contest;
         }
 
-        return $this->deleteEntity($request, $this->em, $this->dj, $this->eventLogService, $this->kernel, $contest,
-                                   $contest->getName(), $this->generateUrl('jury_contests'));
+        return $this->deleteEntities($request, $this->em, $this->dj, $this->eventLogService, $this->kernel, $contests,
+                                     $this->generateUrl('jury_contests'));
     }
 
     /**
@@ -633,9 +636,9 @@ class ContestController extends BaseController
             );
         }
 
-        return $this->deleteEntity($request, $this->em, $this->dj, $this->eventLogService, $this->kernel,
+        return $this->deleteEntities($request, $this->em, $this->dj, $this->eventLogService, $this->kernel,
                                    $contestProblem, $contestProblem->getShortDesc(),
-                                   $this->generateUrl('jury_contest', ['contestId' => $contestId]));
+                                   $this->generateUrl('jury_contest', ['contestIds' => $contestId]));
     }
 
     /**
@@ -682,7 +685,7 @@ class ContestController extends BaseController
             });
             return $this->redirect($this->generateUrl(
                 'jury_contest',
-                ['contestId' => $contest->getcid()]
+                ['contestIds' => $contest->getcid()]
             ));
         }
 

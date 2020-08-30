@@ -127,7 +127,7 @@ class JudgehostRestrictionController extends BaseController
                     'icon' => 'trash-alt',
                     'title' => 'delete this judgehost restriction',
                     'link' => $this->generateUrl('jury_judgehost_restriction_delete', [
-                        'restrictionId' => $judgehostRestriction->getRestrictionid(),
+                        'restrictionIds' => $judgehostRestriction->getRestrictionid(),
                     ]),
                     'ajaxModal' => true,
                 ];
@@ -140,7 +140,7 @@ class JudgehostRestrictionController extends BaseController
                 'link' => $this->generateUrl('jury_judgehost_restriction',
                                              ['restrictionId' => $judgehostRestriction->getRestrictionid()]),
                 'multiAction' => $judgehostRestriction->getRestrictionid(),
-                'multiActionUrl' => $this->generateUrl('jury_judgehost_restriction_delete', ['restrictionId' => 0]),
+                'multiActionUrl' => $this->generateUrl('jury_judgehost_restriction_delete', ['restrictionIds' => 0]),
             ];
         }
 
@@ -236,23 +236,25 @@ class JudgehostRestrictionController extends BaseController
     }
 
     /**
-     * @Route("/{restrictionId<\d+>}/delete", name="jury_judgehost_restriction_delete")
+     * @Route("/{restrictionIds<\d+>}/delete", name="jury_judgehost_restriction_delete")
      * @IsGranted("ROLE_ADMIN")
      * @param Request $request
-     * @param int     $restrictionId
+     * @param string  $restrictionIds
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function deleteAction(Request $request, int $restrictionId)
+    public function deleteActions(Request $request, string $restrictionIds)
     {
-        /** @var JudgehostRestriction $judgehostRestriction */
-        $judgehostRestriction = $this->em->getRepository(JudgehostRestriction::class)->find($restrictionId);
+        /** @var JudgehostRestriction[] $judgehostRestrictions */
+        foreach (explode(',', $contestIds) as $contestId) {
+            $judgehostRestriction = $this->em->getRepository(JudgehostRestriction::class)->find($restrictionId);
+            $judgehostRestrictions[] = $judgehostRestriction;
+        }
 
-        return $this->deleteEntity($request, $this->em, $this->dj, $this->eventLog, $this->kernel,
-                                   $judgehostRestriction, $judgehostRestriction->getShortDesc(),
-                                   $this->generateUrl('jury_judgehost_restrictions'));
+        return $this->deleteEntities($request, $this->em, $this->dj, $this->eventLog, $this->kernel,
+                                     $judgehostRestrictions, $this->generateUrl('jury_judgehost_restrictions'));
     }
 
     /**

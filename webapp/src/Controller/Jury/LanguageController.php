@@ -135,7 +135,7 @@ class LanguageController extends BaseController
                     'icon' => 'trash-alt',
                     'title' => 'delete this language',
                     'link' => $this->generateUrl('jury_language_delete', [
-                        'langId' => $lang->getLangid(),
+                        'langIds' => $lang->getLangid(),
                     ]),
                     'ajaxModal' => true,
                 ];
@@ -155,7 +155,7 @@ class LanguageController extends BaseController
                 'link' => $this->generateUrl('jury_language', ['langId' => $lang->getLangid()]),
                 'cssclass' => $lang->getAllowSubmit() ? '' : 'disabled',
                 'multiAction' => $lang->getLangid(),
-                'multiActionUrl' => $this->generateUrl('jury_language_delete', ['langId' => 0]),
+                'multiActionUrl' => $this->generateUrl('jury_language_delete', ['langIds' => 0]),
             ];
         }
         return $this->render('jury/languages.html.twig', [
@@ -333,24 +333,27 @@ class LanguageController extends BaseController
     }
 
     /**
-     * @Route("/{langId}/delete", name="jury_language_delete")
+     * @Route("/{langIds}/delete", name="jury_language_delete")
      * @IsGranted("ROLE_ADMIN")
      * @param Request $request
-     * @param string  $langId
+     * @param string  $langIds
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function deleteAction(Request $request, string $langId)
+    public function deleteActions(Request $request, string $langIds)
     {
-        /** @var Language $language */
-        $language = $this->em->getRepository(Language::class)->find($langId);
-        if (!$language) {
-            throw new NotFoundHttpException(sprintf('Language with ID %s not found', $langId));
+        /** @var Language[] $languages */
+        foreach (explode(',', $langIds) as $langId) {
+            $language = $this->em->getRepository(Language::class)->find($langId);
+            if (!$language) {
+                throw new NotFoundHttpException(sprintf('Language with ID %s not found', $langId));
+            }
+            $languages[] = $language;
         }
 
-        return $this->deleteEntity(
+        return $this->deleteEntities(
             $request, $this->em, $this->dj, $this->eventLogService, $this->kernel,
-            $language, $language->getShortDesc(), $this->generateUrl('jury_languages')
+            $languages, $this->generateUrl('jury_languages')
         );
     }
 }

@@ -138,7 +138,7 @@ class TeamCategoryController extends BaseController
                     'icon' => 'trash-alt',
                     'title' => 'delete this category',
                     'link' => $this->generateUrl('jury_team_category_delete', [
-                        'categoryId' => $teamCategory->getCategoryid(),
+                        'categoryIds' => $teamCategory->getCategoryid(),
                     ]),
                     'ajaxModal' => true,
                 ];
@@ -154,7 +154,7 @@ class TeamCategoryController extends BaseController
                 'link' => $this->generateUrl('jury_team_category', ['categoryId' => $teamCategory->getCategoryid()]),
                 'style' => $teamCategory->getColor() ? sprintf('background-color: %s;', $teamCategory->getColor()) : '',
                 'multiAction' => $teamCategory->getCategoryid(),
-                'multiActionUrl' => $this->generateUrl('jury_team_category_delete', ['categoryId' => 0]),
+                'multiActionUrl' => $this->generateUrl('jury_team_category_delete', ['categoryIds' => 0]),
             ];
         }
         return $this->render('jury/team_categories.html.twig', [
@@ -246,23 +246,26 @@ class TeamCategoryController extends BaseController
     }
 
     /**
-     * @Route("/{categoryId<\d+>}/delete", name="jury_team_category_delete")
+     * @Route("/{categoryIds<[\d,]*\d+>}/delete", name="jury_team_category_delete")
      * @IsGranted("ROLE_ADMIN")
      * @param Request $request
-     * @param int     $categoryId
+     * @param string $categoryIds
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function deleteAction(Request $request, int $categoryId)
+    public function deleteActions(Request $request, string $categoryIds)
     {
-        /** @var TeamCategory $teamCategory */
-        $teamCategory = $this->em->getRepository(TeamCategory::class)->find($categoryId);
-        if (!$teamCategory) {
-            throw new NotFoundHttpException(sprintf('Team category with ID %s not found', $categoryId));
+        /** @var TeamCategory[] $teamCategories */
+        foreach (explode(',', $categoryIds) as $categoryId) {
+            $teamCategory = $this->em->getRepository(TeamCategory::class)->find($categoryId);
+            if (!$teamCategory) {
+                throw new NotFoundHttpException(sprintf('Team category with ID %s not found', $categoryId));
+            }
+            $teamCategories[] = $teamCategory;
         }
 
-        return $this->deleteEntity($request, $this->em, $this->dj, $this->eventLogService, $this->kernel,
-                                   $teamCategory, $teamCategory->getShortDesc(), $this->generateUrl('jury_team_categories'));
+        return $this->deleteEntities($request, $this->em, $this->dj, $this->eventLogService, $this->kernel,
+                                     $teamCategories, $this->generateUrl('jury_team_categories'));
     }
 
     /**

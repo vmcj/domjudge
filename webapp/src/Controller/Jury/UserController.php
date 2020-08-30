@@ -169,7 +169,7 @@ class UserController extends BaseController
                     'icon' => 'trash-alt',
                     'title' => 'delete this user',
                     'link' => $this->generateUrl('jury_user_delete', [
-                        'userId' => $u->getUserid(),
+                        'userIds' => $u->getUserid(),
                     ]),
                     'ajaxModal' => true,
                 ];
@@ -190,7 +190,7 @@ class UserController extends BaseController
                 'link' => $this->generateUrl('jury_user', ['userId' => $u->getUserid()]),
                 'cssclass' => $u->getEnabled() ? '' : 'disabled',
                 'multiAction' => $u->getUserid(),
-                'multiActionUrl' => $this->generateUrl('jury_user_delete', ['userId' => 0]),
+                'multiActionUrl' => $this->generateUrl('jury_user_delete', ['userIds' => 0]),
             ];
         }
 
@@ -269,23 +269,26 @@ class UserController extends BaseController
     }
 
     /**
-     * @Route("/{userId<\d+>}/delete", name="jury_user_delete")
+     * @Route("/{userIds<[\d,]*\d+>}/delete", name="jury_user_delete")
      * @IsGranted("ROLE_ADMIN")
      * @param Request $request
-     * @param int     $userId
+     * @param string $userIds
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function deleteAction(Request $request, int $userId)
+    public function deleteActions(Request $request, string $userIds)
     {
-        /** @var User $user */
-        $user = $this->em->getRepository(User::class)->find($userId);
-        if (!$user) {
-            throw new NotFoundHttpException(sprintf('User with ID %s not found', $userId));
+        /** @var User[] $users */
+        foreach (explode(',', $userIds) as $userId) {
+            $user = $this->em->getRepository(User::class)->find($userId);
+            if (!$user) {
+                throw new NotFoundHttpException(sprintf('User with ID %s not found', $userId));
+            }
+            $users[] = $user;
         }
 
-        return $this->deleteEntity($request, $this->em, $this->dj, $this->eventLogService, $this->kernel,
-                                   $user, $user->getShortDesc(), $this->generateUrl('jury_users'));
+        return $this->deleteEntities($request, $this->em, $this->dj, $this->eventLogService, $this->kernel,
+                                     $users, $this->generateUrl('jury_users'));
     }
 
     /**

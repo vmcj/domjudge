@@ -189,7 +189,7 @@ class ExecutableController extends BaseController
                     'icon' => 'trash-alt',
                     'title' => 'delete this executable',
                     'link' => $this->generateUrl('jury_executable_delete', [
-                        'execId' => $e->getExecid(),
+                        'execIds' => $e->getExecid(),
                     ]),
                     'ajaxModal' => true,
                 ];
@@ -212,7 +212,7 @@ class ExecutableController extends BaseController
                 'actions' => $execactions,
                 'link' => $this->generateUrl('jury_executable', ['execId' => $e->getExecid()]),
                 'multiAction' => $e->getExecid(),
-                'multiActionUrl' => $this->generateUrl('jury_executable_delete', ['execId' => 0]),
+                'multiActionUrl' => $this->generateUrl('jury_executable_delete', ['execIds' => 0]),
             ];
         }
         return $this->render('jury/executables.html.twig', [
@@ -393,23 +393,26 @@ class ExecutableController extends BaseController
     }
 
     /**
-     * @Route("/{execId}/delete", name="jury_executable_delete")
+     * @Route("/{execIds}/delete", name="jury_executable_delete")
      * @IsGranted("ROLE_ADMIN")
      * @param Request $request
-     * @param string  $execId
+     * @param string  $execIds
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function deleteAction(Request $request, string $execId)
+    public function deleteActions(Request $request, string $execIds)
     {
-        /** @var Executable $executable */
-        $executable = $this->em->getRepository(Executable::class)->find($execId);
-        if (!$executable) {
-            throw new NotFoundHttpException(sprintf('Executable with ID %s not found', $execId));
+        /** @var Executable[] $executables */
+        foreach (explode(',', $contestIds) as $contestId) {
+            $executable = $this->em->getRepository(Executable::class)->find($execId);
+            if (!$executable) {
+                throw new NotFoundHttpException(sprintf('Executable with ID %s not found', $execId));
+            }
+            $executables[] = $executable;
         }
 
-        return $this->deleteEntity($request, $this->em, $this->dj, $this->eventLogService, $this->kernel, $executable,
-                                   $executable->getShortDesc(), $this->generateUrl('jury_executables'));
+        return $this->deleteEntities($request, $this->em, $this->dj, $this->eventLogService, $this->kernel, $executable,
+                                     $this->generateUrl('jury_executables'));
     }
 
     /**

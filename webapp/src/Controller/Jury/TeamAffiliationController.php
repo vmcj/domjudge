@@ -145,7 +145,7 @@ class TeamAffiliationController extends BaseController
                     'icon' => 'trash-alt',
                     'title' => 'delete this affiliation',
                     'link' => $this->generateUrl('jury_team_affiliation_delete', [
-                        'affilId' => $teamAffiliation->getAffilid(),
+                        'affilIds' => $teamAffiliation->getAffilid(),
                     ]),
                     'ajaxModal' => true,
                 ];
@@ -184,7 +184,7 @@ class TeamAffiliationController extends BaseController
                 'actions' => $affiliationactions,
                 'link' => $this->generateUrl('jury_team_affiliation', ['affilId' => $teamAffiliation->getAffilid()]),
                 'multiAction' => $teamAffiliation->getAffilid(),
-                'multiActionUrl' => $this->generateUrl('jury_team_affiliation_delete', ['affilId' => 0]),
+                'multiActionUrl' => $this->generateUrl('jury_team_affiliation_delete', ['affilIds' => 0]),
             ];
         }
 
@@ -278,23 +278,26 @@ class TeamAffiliationController extends BaseController
     }
 
     /**
-     * @Route("/{affilId<\d+>}/delete", name="jury_team_affiliation_delete")
+     * @Route("/{affilIds<[\d,]*\d+>}/delete", name="jury_team_affiliation_delete")
      * @IsGranted("ROLE_ADMIN")
      * @param Request $request
-     * @param int     $affilId
+     * @param string  $affilIds
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function deleteAction(Request $request, int $affilId)
+    public function deleteActions(Request $request, string $affilIds)
     {
-        /** @var TeamAffiliation $teamAffiliation */
-        $teamAffiliation = $this->em->getRepository(TeamAffiliation::class)->find($affilId);
-        if (!$teamAffiliation) {
-            throw new NotFoundHttpException(sprintf('Team affiliation with ID %s not found', $affilId));
+        /** @var TeamAffiliation[] $teamAffiliations */
+        foreach (explode(',', $affilIds) as $affilId) {
+            $teamAffiliation = $this->em->getRepository(TeamAffiliation::class)->find($affilId);
+            if (!$teamAffiliation) {
+                throw new NotFoundHttpException(sprintf('Team affiliation with ID %s not found', $affilId));
+            }
+            $teamAffiliations[] = $teamAffiliation;
         }
 
-        return $this->deleteEntity($request, $this->em, $this->dj, $this->eventLogService, $this->kernel,
-                                   $teamAffiliation, $teamAffiliation->getShortDesc(), $this->generateUrl('jury_team_affiliations'));
+        return $this->deleteEntities($request, $this->em, $this->dj, $this->eventLogService, $this->kernel,
+                                     $teamAffiliations, $this->generateUrl('jury_team_affiliations'));
     }
 
     /**

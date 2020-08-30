@@ -223,7 +223,7 @@ class JudgehostController extends BaseController
                     'icon' => 'trash-alt',
                     'title' => 'delete this judgehost',
                     'link' => $this->generateUrl('jury_judgehost_delete', [
-                        'hostname' => $judgehost->getHostname(),
+                        'hostnames' => $judgehost->getHostname(),
                     ]),
                     'ajaxModal' => true,
                 ];
@@ -236,7 +236,7 @@ class JudgehostController extends BaseController
                 'link' => $this->generateUrl('jury_judgehost', ['hostname' => $judgehost->getHostname()]),
                 'cssclass' => $judgehost->getActive() ? '' : 'disabled',
                 'multiAction' => $judgehost->getHostname(),
-                'multiActionUrl' => $this->generateUrl('jury_judgehost_delete', ['hostname' => 0]),
+                'multiActionUrl' => $this->generateUrl('jury_judgehost_delete', ['hostnames' => 0]),
             ];
         }
 
@@ -325,29 +325,32 @@ class JudgehostController extends BaseController
     }
 
     /**
-     * @Route("/{hostname}/delete", name="jury_judgehost_delete")
+     * @Route("/{hostnames}/delete", name="jury_judgehost_delete")
      * @IsGranted("ROLE_ADMIN")
      * @param Request $request
-     * @param string  $hostname
+     * @param string  $hostnames
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function deleteAction(Request $request, string $hostname)
+    public function deleteActions(Request $request, string $hostnames)
     {
-        /** @var Judgehost $judgehost */
-        $judgehost = $this->em->createQueryBuilder()
-            ->from(Judgehost::class, 'j')
-            ->leftJoin('j.restriction', 'r')
-            ->select('j', 'r')
-            ->andWhere('j.hostname = :hostname')
-            ->setParameter(':hostname', $hostname)
-            ->getQuery()
-            ->getOneOrNullResult();
+        /** @var Judgehost[] $judgehosts */
+        foreach (explode(',', $hostnames) as $hostname) {
+            $judgehost = $this->em->createQueryBuilder()
+                ->from(Judgehost::class, 'j')
+                ->leftJoin('j.restriction', 'r')
+                ->select('j', 'r')
+                ->andWhere('j.hostname = :hostname')
+                ->setParameter(':hostname', $hostname)
+                ->getQuery()
+                ->getOneOrNullResult();
+            $judgehosts[] = $judgehost;
+        }
 
-        return $this->deleteEntity($request, $this->em, $this->dj, $this->eventLog, $this->kernel,
-                                   $judgehost, $judgehost->getShortDesc(), $this->generateUrl('jury_judgehosts'));
+        return $this->deleteEntities($request, $this->em, $this->dj, $this->eventLog, $this->kernel,
+                                     $judgehosts, $this->generateUrl('jury_judgehosts'));
     }
 
     /**
