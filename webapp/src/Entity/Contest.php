@@ -430,6 +430,16 @@ class Contest extends BaseApiEntity
     }
 
     /**
+     * Get short textual description, human readable identifier of entity
+     *
+     * @return string
+     */
+    public function getShortDesc()
+    {
+        return $this->getShortname();
+    }
+
+    /**
      * Get activatetime
      *
      * @return double

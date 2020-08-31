@@ -198,6 +198,16 @@ class Executable
     }
 
     /**
+     * Get short textual description, human readable identifier of entity
+     *
+     * @return string
+     */
+    public function getShortDesc()
+    {
+        return $this->getDescription();
+    }
+
+    /**
      * Set type
      *
      * @param string $type

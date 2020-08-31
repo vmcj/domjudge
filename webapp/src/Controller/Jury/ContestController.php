@@ -634,7 +634,7 @@ class ContestController extends BaseController
         }
 
         return $this->deleteEntity($request, $this->em, $this->dj, $this->eventLogService, $this->kernel,
-                                   $contestProblem, $contestProblem->getShortname(),
+                                   $contestProblem, $contestProblem->getShortDesc(),
                                    $this->generateUrl('jury_contest', ['contestId' => $contestId]));
     }
 

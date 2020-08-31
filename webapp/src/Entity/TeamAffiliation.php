@@ -202,6 +202,16 @@ class TeamAffiliation extends BaseApiEntity
     }
 
     /**
+     * Get short textual description, human readable identifier of entity
+     *
+     * @return string
+     */
+    public function getShortDesc()
+    {
+        return $this->getName();
+    }
+
+    /**
      * Set country
      *
      * @param string $country

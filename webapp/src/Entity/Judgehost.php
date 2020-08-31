@@ -93,6 +93,16 @@ class Judgehost
     }
 
     /**
+     * Get short textual description, human readable identifier of entity
+     *
+     * @return string
+     */
+    public function getShortDesc()
+    {
+        return $this->getHostname();
+    }
+
+    /**
      * Set active
      *
      * @param boolean $active

@@ -291,6 +291,16 @@ class Team extends BaseApiEntity implements ExternalRelationshipEntityInterface
     }
 
     /**
+     * Get short textual description, human readable identifier of entity
+     *
+     * @return string
+     */
+    public function getShortDesc()
+    {
+        return $this->getEffectiveName();
+    }
+
+    /**
      * Set categoryid
      *
      * @param integer $categoryid

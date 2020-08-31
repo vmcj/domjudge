@@ -85,6 +85,16 @@ class JudgehostRestriction
     }
 
     /**
+     * Get short textual description, human readable identifier of entity
+     *
+     * @return string
+     */
+    public function getShortDesc()
+    {
+        return $this->getName();
+    }
+
+    /**
      * Set restrictions
      *
      * @param array $restrictions

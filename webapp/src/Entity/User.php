@@ -242,6 +242,16 @@ class User implements UserInterface, EquatableInterface, \Serializable
     }
 
     /**
+     * Get short textual description, human readable identifier of entity
+     *
+     * @return string
+     */
+    public function getShortDesc()
+    {
+        return $this->getName();
+    }
+
+    /**
      * Set email
      *
      * @param string $email
