@@ -685,7 +685,7 @@ class ContestController extends BaseController
             });
             return $this->redirect($this->generateUrl(
                 'jury_contest',
-                ['contestIds' => $contest->getcid()]
+                ['contestId' => $contest->getcid()]
             ));
         }
 

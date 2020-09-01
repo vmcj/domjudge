@@ -267,7 +267,8 @@ abstract class BaseController extends AbstractController
                 $contestsForEntity = $this->contestsForEntity($entity, $DOMJudgeService);
 
                 $entityManager->transactional(function () use ($entityManager, $entity) {
-                    if ($entity instanceof Problem) {
+                    var_dump($entity);
+                    /*if ($entity instanceof Problem) {
                         // Deleting problem is a special case: its dependent tables do not
                         // form a tree, and a delete to judging_run can only cascade from
                         // judging, not from testcase. Since MySQL does not define the
@@ -285,8 +286,8 @@ abstract class BaseController extends AbstractController
                         );
                         $entityManager->clear();
                         $entity = $entityManager->getRepository(Problem::class)->find($entity->getProbid());
-                    }
-                    $entityManager->remove($entity);
+                    }*/
+                    //$entityManager->remove($entity);
                 });
 
                 // Add an audit log entry
@@ -303,7 +304,7 @@ abstract class BaseController extends AbstractController
                     }
                 }
 
-                if ($entity instanceof Team) {
+                /*if ($entity instanceof Team) {
                     // No need to do this in a transaction, since the chance of a team
                     // with same ID being created at the same time is negligible.
                     $entityManager->getConnection()->executeQuery(
@@ -314,7 +315,7 @@ abstract class BaseController extends AbstractController
                         'DELETE FROM rankcache WHERE teamid = :teamid',
                         [':teamid' => $entityId]
                     );
-                }
+                }*/
 
                 $msg = sprintf('Successfully deleted %s %s "%s"',
                                $readableType, implode(', ', $primaryKeyData), $entity->getShortDesc());
