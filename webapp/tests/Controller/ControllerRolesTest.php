@@ -49,7 +49,7 @@ class ControllerRolesTest extends BaseTest
             return true;
         }
         // Remove links to local page, external or application links
-        if ($url[0] == '#' || $url[0] == 'h' || $url == '/logout') {
+        if ($url[0] == '#' || strpos($url, 'http') !== false || $url == '/logout') {
             return true;
         }
         return false;
@@ -72,7 +72,7 @@ class ControllerRolesTest extends BaseTest
             return [];
         }
         //Remove links to local page, external or application links
-        if ($url[0] == '#' || $url[0] == 'h' || $url == '/logout') {
+        if ($url[0] == '#' || strpos($url, 'http') !== false || $url == '/logout') {
             return [];
         }
         // This yields an error, disable for now
@@ -162,6 +162,12 @@ class ControllerRolesTest extends BaseTest
         $this->verifyAccess($combinations, $urlsToCheck);
     }
 
+    /** The test needs the data of which role to test with its base endpoint and the other optional roles/
+     * We than check for the role admin which has as base endpoint
+     * /jury if any combination with the other roles does forbide us from entering a page which the role can see
+     * if its the only role.
+     * For the first row: admin endpoint, [RoleName], [Other Optional roles], no traversing found links
+     **/
     public function provideBasePages()
     {
         return [
@@ -210,6 +216,13 @@ class ControllerRolesTest extends BaseTest
         }
     }
 
+    /** The test needs the data of which role to test with its base endpoint and
+     *  the endpoints of the other roles. We than check for the role admin which has as base endpoint
+     * /jury if the endpoints of the other roles jur+team have other pages which we're allowed to access
+     * so a Response: 200 but is not a link we have at our base endpoint
+     * the last boolean is for following all found links.
+     * For the first row: admin endpoint, [jury endpoint, team endpoint] adminRole, [OtherRoles], no traversing links
+     **/
     public function provideBaseURLAndRoles()
     {
         return [
