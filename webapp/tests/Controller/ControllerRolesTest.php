@@ -7,63 +7,18 @@ use App\Tests\BaseTest;
 class ControllerRolesTest extends BaseTest
 {
     protected static $roles = [];
+    protected static $loginURL = "http://localhost/login";
 
     /**
-     * //See: https://www.oreilly.com/library/view/php-cookbook/1565926811/ch04s25.html
-     * Get all combinations of roles with at minimal the starting roles
-     * @return array $results
-     * @var string[] $possible_roles
-     * @var string[] $start_roles
-     */
-    protected function roleCombinations(array $start_roles, array $possible_roles)
-    {
-        // initialize by adding the empty set
-        $results = array($start_roles);
-
-        foreach ($possible_roles as $element) {
-            foreach ($results as $combination) {
-                array_push($results, array_merge(array($element), $combination));
-            }
-        }
-        return $results;
-    }
-
-    /*
      * Some URLs are not setup in the testing framework or have a function for the
      * user UX/login process, those are skipped.
      * @var string $url
      * @return boolean $includedInTest
-     */
+     **/
     public function urlExcluded(string $url)
     {
-        // Documentation is not setup in the UnitTesting framework
-        if (substr($url, 0, 4) == '/doc') {
-            return true;
-        }
-        // API is not functional in Testing framework
-        if (substr($url, 0, 4) == '/api') {
-            return true;
-        }
-        // The change-contest handles a different action
-        if (substr($url, 0, 21) == '/jury/change-contest/') {
-            return true;
-        }
-        // Remove links to local page, external or application links
-        if ($url[0] == '#' || strpos($url, 'http') !== false || $url == '/logout') {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Crawl the webpage assume this is allowed and return all other links on the page
-     * @return string[] $urlsToCheck
-     * @var string $url
-     * @var int $statusCode
-     */
-    public function crawlPage(string $url, int $statusCode)
-    {
-        // We exclude some possible urls to not break the MockData
+        /*
+         /// We exclude some possible urls to not break the MockData
         if (strpos($url, '/delete') !== false) {
             return [];
         }
@@ -93,12 +48,72 @@ class ControllerRolesTest extends BaseTest
         ) {
             return [];
         }
+        */
+                /*// Documentation is not setup in the UnitTesting framework
+                if (substr($url, 0, 4) == '/doc') {
+                    return true;
+                }
+                // API is not functional in Testing framework
+                if (substr($url, 0, 4) == '/api') {
+                    return true;
+                }
+                // The change-contest handles a different action
+                if (substr($url, 0, 21) == '/jury/change-contest/') {
+                    return true;
+                }
+                // Remove links to local page, external or application links
+                if ($url[0] == '#' || strpos($url, 'http') !== false || $url == '/logout') {
+                    return true;
+                }*/
+        return false;
+    }
+
+    /**
+     * Crawl the webpage assume this is allowed and return all other links on the page
+     * @return string[] $urlsToCheck
+     * @var string $url
+     * @var int $statusCode
+     */
+    public function crawlPage(string $url, int $statusCode)
+    {
+        if(urlExcluded($url)) {
+            return [];
+        }
         $crawler = $this->client->request('GET', $url);
         $response = $this->client->getResponse();
         $message = var_export($response, true);
-        $this->assertEquals($statusCode, $response->getStatusCode(), $message);
+        print($url." + roles: ".implode(',',static::$roles)." -Act:".$response->getStatusCode()." -Exp:".$statusCode."\n");
+        if($response->isRedirection() && $statusCode=='403') {
+            $this->assertEquals($response->headers->get('location'), $this::$loginURL);
+        } else {
+            $this->assertEquals($statusCode, $response->getStatusCode(), $message);
+        }
         return array_unique($crawler->filter('a')->extract(['href']));
     }
+
+    /**
+     * //See: https://www.oreilly.com/library/view/php-cookbook/1565926811/ch04s25.html
+     * Get all combinations of roles with at minimal the starting roles
+     * @return array $results
+     * @var string[] $possible_roles
+     * @var string[] $start_roles
+     */
+    /*protected function roleCombinations(array $start_roles, array $possible_roles)
+    {
+        // initialize by adding the empty set
+        $results = array($start_roles);
+
+        foreach ($possible_roles as $element) {
+            foreach ($results as $combination) {
+                array_push($results, array_merge(array($element), $combination));
+            }
+        }
+        return $results;
+    }*/
+
+
+
+
 
     /**
      * Test that having the role(s) gives access to all visible pages.
@@ -107,7 +122,7 @@ class ControllerRolesTest extends BaseTest
      * @var string[] $combinations
      * @var string[] $roleURLs
      */
-    private function verifyAccess(array $combinations, array $roleURLs)
+    /*private function verifyAccess(array $combinations, array $roleURLs)
     {
         foreach ($combinations as static::$roles) {
             foreach ($roleURLs as $url) {
@@ -210,9 +225,10 @@ class ControllerRolesTest extends BaseTest
      */
     public function provideRoleAccessData()
     {
-        yield ['/jury', ['admin'],    ['jury','team'], false];
-        yield ['/jury', ['jury'],     ['admin','team'], false];
-        yield ['/team', ['team'],     ['admin','jury'], true];
+        /*yield ['/jury',     ['admin'],  ['jury','team'],            false];
+        yield ['/jury',     ['jury'],   ['admin','team'],           false];
+        yield ['/team',     ['team'],   ['admin','jury'],           true];
+        yield ['/public',   [],         ['team','admin','jury'],    true];*/
     }
 
     /**
@@ -226,8 +242,9 @@ class ControllerRolesTest extends BaseTest
      **/
     public function provideRoleAccessOtherRoles()
     {
-        yield ['/jury', ['/jury','/team'],    ['admin'],  ['jury','team'], false];
-        yield ['/jury', ['/jury','/team'],    ['jury'],   ['admin','team'], false];
-        yield ['/team', ['/jury'],            ['team'],   ['admin','jury'], true];
+        yield ['/jury',     ['/jury','/team'],  ['admin'],  ['jury','team'],            false];
+        yield ['/jury',     ['/jury','/team'],  ['jury'],   ['admin','team'],           false];
+        yield ['/team',     ['/jury'],          ['team'],   ['admin','jury'],           false];
+        yield ['/public',   ['/jury','/team'],  [],         ['admin','jury','team'],    false];
     }
 }
