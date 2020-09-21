@@ -148,7 +148,7 @@ class ControllerRolesTest extends BaseTest
      * @var string[] $baseRoles The standard role of the user
      * @var string[] $optionalRoles The roles which should not restrict the viewable pages
      * @var boolean $allPages Should all possible pages be visited
-     * @dataProvider provideBasePages
+     * @dataProvider provideRoleAccessData
      */
     public function testRoleAccess(string $roleBaseURL, array $baseRoles, array $optionalRoles, bool $allPages)
     {
@@ -162,29 +162,14 @@ class ControllerRolesTest extends BaseTest
         $this->verifyAccess($combinations, $urlsToCheck);
     }
 
-    /** The test needs the data of which role to test with its base endpoint and the other optional roles/
-     * We than check for the role admin which has as base endpoint
-     * /jury if any combination with the other roles does forbide us from entering a page which the role can see
-     * if its the only role.
-     * For the first row: admin endpoint, [RoleName], [Other Optional roles], no traversing found links
-     **/
-    public function provideBasePages()
-    {
-        return [
-            ['/jury', ['admin'],    ['jury','team'], false],
-            ['/jury', ['jury'],     ['admin','team'], false],
-            ['/team', ['team'],     ['admin','jury'], true]
-        ];
-    }
-
     /**
      * Test that having for example the jury role does not allow access to the pages of other roles.
-     * @dataProvider provideBaseURLAndRoles
      * @var string $roleBaseURL The URL of the current Role
      * @var string[] $roleOthersBaseURL The BaseURLs of the other roles
      * @var string[] $role The tested Role,
      * @var string[] $rolesOther The other Roles
      * @var boolean $allPages Should all possible pages be visited
+     * @dataProvider provideRoleAccessOtherRoles
      */
     public function testRoleAccessOtherRoles(
         string $roleBaseURL,
@@ -216,19 +201,33 @@ class ControllerRolesTest extends BaseTest
         }
     }
 
-    /** The test needs the data of which role to test with its base endpoint and
-     *  the endpoints of the other roles. We than check for the role admin which has as base endpoint
-     * /jury if the endpoints of the other roles jur+team have other pages which we're allowed to access
-     * so a Response: 200 but is not a link we have at our base endpoint
-     * the last boolean is for following all found links.
-     * For the first row: admin endpoint, [jury endpoint, team endpoint] adminRole, [OtherRoles], no traversing links
-     **/
-    public function provideBaseURLAndRoles()
+    /**
+     * Data provider used to test role access. Each item contains:
+     * - the page to visit
+     * - the base roles the user has
+     * - additional roles to add to the user
+     * - Whether to also recursively visit linked pages
+     */
+    public function provideRoleAccessData()
     {
-        return [
-            ['/jury', ['/jury','/team'],    ['admin'],  ['jury','team'], false],
-            ['/jury', ['/jury','/team'],    ['jury'],   ['admin','team'], false],
-            ['/team', ['/jury'],            ['team'],   ['admin','jury'], true],
-        ];
+        yield ['/jury', ['admin'],    ['jury','team'], false];
+        yield ['/jury', ['jury'],     ['admin','team'], false];
+        yield ['/team', ['team'],     ['admin','jury'], true];
+    }
+
+    /**
+     * Data provider used to test if having one role does not add access of other roles
+     * Each item contains:
+     * - the base page of the tested role
+     * - the base pages of the other roles
+     * - the tested role
+     * - the other excluded roles
+     * - Whether to also recursively visit linked pages
+     **/
+    public function provideRoleAccessOtherRoles()
+    {
+        yield ['/jury', ['/jury','/team'],    ['admin'],  ['jury','team'], false];
+        yield ['/jury', ['/jury','/team'],    ['jury'],   ['admin','team'], false];
+        yield ['/team', ['/jury'],            ['team'],   ['admin','jury'], true];
     }
 }
