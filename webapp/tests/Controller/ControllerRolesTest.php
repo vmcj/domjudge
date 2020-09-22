@@ -225,6 +225,7 @@ class ControllerRolesTest extends BaseTest
             strpos($url, '/delete') !== false ||                     // Breaks MockData
             $url == '/logout' ||                                           // Application links
             substr($url, 0, 21) == '/jury/change-contest/' ||
+            strpos($url, '/jury') !== false ||
             false
         );
     }
@@ -252,6 +253,13 @@ class ControllerRolesTest extends BaseTest
         foreach ($temp as $secUrl) {
             if(strpos($secUrl, '/jury/contests/970') !== false) {
                 print($url." + ".$secUrl."\n");
+            }
+        }
+        foreach($crawler->filter('a')->extract(['href']) as $i) {
+            if($i==''){
+                var_dump(static::$roles);
+                var_dump($crawler);
+                print("Failing: ".$url."\n");
             }
         }
         return array_unique($crawler->filter('a')->extract(['href']));
@@ -301,6 +309,12 @@ class ControllerRolesTest extends BaseTest
         // Find all pages, currently this sometimes breaks as some routes have the same logic
         if ($allPages) {
             $urlsToCheck = $this->getAllPages($urlsToCheck);
+        }
+        foreach ($urlsToCheck as $newURL) {
+            if ($newURL==''){
+                var_dump($roles, $roleBaseURL);
+            }
+            $urlsToCheck = array_merge($urlsToCheck, $this->crawlPage($baseURL, 200));
         }
         return $urlsToCheck;
     }
