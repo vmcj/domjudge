@@ -1,5 +1,7 @@
 #!/bin/bash
 
+git checkout master
+
 shopt -s expand_aliases
 alias trace_on='set -x'
 alias trace_off='{ set +x; } 2>/dev/null'
@@ -21,8 +23,6 @@ set -euxo pipefail
 
 section_start setup "Setup and install"
 
-mkdir screenshots
-
 export PS4='(${BASH_SOURCE}:${LINENO}): - [$?] $ '
 
 DIR=$(pwd)
@@ -32,8 +32,7 @@ GITSHA=$(git rev-parse HEAD || true)
 "$( dirname "${BASH_SOURCE[0]}" )"/base.sh
 
 apt install firefox cutycapt xvfb wkhtmltopdf
-firefox -screenshot screenshots/public-ff.png http://localhost/public
-xvfb-run --server-args="-screen 0, 1024x768x24" cutycapt --url=http://localhost/public --out=screenshots/public-capt.png --min-width=1366 --min-height=768
-wkhtmltoimage http://localhost/public google.png
-
+firefox -screenshot screenshots/public-ff-mstr.png http://localhost/public
+xvfb-run --server-args="-screen 0, 1024x768x24" cutycapt --url=http://localhost/public --out=screenshots/public-capt-mstr.png --min-width=1366 --min-height=768
+wkhtmltoimage http://localhost/public screenshots/public-wiki-mstr.png
 ls screenshots
