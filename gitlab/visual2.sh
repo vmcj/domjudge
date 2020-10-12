@@ -35,5 +35,13 @@ apt update
 apt install firefox cutycapt xvfb wkhtmltopdf -y
 firefox -screenshot screenshots/public-ff-mstr.png http://localhost/public
 xvfb-run --server-args="-screen 0, 1024x768x24" cutycapt --url=http://localhost/public --out=screenshots/public-capt-mstr.png --min-width=1366 --min-height=768
-wkhtmltoimage http://localhost/public screenshots/public-wiki-mstr.png
+xvfb-run --server-args="-screen 0, 1024x768x24" wkhtmltoimage http://localhost/public screenshots/public-wiki-mstr.png
 ls screenshots
+
+apt install -y openimageio-tools perceptualdiff uprightdiff
+idiff -warnpercent 1 -fail 0.0004 -failpercent 0.1 screenshots/public-ff.png screenshots/public-ff-mstr.png -o screenshots/ff.tif -abs -od -scale 10.0
+idiff -warnpercent 1 -fail 0.0004 -failpercent 0.1 screenshots/public-capt.png screenshots/public-capt-mstr.png -o screenshots/capt.tif -abs -od -scale 10.0
+idiff -warnpercent 1 -fail 0.0004 -failpercent 0.1 screenshots/public-wiki.png screenshots/public-wiki-mstr.png -o screenshots/wiki.tif -abs -od -scale 10.0
+uprightdiff screenshots/public-ff.png screenshots/public-ff-mstr.png screenshots/ff_upright.png
+uprightdiff screenshots/public-wiki.png screenshots/public-capt-mstr.png screenshots/capt_upright.png
+uprightdiff screenshots/public-capt.png screenshots/public-wiki-mstr.png screenshots/wiki_upright.png
