@@ -31,6 +31,7 @@ GITSHA=$(git rev-parse HEAD || true)
 # Set up
 "$( dirname "${BASH_SOURCE[0]}" )"/base.sh
 
+apt update;
 apt install firefox cutycapt xvfb wkhtmltopdf
 firefox -screenshot screenshots/public-ff.png http://localhost/public
 xvfb-run --server-args="-screen 0, 1024x768x24" cutycapt --url=http://localhost/public --out=screenshots/public-capt.png --min-width=1366 --min-height=768
