@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#!/bin/bash
-
 shopt -s expand_aliases
 alias trace_on='set -x'
 alias trace_off='{ set +x; } 2>/dev/null'
@@ -33,7 +31,10 @@ GITSHA=$(git rev-parse HEAD || true)
 # Set up
 "$( dirname "${BASH_SOURCE[0]}" )"/base.sh
 
-apt install firefox cutycapt xvfb wkhtmltopdf
+apt update;
+apt install firefox cutycapt xvfb wkhtmltopdf -y
 firefox -screenshot screenshots/public-ff.png http://localhost/public
 xvfb-run --server-args="-screen 0, 1024x768x24" cutycapt --url=http://localhost/public --out=screenshots/public-capt.png --min-width=1366 --min-height=768
-wkhtmltoimage http://localhost/public google.png
+xvfb-run --server-args="-screen 0, 1024x768x24" wkhtmltoimage http://localhost/public screenshots/public-wk.png
+
+ls screenshots
