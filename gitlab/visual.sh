@@ -1,5 +1,6 @@
 #!/bin/bash
 
+mkdir screenshots
 apt update;
 apt install firefox cutycapt xvfb wkhtmltopdf -y 
 
