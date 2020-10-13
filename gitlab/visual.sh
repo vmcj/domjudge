@@ -1,5 +1,8 @@
 #!/bin/bash
 
+apt update;
+apt install firefox cutycapt xvfb wkhtmltopdf -y 
+
 shopt -s expand_aliases
 alias trace_on='set -x'
 alias trace_off='{ set +x; } 2>/dev/null'
@@ -222,3 +225,9 @@ section_start validate_feed "Validate the eventfeed against API (ignoring failur
 cd ${DIR}/misc-tools
 ./compare-cds.sh http://localhost/domjudge 2 || true
 section_end validate_feed
+
+firefox -screenshot screenshots/public-ff.png http://localhost/public
+xvfb-run --server-args="-screen 0, 1024x768x24" cutycapt --url=http://localhost/public --out=screenshots/public-capt.png --min-width=1366 --min-height=768
+xvfb-run --server-args="-screen 0, 1024x768x24" wkhtmltoimage http://localhost/public screenshots/public-wk.png
+
+ls screenshots
