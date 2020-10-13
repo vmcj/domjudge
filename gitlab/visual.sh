@@ -73,11 +73,11 @@ sudo /usr/sbin/php-fpm7.2
 
 section_end setup
 
-curl http://localhost/public >> curpage.html
+curl http://localhost/domjudge/public >> curpage.html
 cat curpage.html
 
-firefox -screenshot screenshots/public-ff.png http://localhost/public
-xvfb-run --server-args="-screen 0, 1024x768x24" cutycapt --url=http://localhost/public --out=screenshots/public-capt.png --min-width=1366 --min-height=768
-xvfb-run --server-args="-screen 0, 1024x768x24" wkhtmltoimage http://localhost/public screenshots/public-wk.png
+firefox -screenshot screenshots/public-ff.png http://localhost/domjudge/public
+xvfb-run --server-args="-screen 0, 1024x768x24" cutycapt --url=http://localhost/domjudge/public --out=screenshots/public-capt.png --min-width=1366 --min-height=768
+xvfb-run --server-args="-screen 0, 1024x768x24" wkhtmltoimage http://localhost/domjudge/public screenshots/public-wk.png
 
 ls screenshots
