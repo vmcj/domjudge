@@ -14,7 +14,7 @@ curl $CURLOPTS -c $COOKIEJAR -F "_csrf_token=$CSRFTOKEN" -F "_username=admin" -F
 
 cat $COOKIEJAR
 sed -i 's/#HttpOnly_//g' $COOKIEJAR
-cat $COOKIEJAR
+>&2 cat $COOKIEJAR
 
 cp $COOKIEJAR cookies.txt
 
@@ -30,7 +30,7 @@ do
 	mkdir $url
 	cd $url
 	httrack http://localhost/$url
-	vnu-runtime-image/bin/vnu $url
+	./vnu-runtime-image/bin/vnu $url
 	cd $mydir
 done
 
