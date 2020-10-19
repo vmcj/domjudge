@@ -40,9 +40,8 @@ check_w3c_html:
   artifacts:
     when: always
     paths:
-      - team
       - public
-      - jury
+      - w3cHtml.json
 
 run unit tests:
   stage: test

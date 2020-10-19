@@ -92,8 +92,8 @@ wget https://github.com/validator/validator/releases/latest/download/vnu.linux.z
 unzip -q vnu.linux.zip
 #RES=0
 FOUNDERR=0
-ACCEPTEDERR=100
-for url in public jury team
+ACCEPTEDERR=4871
+for url in public
 do
 	mkdir $url
 	cd $url
@@ -101,11 +101,11 @@ do
 	httrack http://localhost/domjudge/$url -*doc* -*logout*
 	cd $DIR
 	$DIR/vnu-runtime-image/bin/vnu --skip-non-html --format json --exit-zero-always --stdout $url 2> result #; RES=$((RES+$?))
-	NEWFOUNDERRORS=$(($DIR/vnu-runtime-image/bin/vnu --skip-non-html --format text --exit-zero-always --stdout $url 2> | wc -l))
+	NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --skip-non-html --format text --exit-zero-always --stdout $url 2>&1 | wc -l`
 	FOUNDERR=$((NEWFOUNDERRORS+FOUNDERR))
-	python3 -m "json.tool" < result
+	python3 -m "json.tool" < result > w3cHtml.json
 done
 # Do not hard error yet
 # exit $RES
-echo "Found: " $fFOUNDERR
-#exit [ "$FOUNDERR" -le "$ACCEPTEDERR" ]
+echo "Found: " $FOUNDERR
+exit [ "$FOUNDERR" -le "$ACCEPTEDERR" ]
