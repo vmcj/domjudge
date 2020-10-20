@@ -92,20 +92,23 @@ wget https://github.com/validator/validator/releases/latest/download/vnu.linux.z
 unzip -q vnu.linux.zip
 #RES=0
 FOUNDERR=0
-ACCEPTEDERR=4871
+ACCEPTEDERR=1132
 for url in public
 do
 	mkdir $url
 	cd $url
     cp $DIR/cookies.txt ./
-	httrack http://localhost/domjudge/$url -*doc* -*logout*
+	httrack http://localhost/domjudge/$url --assume html=text/html -*doc* -*logout*
 	cd $DIR
-	$DIR/vnu-runtime-image/bin/vnu --skip-non-html --format json --exit-zero-always --stdout $url 2> result #; RES=$((RES+$?))
-	NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --skip-non-html --format text --exit-zero-always --stdout $url 2>&1 | wc -l`
+	$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-html --format json $url 2> result.json #; RES=$((RES+$?))
+	NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-html --format gnu $url 2>&1 | wc -l`
 	FOUNDERR=$((NEWFOUNDERRORS+FOUNDERR))
-	python3 -m "json.tool" < result > w3cHtml.json
+	python3 -m "json.tool" < result.json > w3cHtml$url.json
+    trace_off
+    python3 gitlab/jsontogitlab.py w3cHtml$url.json
+    trace_on
 done
 # Do not hard error yet
 # exit $RES
 echo "Found: " $FOUNDERR
-exit [ "$FOUNDERR" -le "$ACCEPTEDERR" ]
+[ "$FOUNDERR" -le "$ACCEPTEDERR" ]
