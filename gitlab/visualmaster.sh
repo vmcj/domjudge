@@ -1,5 +1,6 @@
 #!/bin/bash
 
-git checkout master
+git branch -a
+#git checkout master
 
-./gitlab/visualpr.sh master
+#./gitlab/visualpr.sh master
