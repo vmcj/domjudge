@@ -139,11 +139,8 @@ visual_master:
   script:
   - |
     apk add git
-    ls
     git status
-    git branch -l
     git branch -a
-    git checkout master
     docker run --privileged \
       -v $CI_PROJECT_DIR:$CI_PROJECT_DIR \
       --net=host \
