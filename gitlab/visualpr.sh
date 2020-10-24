@@ -104,11 +104,11 @@ do
 	httrack http://localhost/domjudge/$url --assume html=text/html -*doc* -*logout*
 	cd $DIR
     cp -r $url /var/www/
-    for file in find $url -type f -name "*.html"
+    for file in `find $url -type f -name "*.html"`
     do
         echo $file
     done
-    for file in find $url -type f -name "*.html"
+    for file in `find $url -type f -name "*.html"`
     do
         prefix="^.\/$url"
         urlpath=$(sed "s/$prefix//g"<<<$file)
