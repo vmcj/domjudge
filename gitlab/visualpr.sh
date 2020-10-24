@@ -19,7 +19,7 @@ alias section_end='trace_off ; section_end_internal '
 
 set -euxo pipefail
 
-section_start fixup
+section_start fixup "Remove later"
 apt update
 apt install firefox cutycapt xvfb wkhtmltopdf -y
 section_end fixup
