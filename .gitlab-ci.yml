@@ -138,11 +138,11 @@ visual_master:
     GIT_CHECKOUT: "false"
   script:
   - |
-    apk add git
-    git status
-    git branch -a
-    ls
-    pwd
+    apk add git; \
+    git status; \
+    git branch -a; \
+    ls; \
+    pwd; \
     docker run --privileged \
       -v $CI_PROJECT_DIR:$CI_PROJECT_DIR \
       --net=host \
