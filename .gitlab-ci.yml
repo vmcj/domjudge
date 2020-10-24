@@ -141,6 +141,7 @@ visual_master:
     apk add git; \
     git status; \
     git branch -a; \
+    git pull; \
     ls; \
     pwd; \
     docker run --privileged \
