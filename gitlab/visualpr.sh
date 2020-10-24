@@ -86,6 +86,8 @@ curl $CURLOPTS -c $COOKIEJAR -F "_csrf_token=$CSRFTOKEN" -F "_username=admin" -F
 
 cd $DIR
 
+STORAGEDIR=screenshots$1
+
 cp $COOKIEJAR cookies.txt
 sed -i 's/#HttpOnly_//g' cookies.txt
 sed -i 's/\t0\t/\t1999999999\t/g' cookies.txt
@@ -109,7 +111,13 @@ do
     for file in find $url -type f -name "*.html"
     do
         prefix="^.\/$url"
-        urlpath=$(sed "s/$prefix//g"<<<$file) 
+        urlpath=$(sed "s/$prefix//g"<<<$file)
         echo $file $urlpath
+        # Small risk of collision
+        storepath=$(sed "s/\//_s_/g"<<<$urlpath)
+        echo $file $urlpath $storepath
+        firefox -screenshot $STORAGEDIR/$storepath-ff.png http://localhost/$urlpath
+        xvfb-run --server-args="-screen 0, 1024x768x24" cutycapt --url=http://localhost/$urlpath --out=$STORAGEDIR/$storepath-cc.png --min-width=1366 --min-height=768
+        xvfb-run --server-args="-screen 0, 1024x768x24" wkhtmltoimage http://localhost/$urlpath $STORAGEDIR/$storepath-wk.png
     done
 done
