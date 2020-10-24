@@ -139,6 +139,7 @@ visual_master:
   script:
   - |
     apk add git
+    ls
     git checkout master
     docker run --privileged \
       -v $CI_PROJECT_DIR:$CI_PROJECT_DIR \
