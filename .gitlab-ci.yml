@@ -140,8 +140,10 @@ visual_master:
   - |
     apk add git; \
     git status; \
+    git log; \
     git branch -a; \
-    git pull; \
+    git branch -l; \
+    git pull origin master; \
     ls; \
     pwd; \
     docker run --privileged \
