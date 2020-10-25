@@ -143,6 +143,7 @@ visual_master:
     git log; \
     git branch -a; \
     git branch -l; \
+    git checkout -B master origin/master; \
     git pull origin master; \
     ls; \
     pwd; \
