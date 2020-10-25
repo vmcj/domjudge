@@ -156,6 +156,7 @@ visual_master:
     when: always
     paths:
       - screenshotsmaster
+      - public
 
 visual_pr:
   stage: test
@@ -185,6 +186,7 @@ visual_pr:
     when: always
     paths:
       - screenshotspr
+      - public
 
 visual_compare:
   stage: compare
