@@ -138,13 +138,13 @@ visual_master:
     GIT_CHECKOUT: "false"
   script:
   - |
-    apk add git; \
-    git status; \
-    git log; \
-    git branch -a; \
-    git branch -l; \
-    git checkout -B master origin/master; \
-    git pull origin master; \
+    apk add git
+    git status
+    git branch -a
+    git branch -l
+    git checkout -B master origin/master
+    git log
+    #pull origin master; \
     ls; \
     pwd; \
     docker run --privileged \
