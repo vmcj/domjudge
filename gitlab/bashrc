@@ -5,7 +5,11 @@ alias trace_on='set -x'
 alias trace_off='{ set +x; } 2>/dev/null'
 
 function section_start_internal() {
+<<<<<<< HEAD
 	echo -e "section_start:`date +%s`:$1\r\e[0K$2"
+=======
+	echo -e "section_start:`date +%s`:$1[collapsed=true]\r\e[0K$2"
+>>>>>>> 6e9371fd3b763e10e3596f1f1165a9b565806481
 	trace_on
 }
 
