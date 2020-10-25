@@ -117,7 +117,7 @@ do
         storepath=$(sed "s/\//_s_/g"<<<$urlpath)
         echo $file $urlpath $storepath
         firefox -screenshot $STORAGEDIR/$storepath-ff.png http://localhost/$urlpath
-        xvfb-run --server-args="-screen 0, 1024x768x24" cutycapt --url=http://localhost/$urlpath --out=$STORAGEDIR/$storepath-cc.png --min-width=1366 --min-height=768
+        #xvfb-run --server-args="-screen 0, 1024x768x24" cutycapt --url=http://localhost/$urlpath --out=$STORAGEDIR/$storepath-cc.png --min-width=1366 --min-height=768
         #xvfb-run --server-args="-screen 0, 1024x768x24" wkhtmltoimage http://localhost/$urlpath $STORAGEDIR/$storepath-wk.png
     done
 done
