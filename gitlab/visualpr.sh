@@ -99,7 +99,8 @@ do
     cp $DIR/cookies.txt ./
 	httrack http://localhost/domjudge/$url --assume html=text/html -*logout*
 	cd $DIR
-    cp -r $url /var/www/
+    mkdir /var/www/html/$url/
+    cp -r $url/localhost/domjudge/* /var/www/html/$url/
     for file in `find $url -type f -name "*.html"`
     do
         echo $file
