@@ -87,15 +87,11 @@ curl $CURLOPTS -c $COOKIEJAR -F "_csrf_token=$CSRFTOKEN" -F "_username=admin" -F
 cd $DIR
 
 STORAGEDIR=screenshots$1
+mkdir $STORAGEDIR
 
 cp $COOKIEJAR cookies.txt
 sed -i 's/#HttpOnly_//g' cookies.txt
 sed -i 's/\t0\t/\t1999999999\t/g' cookies.txt
-wget https://github.com/validator/validator/releases/latest/download/vnu.linux.zip
-unzip -q vnu.linux.zip
-#RES=0
-FOUNDERR=0
-ACCEPTEDERR=1132
 for url in public
 do
 	mkdir $url
