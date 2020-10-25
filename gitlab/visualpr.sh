@@ -17,11 +17,12 @@ function section_end_internal() {
 alias section_start='trace_off ; section_start_internal '
 alias section_end='trace_off ; section_end_internal '
 
+mkdir screenshots$1
 set -euxo pipefail
 
 section_start fixup "Remove later"
 apt update
-apt install firefox cutycapt xvfb wkhtmltopdf -y
+apt install firefox -y
 section_end fixup
 
 section_start setup "Setup and install"
@@ -78,7 +79,7 @@ ADMINPASS=$(cat etc/initial_admin_password.secret)
 export COOKIEJAR
 COOKIEJAR=$(mktemp --tmpdir)
 export CURLOPTS="--fail -sq -m 30 -b $COOKIEJAR"
-
+date -s "18 May 2004 12:05:57"
 # Make an initial request which will get us a session id, and grab the csrf token from it
 CSRFTOKEN=$(curl $CURLOPTS -c $COOKIEJAR "http://localhost/domjudge/login" 2>/dev/null | sed -n 's/.*_csrf_token.*value="\(.*\)".*/\1/p')
 # Make a second request with our session + csrf token to actually log in
@@ -97,23 +98,36 @@ do
 	mkdir $url
 	cd $url
     cp $DIR/cookies.txt ./
-	httrack http://localhost/domjudge/$url --assume html=text/html -*logout*
+	httrack http://localhost/domjudge/$url --assume html=text/html -*doc* -*/team/* -*/jury/* -*logout*
 	cd $DIR
     mkdir /var/www/html/$url/
     cp -r $url/localhost/domjudge/* /var/www/html/$url/
+    #ls /var/www/html/$url/
+    #cat /etc/nginx/nginx.conf
+    #ls /etc/nginx/sites-enabled/
+    #cat /etc/nginx/sites-enabled/default
+    #ls /etc/nginx
+    # configure and restart nginx
+    #sudo rm -f /etc/nginx/sites-enabled/*
+    cp $DIR/gitlab/default-nginx /etc/nginx/sites-enabled/default
+    service nginx restart
+    #/usr/sbin/nginx &
+    #firefox -screenshot $STORAGEDIR/nginx-ff.png http://localhost/index.html
+    #firefox -screenshot $STORAGEDIR/$urlpart-ff.png http://localhost/$urlpublic/public.html
+    #firefox -screenshot $STORAGEDIR/2-ff.png http://localhost/public/
+    #for file in `find $url -type f -name "*.html"`
+    #do
+    #    echo $file
+    #done
     for file in `find $url -type f -name "*.html"`
     do
-        echo $file
-    done
-    for file in `find $url -type f -name "*.html"`
-    do
-        prefix="^.\/$url"
+        prefix="^$url\/localhost\/domjudge\/"
         urlpath=$(sed "s/$prefix//g"<<<$file)
-        echo $file $urlpath
+        #echo $file $urlpath
         # Small risk of collision
         storepath=$(sed "s/\//_s_/g"<<<$urlpath)
-        echo $file $urlpath $storepath
-        firefox -screenshot $STORAGEDIR/$storepath-ff.png http://localhost/$urlpath
+        #echo $file $urlpath $storepath
+        firefox -screenshot $STORAGEDIR/$storepath-ff.png http://localhost/$url/$urlpath
         #xvfb-run --server-args="-screen 0, 1024x768x24" cutycapt --url=http://localhost/$urlpath --out=$STORAGEDIR/$storepath-cc.png --min-width=1366 --min-height=768
         #xvfb-run --server-args="-screen 0, 1024x768x24" wkhtmltoimage http://localhost/$urlpath $STORAGEDIR/$storepath-wk.png
     done

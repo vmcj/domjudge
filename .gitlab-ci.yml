@@ -5,208 +5,77 @@ stages:
   - test
   - compare
 
-    #include:
-    #  - template: Dependency-Scanning.gitlab-ci.yml
-    #  - template: SAST.gitlab-ci.yml
-    #  - template: License-Scanning.gitlab-ci.yml
-    #
-    #check syntax:
-    #  stage: test
-    #  image: domjudge/gitlabci:1.0
-    #  script:
-    #    - ./gitlab/syntax.sh
-    #
-    #run unit tests:
-    #  stage: test
-    #  image: domjudge/gitlabci:1.0
-    #  # Disabled for now as it drastically speeds up running unit tests and we don't use it yet
-    #  # before_script:
-    #  #   - apt-get update -yqq
-    #  #   - apt-get install php-xdebug -yqq
-    #  services:
-    #    - mariadb
-    #  variables:
-    #    MYSQL_ROOT_PASSWORD: password
-    #  script:
-    #    - ./gitlab/unit-tests.sh
-    #  artifacts:
-    #    when: always
-    #    paths:
-    #      - unit-tests.xml
-    #    reports:
-    #      junit:
-    #        - unit-tests.xml
-    #  cache:
-    #    key: unit-tests
-    #    paths:
-    #      - lib/vendor/
-    #
-    #integration:
-    #  stage: test
-    #  before_script:
-    #    # Takes about 1 minute to pull
-    #    - echo -e "section_start:`date +%s`:docker\r\e[0Kdocker pull"
-    #    - time docker pull domjudge/gitlabci:1.0
-    #    - echo -e "section_end:`date +%s`:docker\r\e[0K"
-    #  image: docker:stable
-    #  services:
-    #    - docker:19-dind
-    #    - mariadb
-    #  variables:
-    #    MYSQL_ROOT_PASSWORD: password
-    #    DOCKER_HOST: tcp://docker:2375/
-    #    DOCKER_DRIVER: overlay2
-    #  script:
-    #  - |
-    #    docker run --privileged \
-    #      -v $CI_PROJECT_DIR:$CI_PROJECT_DIR \
-    #      --net=host \
-    #      -e "TERM=xterm-256color" -e "HOME=$HOME" -e "USER=$USER" -e "MARIADB_PORT_3306_TCP_ADDR=$MARIADB_PORT_3306_TCP_ADDR" -e "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD" \
-    #      domjudge/gitlabci:1.0 /bin/bash -eo pipefail -c "umask 0002; cd $CI_PROJECT_DIR; script --return -qfc \"./gitlab/integration.sh\" /dev/null | ts \"[%F %T]\" "
-    #  artifacts:
-    #    when: always
-    #    paths:
-    #      - misc-tools/icpctools/dj-events.json
-    #      - misc-tools/icpctools/dj-scoreboard.json
-    #      - misc-tools/icpctools/cds-events.json
-    #      - misc-tools/icpctools/cds-scoreboard.json
-    ## TODO: Re-enable when gitlab is in better shape...
-    ##  cache:
-    ##    key: integration
-    ##    paths:
-    ##      - lib/vendor/
-    ##      - chroot
+include:
+ - template: Dependency-Scanning.gitlab-ci.yml
+ - template: SAST.gitlab-ci.yml
+ - template: License-Scanning.gitlab-ci.yml
 
-visual:
-  stage: test
-  before_script:
-    # Takes about 1 minute to pull
-    - echo -e "section_start:`date +%s`:docker\r\e[0Kdocker pull"
-    - time docker pull domjudge/gitlabci:1.0
-    - echo -e "section_end:`date +%s`:docker\r\e[0K"
-  image: docker:stable
-  services:
-    - docker:19-dind
-    - mariadb
-  variables:
-    MYSQL_ROOT_PASSWORD: password
-    DOCKER_HOST: tcp://docker:2375/
-    DOCKER_DRIVER: overlay2
-  script:
-  - |
-    docker run --privileged \
-      -v $CI_PROJECT_DIR:$CI_PROJECT_DIR \
-      --net=host \
-      -e "TERM=xterm-256color" -e "HOME=$HOME" -e "USER=$USER" -e "MARIADB_PORT_3306_TCP_ADDR=$MARIADB_PORT_3306_TCP_ADDR" -e "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD" \
-      domjudge/gitlabci:1.0 /bin/bash -eo pipefail -c "umask 0002; cd $CI_PROJECT_DIR; script --return -qfc \"./gitlab/visual.sh\" /dev/null | ts \"[%F %T]\" "
-  artifacts:
-    when: always
-    paths:
-      - screenshots
+check syntax:
+ stage: test
+ image: domjudge/gitlabci:1.0
+ script:
+   - ./gitlab/syntax.sh
 
-visual2:
-  stage: test2
-  before_script:
-    # Takes about 1 minute to pull
-    - echo -e "section_start:`date +%s`:docker\r\e[0Kdocker pull"
-    - time docker pull domjudge/gitlabci:1.0
-    - echo -e "section_end:`date +%s`:docker\r\e[0K"
-  image: docker:stable
-  services:
-    - docker:19-dind
-    - mariadb
-  variables:
-    MYSQL_ROOT_PASSWORD: password
-    DOCKER_HOST: tcp://docker:2375/
-    DOCKER_DRIVER: overlay2
-  script:
-  - |
-    docker run --privileged \
-      -v $CI_PROJECT_DIR:$CI_PROJECT_DIR \
-      --net=host \
-      -e "TERM=xterm-256color" -e "HOME=$HOME" -e "USER=$USER" -e "MARIADB_PORT_3306_TCP_ADDR=$MARIADB_PORT_3306_TCP_ADDR" -e "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD" \
-      domjudge/gitlabci:1.0 /bin/bash -eo pipefail -c "umask 0002; cd $CI_PROJECT_DIR; script --return -qfc \"./gitlab/visual2.sh\" /dev/null | ts \"[%F %T]\" "
-  artifacts:
-    when: always
-    paths:
-      - screenshots
-  dependencies:
-    - visual
+run unit tests:
+ stage: test
+ image: domjudge/gitlabci:1.0
+ # Disabled for now as it drastically speeds up running unit tests and we don't use it yet
+ # before_script:
+ #   - apt-get update -yqq
+ #   - apt-get install php-xdebug -yqq
+ services:
+   - mariadb
+ variables:
+   MYSQL_ROOT_PASSWORD: password
+ script:
+   - ./gitlab/unit-tests.sh
+ artifacts:
+   when: always
+   paths:
+     - unit-tests.xml
+   reports:
+     junit:
+       - unit-tests.xml
+ cache:
+   key: unit-tests
+   paths:
+     - lib/vendor/
 
-      - misc-tools/icpctools/dj-events.json
-      - misc-tools/icpctools/dj-scoreboard.json
-      - misc-tools/icpctools/cds-events.json
-      - misc-tools/icpctools/cds-scoreboard.json
+integration:
+ stage: test
+ before_script:
+   # Takes about 1 minute to pull
+   - echo -e "section_start:`date +%s`:docker\r\e[0Kdocker pull"
+   - time docker pull domjudge/gitlabci:1.0
+   - echo -e "section_end:`date +%s`:docker\r\e[0K"
+ image: docker:stable
+ services:
+   - docker:19-dind
+   - mariadb
+ variables:
+   MYSQL_ROOT_PASSWORD: password
+   DOCKER_HOST: tcp://docker:2375/
+   DOCKER_DRIVER: overlay2
+ script:
+ - |
+   docker run --privileged \
+     -v $CI_PROJECT_DIR:$CI_PROJECT_DIR \
+     --net=host \
+     -e "TERM=xterm-256color" -e "HOME=$HOME" -e "USER=$USER" -e "MARIADB_PORT_3306_TCP_ADDR=$MARIADB_PORT_3306_TCP_ADDR" -e "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD" \
+     domjudge/gitlabci:1.0 /bin/bash -eo pipefail -c "umask 0002; cd $CI_PROJECT_DIR; script --return -qfc \"./gitlab/integration.sh\" /dev/null | ts \"[%F %T]\" "
+ artifacts:
+   when: always
+   paths:
+     - misc-tools/icpctools/dj-events.json
+     - misc-tools/icpctools/dj-scoreboard.json
+     - misc-tools/icpctools/cds-events.json
+     - misc-tools/icpctools/cds-scoreboard.json
 # TODO: Re-enable when gitlab is in better shape...
 #  cache:
 #    key: integration
 #    paths:
 #      - lib/vendor/
 #      - chroot
-
-check syntax:
-  stage: test
-  image: domjudge/gitlabci:1.0
-  script:
-    - ./gitlab/syntax.sh
-
-run unit tests:
-  stage: test
-  image: domjudge/gitlabci:1.0
-  # Disabled for now as it drastically speeds up running unit tests and we don't use it yet
-  # before_script:
-  #   - apt-get update -yqq
-  #   - apt-get install php-xdebug -yqq
-  services:
-    - mariadb
-  variables:
-    MYSQL_ROOT_PASSWORD: password
-  script:
-    - ./gitlab/unit-tests.sh
-  artifacts:
-    when: always
-    paths:
-      - unit-tests.xml
-    reports:
-      junit:
-        - unit-tests.xml
-  cache:
-    key: unit-tests
-    paths:
-      - lib/vendor/
-
-visual_master:
-  stage: test
-  before_script:
-    # Takes about 1 minute to pull
-    - echo -e "section_start:`date +%s`:docker\r\e[0Kdocker pull"
-    - time docker pull domjudge/gitlabci:1.0
-    - echo -e "section_end:`date +%s`:docker\r\e[0K"
-  image: docker:stable
-  services:
-    - docker:19-dind
-    - mariadb
-  variables:
-    MYSQL_ROOT_PASSWORD: password
-    DOCKER_HOST: tcp://docker:2375/
-    DOCKER_DRIVER: overlay2
-  script:
-  - |
-    docker run --privileged \
-      -v $CI_PROJECT_DIR:$CI_PROJECT_DIR \
-      --net=host \
-      -e "TERM=xterm-256color" -e "HOME=$HOME" -e "USER=$USER" -e "MARIADB_PORT_3306_TCP_ADDR=$MARIADB_PORT_3306_TCP_ADDR" -e "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD" \
-      domjudge/gitlabci:1.0 /bin/bash -eo pipefail -c "umask 0002; cd $CI_PROJECT_DIR; script --return -qfc \"./gitlab/visualmaster.sh\" /dev/null | ts \"[%F %T]\" "
-  artifacts:
-    when: always
-    paths:
-      - screenshotsmaster
-
-check syntax:
-  stage: test
-  image: domjudge/gitlabci:1.0
-  script:
-    - ./gitlab/syntax.sh
 
 check_w3c_css:
   stage: test
@@ -219,38 +88,8 @@ check_w3c_css:
     - python3 -m json.tool < result
     - exit $RES
 
-run unit tests:
-  stage: test
-  image: domjudge/gitlabci:1.0
-  # Disabled for now as it drastically speeds up running unit tests and we don't use it yet
-  # before_script:
-  #   - apt-get update -yqq
-  #   - apt-get install php-xdebug -yqq
-  services:
-    - mariadb
-  variables:
-    MYSQL_ROOT_PASSWORD: password
-  script:
-    - ./gitlab/unit-tests.sh
-  artifacts:
-    when: always
-    paths:
-      - unit-tests.xml
-    reports:
-      junit:
-        - unit-tests.xml
-  cache:
-    key: unit-tests
-    paths:
-      - lib/vendor/
-
 visual_master:
   stage: test
-  before_script:
-    # Takes about 1 minute to pull
-    - echo -e "section_start:`date +%s`:docker\r\e[0Kdocker pull"
-    - time docker pull domjudge/gitlabci:1.0
-    - echo -e "section_end:`date +%s`:docker\r\e[0K"
   image: docker:stable
   services:
     - docker:19-dind
@@ -261,27 +100,25 @@ visual_master:
     DOCKER_DRIVER: overlay2
     GIT_STRATEGY: clone
     GIT_CHECKOUT: "false"
-  script:
-  - |
-    apk add git
-    git status
-    git branch -a
-    git branch -l
-    git checkout -B master origin/master
-    git log
-    #pull origin master; \
-    ls; \
-    pwd; \
-    docker run --privileged \
-      -v $CI_PROJECT_DIR:$CI_PROJECT_DIR \
-      --net=host \
-      -e "TERM=xterm-256color" -e "HOME=$HOME" -e "USER=$USER" -e "MARIADB_PORT_3306_TCP_ADDR=$MARIADB_PORT_3306_TCP_ADDR" -e "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD" \
-      domjudge/gitlabci:1.0 /bin/bash -eo pipefail -c "umask 0002; cd $CI_PROJECT_DIR; script --return -qfc \"./gitlab/visualpr.sh master\" /dev/null | ts \"[%F %T]\" "
   artifacts:
     when: always
     paths:
       - screenshotsmaster
       - public
+  script:
+    - apk add git
+    - git fetch
+    - git checkout -B master origin/master
+    - git branch --set-upstream-to=origin/master master
+    - git pull
+    - git checkout $CI_COMMIT_SHA -- gitlab/visualpr.sh # Always compare with the same tests
+    - git checkout $CI_COMMIT_SHA -- gitlab/default-nginx
+    - |
+      docker run --privileged \
+        -v $CI_PROJECT_DIR:$CI_PROJECT_DIR \
+        --net=host \
+        -e "TERM=xterm-256color" -e "HOME=$HOME" -e "USER=$USER" -e "MARIADB_PORT_3306_TCP_ADDR=$MARIADB_PORT_3306_TCP_ADDR" -e "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD" \
+        domjudge/gitlabci:1.0 /bin/bash -eo pipefail -c "umask 0002; cd $CI_PROJECT_DIR; script --return -qfc \"./gitlab/visualpr.sh master\" /dev/null | ts \"[%F %T]\" "
 
 visual_pr:
   stage: test
@@ -300,8 +137,6 @@ visual_pr:
     DOCKER_DRIVER: overlay2
   script:
   - |
-    ls
-    pwd
     docker run --privileged \
       -v $CI_PROJECT_DIR:$CI_PROJECT_DIR \
       --net=host \
@@ -314,28 +149,14 @@ visual_pr:
       - public
 
 visual_compare:
-  stage: compare
-  before_script:
-    # Takes about 1 minute to pull
-    - echo -e "section_start:`date +%s`:docker\r\e[0Kdocker pull"
-    - time docker pull domjudge/gitlabci:1.0
-    - echo -e "section_end:`date +%s`:docker\r\e[0K"
-  image: docker:stable
-  services:
-    - docker:19-dind
-    - mariadb
-  variables:
-    MYSQL_ROOT_PASSWORD: password
-    DOCKER_HOST: tcp://docker:2375/
-    DOCKER_DRIVER: overlay2
-  script:
-  - |
-    docker run --privileged \
-      -v $CI_PROJECT_DIR:$CI_PROJECT_DIR \
-      --net=host \
-      -e "TERM=xterm-256color" -e "HOME=$HOME" -e "USER=$USER" -e "MARIADB_PORT_3306_TCP_ADDR=$MARIADB_PORT_3306_TCP_ADDR" -e "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD" \
-      domjudge/gitlabci:1.0 /bin/bash -eo pipefail -c "umask 0002; cd $CI_PROJECT_DIR; script --return -qfc \"./gitlab/visualpr.sh\" /dev/null | ts \"[%F %T]\" "
-  artifacts:
-    when: on_failure
+ stage: compare
+ image: domjudge/gitlabci:1.0
+ needs:
+  - visual_master
+  - visual_pr
+ script:
+   - ./gitlab/visual2.sh
+ artifacts:
+    when: always
     paths:
       - failingchanges
