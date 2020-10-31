@@ -104,7 +104,7 @@ FOUNDERR=0
 ACCEPTEDERRTOTAL=0
 ACCEPTEDERR=5
 
-URL=public
+URL=public$1
 mkdir $URL
 cd $URL
 if [ "$1" == "team" ]; then
