@@ -77,7 +77,7 @@ section_end setup
 
 cd $DIR
 
-STANDARDS="WCAG2A WCAG2AA WCAG2AAA"
+STANDARDS="WCAG2A WCAG2AA WCAG2AAA Section508"
 
 if [ "$1" == "team" ]; then
 	STANDARDS=""
