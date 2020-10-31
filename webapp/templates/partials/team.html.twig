@@ -42,7 +42,7 @@
                             <td>
                                 {% set countryFlag = 'images/countries/' ~ team.affiliation.country ~ '.png' %}
                                 {% if countryFlag | assetExists %}
-                                    <img src="{{ asset(countryFlag) }}" alt="{{ alpha3_countries[team.affiliation.country] }}"
+                                    <img src="{{ asset(countryFlag) }}" alt="Countryflag of {{ alpha3_countries[team.affiliation.country] }}"
                                          title="{{ alpha3_countries[team.affiliation.country] }}" class="countryflag"/>
                                 {% endif %}
                                 {{ alpha3_countries[team.affiliation.country] }}
