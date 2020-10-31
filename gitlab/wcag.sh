@@ -31,8 +31,12 @@ GITSHA=$(git rev-parse HEAD || true)
 
 # Add jury to dummy user
 echo "INSERT INTO userrole (userid, roleid) VALUES (1, 2);" | mysql domjudge
+
+if [ "$2" == "team" ]; then
+# Add team to admin user
 echo "INSERT INTO userrole (userid, roleid) VALUES (1, 3);" | mysql domjudge
 echo "UPDATE user SET teamid = 1 WHERE userid = 1;" | mysql domjudge
+fi
 
 # Add netrc file for dummy user login
 echo "machine localhost login dummy password dummy" > ~/.netrc
