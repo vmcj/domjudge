@@ -79,7 +79,7 @@ check_wcag_team:
   artifacts:
     when: always
     paths:
-      - public
+      - publicteam
 
 check_wcag_public:
   stage: test
@@ -106,7 +106,7 @@ check_wcag_public:
   artifacts:
     when: always
     paths:
-      - public
+      - publicpublic
 
 run unit tests:
   stage: test
