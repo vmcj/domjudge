@@ -32,7 +32,7 @@ GITSHA=$(git rev-parse HEAD || true)
 # Add jury to dummy user
 echo "INSERT INTO userrole (userid, roleid) VALUES (1, 2);" | mysql domjudge
 
-if [ "$2" == "team" ]; then
+if [ "$1" == "team" ]; then
 # Add team to admin user
 echo "INSERT INTO userrole (userid, roleid) VALUES (1, 3);" | mysql domjudge
 echo "UPDATE user SET teamid = 1 WHERE userid = 1;" | mysql domjudge
@@ -79,7 +79,7 @@ cd $DIR
 
 STANDARDS="WCAG2A WCAG2AA"
 
-if [ "$2" == "team" ]; then
+if [ "$1" == "team" ]; then
 	STANDARDS=""
 	export COOKIEJAR
 	COOKIEJAR=$(mktemp --tmpdir)
@@ -107,7 +107,7 @@ ACCEPTEDERR=5
 URL=public
 mkdir $url
 cd $url
-if [ "$2" == "team" ]; then
+if [ "$1" == "team" ]; then
 	cp $DIR/cookies.txt ./
 fi
 httrack http://localhost/domjudge/$url --assume html=text/html -*jury* -*doc* -*login* -*logout*
@@ -117,7 +117,7 @@ for file in `find $url -name *.html`
 do
 	section_start ${file//\//} $file
 	# T is reasonable amount of errors to allow to not break
-	if [ "$2" == "public" ]; then
+	if [ "$1" == "public" ]; then
 	su domjudge -c "pa11y --runner axe -T $ACCEPTEDERR --ignore color-contrast --ignore page-has-heading-one -E '#menuDefault > a > button' --reporter json ./$file" | python -m json.tool
         ERR=`su domjudge -c "pa11y --runner axe --ignore page-has-heading-one --ignore color-contrast -T $ACCEPTEDERR -E '#menuDefault > a > button' --reporter csv ./$file" | wc -l`
 	FOUNDERR=$((ERR+FOUNDERR-1)) # Remove header row
