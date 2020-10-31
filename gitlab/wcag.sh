@@ -125,8 +125,8 @@ do
 	# fi
 	for standard in $STANDARDS
 	do
-		su domjudge -c "pa11y -s $standard -T $ACCEPTEDERR -E '#menuDefault > a > button' -i WCAG2AAA.Principle1.Guideline1_4.1_4_6.G17.Fail --reporter json ./$file" | python -m json.tool
-        	ERR=`su domjudge -c "pa11y -s $standard -T $ACCEPTEDERR -E '#menuDefault > a > button' -i WCAG2AAA.Principle1.Guideline1_4.1_4_6.G17.Fail --reporter csv ./$file" | wc -l`
+		su domjudge -c "pa11y -s $standard -T $ACCEPTEDERR -E '#menuDefault > a' -i WCAG2AAA.Principle1.Guideline1_4.1_4_6.G17.Fail --reporter json ./$file" | python -m json.tool
+        	ERR=`su domjudge -c "pa11y -s $standard -T $ACCEPTEDERR -E '#menuDefault > a' -i WCAG2AAA.Principle1.Guideline1_4.1_4_6.G17.Fail --reporter csv ./$file" | wc -l`
 		FOUNDERR=$((ERR+FOUNDERR-1)) # Remove header row
 	done
 	section_end $file
