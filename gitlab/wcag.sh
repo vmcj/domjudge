@@ -105,15 +105,15 @@ ACCEPTEDERRTOTAL=0
 ACCEPTEDERR=5
 
 URL=public
-mkdir $url
-cd $url
+mkdir $URL
+cd $URL
 if [ "$1" == "team" ]; then
 	cp $DIR/cookies.txt ./
 fi
-httrack http://localhost/domjudge/$url --assume html=text/html -*jury* -*doc* -*login* -*logout*
+httrack http://localhost/domjudge/$URL --assume html=text/html -*jury* -*doc* -*login* -*logout*
 
 cd $DIR
-for file in `find $url -name *.html`
+for file in `find $URL -name *.html`
 do
 	section_start ${file//\//} $file
 	# T is reasonable amount of errors to allow to not break
