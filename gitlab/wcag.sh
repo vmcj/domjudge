@@ -71,55 +71,58 @@ sudo /usr/sbin/php-fpm7.2
 
 section_end setup
 
-ADMINPASS=$(cat etc/initial_admin_password.secret)
-if [ "$2" == "public" ]; then
-	ADMINPASS='dontlogin'
-fi
-export COOKIEJAR
-COOKIEJAR=$(mktemp --tmpdir)
-export CURLOPTS="--fail -sq -m 30 -b $COOKIEJAR"
-
-# Make an initial request which will get us a session id, and grab the csrf token from it
-CSRFTOKEN=$(curl $CURLOPTS -c $COOKIEJAR "http://localhost/domjudge/login" 2>/dev/null | sed -n 's/.*_csrf_token.*value="\(.*\)".*/\1/p')
-# Make a second request with our session + csrf token to actually log in
-curl $CURLOPTS -c $COOKIEJAR -F "_csrf_token=$CSRFTOKEN" -F "_username=admin" -F "_password=$ADMINPASS" "http://localhost/domjudge/login"
-
 cd $DIR
+
+STANDARDS=WCAG2A WCAG2AA
+
+if [ "$2" == "team" ]; then
+	STANDARDS=WCAG2A
+	export COOKIEJAR
+	COOKIEJAR=$(mktemp --tmpdir)
+	export CURLOPTS="--fail -sq -m 30 -b $COOKIEJAR"
+
+	# Make an initial request which will get us a session id, and grab the csrf token from it
+	CSRFTOKEN=$(curl $CURLOPTS -c $COOKIEJAR "http://localhost/domjudge/login" 2>/dev/null | sed -n 's/.*_csrf_token.*value="\(.*\)".*/\1/p')
+	# Make a second request with our session + csrf token to actually log in
+	curl $CURLOPTS -c $COOKIEJAR -F "_csrf_token=$CSRFTOKEN" -F "_username=admin" -F "_password=$ADMINPASS" "http://localhost/domjudge/login"
+	cp $COOKIEJAR cookies.txt
+	sed -i 's/#HttpOnly_//g' cookies.txt
+	sed -i 's/\t0\t/\t1999999999\t/g' cookies.txt
+fi
+
 
 apt update
 apt install -y npm
 apt -y install libx11-xcb-dev libxtst-dev libnss3-dev libxss-dev libasound2-dev libatk-bridge2.0-dev libgtk-3-dev
 npm install -g pa11y
 
-cp $COOKIEJAR cookies.txt
-sed -i 's/#HttpOnly_//g' cookies.txt
-sed -i 's/\t0\t/\t1999999999\t/g' cookies.txt
 FOUNDERR=0
 ACCEPTEDERRTOTAL=0
 ACCEPTEDERR=5
 
-for url in public
+URL=public
+mkdir $url
+cd $url
+if [ "$2" == "team" ]; then
+	cp $DIR/cookies.txt ./
+fi
+httrack http://localhost/domjudge/$url --assume html=text/html -*jury* -*doc* -*login* -*logout*
+
+cd $DIR
+for file in `find $url -name *.html`
 do
-	mkdir $url
-	cd $url
-    	cp $DIR/cookies.txt ./
-	httrack http://localhost/domjudge/$url --assume html=text/html -*jury* -*doc* -*login* -*logout*
-	cd $DIR
-	for file in `find $url -name *.html`
+	section_start ${file//\//} $file
+	# T is reasonable amount of errors to allow to not break
+	su domjudge -c "pa11y --runner axe -T $ACCEPTEDERR --ignore color-contrast --ignore page-has-heading-one -E '#menuDefault > a > button' --reporter json ./$file" | python -m json.tool
+        ERR=`su domjudge -c "pa11y --runner axe --ignore page-has-heading-one --ignore color-contrast -T $ACCEPTEDERR -E '#menuDefault > a > button' --reporter csv ./$file" | wc -l`
+	FOUNDERR=$((ERR+FOUNDERR-1)) # Remove header row
+	for standard in $STANDARDS
 	do
-		section_start ${file//\//} $file
-		# T is reasonable amount of errors to allow to not break
-		su domjudge -c "pa11y --runner axe -T $ACCEPTEDERR --ignore color-contrast --ignore page-has-heading-one -E '#menuDefault > a > button' --reporter json ./$file" | python -m json.tool
-	        ERR=`su domjudge -c "pa11y --runner axe --ignore page-has-heading-one --ignore color-contrast -T $ACCEPTEDERR -E '#menuDefault > a > button' --reporter csv ./$file" | wc -l`
+		su domjudge -c "pa11y -s $standard -T $ACCEPTEDERR -E '#menuDefault > a > button' --reporter json ./$file" | python -m json.tool
+        	ERR=`su domjudge -c "pa11y -s $standard -T $ACCEPTEDERR -E '#menuDefault > a > button' --reporter csv ./$file" | wc -l`
 		FOUNDERR=$((ERR+FOUNDERR-1)) # Remove header row
-		for standard in Section508 WCAG2A WCAG2AA WCAG2AAA
-		do
-			su domjudge -c "pa11y -s $standard -T $ACCEPTEDERR -E '#menuDefault > a > button' --reporter json ./$file" | python -m json.tool
-	        	ERR=`su domjudge -c "pa11y -s $standard -T $ACCEPTEDERR -E '#menuDefault > a > button' --reporter csv ./$file" | wc -l`
-			FOUNDERR=$((ERR+FOUNDERR-1)) # Remove header row
-		done
-		section_end $file
 	done
+	section_end $file
 done
 # Do not hard error yet
 echo "Found: " $FOUNDERR
