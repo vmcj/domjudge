@@ -88,7 +88,7 @@ wget https://github.com/validator/validator/releases/latest/download/vnu.linux.z
 unzip -q vnu.linux.zip
 #RES=0
 FOUNDERR=0
-ACCEPTEDERR=1110
+ACCEPTEDERR=1096
 for url in public
 do
 	mkdir $url
