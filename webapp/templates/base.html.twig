@@ -22,7 +22,7 @@
 <body{% if static is defined and static %} class="static"{% endif%}>
 {% block menu %}{% endblock %}
 {% block body %}
-    <div class="container-fluid">
+    <main class="container-fluid">
         <div class="row">
             <div class="col-12">
                 {% block messages %}
@@ -31,7 +31,7 @@
                 {% block content %}{{ body|raw }}{% endblock %}
             </div>
         </div>
-    </div>
+    </main>
 {% endblock %}
 
 <script>
