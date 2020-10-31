@@ -104,13 +104,14 @@ FOUNDERR=0
 ACCEPTEDERRTOTAL=0
 ACCEPTEDERR=5
 
-URL=public$1
+SCRAPEURL=public
+URL=$SCRAPEURL$1
 mkdir $URL
 cd $URL
 if [ "$1" == "team" ]; then
 	cp $DIR/cookies.txt ./
 fi
-httrack http://localhost/domjudge/$URL --assume html=text/html -*jury* -*doc* -*login* -*logout*
+httrack http://localhost/domjudge/$SCRAPEURL --assume html=text/html -*jury* -*doc* -*login* -*logout*
 
 cd $DIR
 for file in `find $URL -name *.html`
