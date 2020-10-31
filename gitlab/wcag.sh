@@ -80,7 +80,7 @@ cd $DIR
 STANDARDS="WCAG2A WCAG2AA WCAG2AAA Section508"
 
 if [ "$1" == "team" ]; then
-	STANDARDS=""
+	STANDARDS="WCAG2A WCAG2AA"
 	export COOKIEJAR
 	COOKIEJAR=$(mktemp --tmpdir)
 	export CURLOPTS="--fail -sq -m 30 -b $COOKIEJAR"
@@ -118,11 +118,11 @@ for file in `find $URL -name *.html`
 do
 	section_start ${file//\//} $file
 	# T is reasonable amount of errors to allow to not break
-	if [ "$1" == "public" ]; then
+	# if [ "$1" == "public" ]; then
 	su domjudge -c "pa11y --runner axe -T $ACCEPTEDERR --ignore color-contrast --ignore page-has-heading-one -E '#menuDefault > a > button' --reporter json ./$file" | python -m json.tool
         ERR=`su domjudge -c "pa11y --runner axe --ignore page-has-heading-one --ignore color-contrast -T $ACCEPTEDERR -E '#menuDefault > a > button' --reporter csv ./$file" | wc -l`
 	FOUNDERR=$((ERR+FOUNDERR-1)) # Remove header row
-	fi
+	# fi
 	for standard in $STANDARDS
 	do
 		su domjudge -c "pa11y -s $standard -T $ACCEPTEDERR -E '#menuDefault > a > button' -i WCAG2AAA.Principle1.Guideline1_4.1_4_6.G17.Fail --reporter json ./$file" | python -m json.tool
