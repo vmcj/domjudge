@@ -96,10 +96,10 @@ do
     cp $DIR/cookies.txt ./
 	httrack http://localhost/domjudge/$url --assume html=text/html -*doc* -*logout*
 	cd $DIR
-	if [ "$2" == "css" ]; then
+	if [ "$1" == "css" ]; then
 		$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-css --format json $url 2> result.json #; RES=$((RES+$?))
 		NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-css --format gnu $url 2>&1 | wc -l`
-	elif [ "$2" == "svg" ]; then
+	elif [ "$1" == "svg" ]; then
 		$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-svg --format json $url 2> result.json #; RES=$((RES+$?))
 		NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-svg --format gnu $url 2>&1 | wc -l`
 	else
