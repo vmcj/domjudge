@@ -135,19 +135,20 @@ do
 	rm index.html
 	rm localhost/domjudge/css/bootstrap.min25fe.css
 	cd $DIR
+	$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --also-check-css --also-check-svg  --format json $url
 	$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-css --format json $url 2> result.json #; RES=$((RES+$?))
     #trace_off
 	python3 -m "json.tool" < result.json > w3cCSS$url.json
     #trace_on
-	NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-css --format gnu $url 2>&1 | grep -v "css/boot" | wc -l`
-	FOUNDERR=$((NEWFOUNDERRORS+FOUNDERR))
+	#NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-css --format gnu $url 2>&1 | grep -v "css/boot" | wc -l`
+	#FOUNDERR=$((NEWFOUNDERRORS+FOUNDERR))
 
 	$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-svg --format json $url 2> result.json #; RES=$((RES+$?))
     #trace_off
 	python3 -m "json.tool" < result.json > w3cSVG$url.json
     #trace_on
-	NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-svg --format gnu $url 2>&1 | wc -l`
-	FOUNDERR=$((NEWFOUNDERRORS+FOUNDERR))
+	#NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-svg --format gnu $url 2>&1 | wc -l`
+	#FOUNDERR=$((NEWFOUNDERRORS+FOUNDERR))
 
 	#$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-svg --format json $url 2> result.json #; RES=$((RES+$?))
 	#fi
@@ -159,9 +160,9 @@ do
     #trace_on
     #trace_off
     #trace_on
-	NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-html --format gnu $url 2>&1 | grep -v "Attribute “loading” not allowed on element" | grep -v "Element “style” not allowed as child of element" | wc -l`
+	#NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-html --format gnu $url 2>&1 | grep -v "Attribute “loading” not allowed on element" | grep -v "Element “style” not allowed as child of element" | wc -l`
 	#fi
-	FOUNDERR=$((NEWFOUNDERRORS+FOUNDERR))
+	#FOUNDERR=$((NEWFOUNDERRORS+FOUNDERR))
     	python3 gitlab/jsontogitlab.py w3cCSS$url.json
     	python3 gitlab/jsontogitlab.py w3cSVG$url.json
     	python3 gitlab/jsontogitlab.py w3cHTML$url.json
