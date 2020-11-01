@@ -88,7 +88,7 @@ cd $DIR
 if [ "$1" == "public" ]; then
 	STANDARDS="WCAG2A WCAG2AA WCAG2AAA Section508"
 else
-	STANDARDS="WCAG2A WCAG2AA Section508"
+	STANDARDS="WCAG2A WCAG2AA WCAG2AAA Section508"
 	export COOKIEJAR
 	COOKIEJAR=$(mktemp --tmpdir)
 	export CURLOPTS="--fail -sq -m 30 -b $COOKIEJAR"
