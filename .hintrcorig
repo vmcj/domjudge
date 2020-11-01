@@ -1,0 +1,8 @@
+{
+    "extends": [
+        "development",
+	"accessibility",
+	"web-recommended",
+	"progressive-web-apps"
+    ]
+}
