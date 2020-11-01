@@ -128,6 +128,7 @@ do
 	cd $url
     	cp $DIR/cookies.txt ./
 	httrack http://localhost/domjudge/$url --assume html=text/html -*doc* -*logout*
+	rm index.html
 	cd $DIR
 	#if [ "$1" == "css" ]; then
 		$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-css --format json $url 2> result.json #; RES=$((RES+$?))

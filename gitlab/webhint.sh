@@ -123,6 +123,7 @@ if [ "$1" == "team" ]; then
 	cp $DIR/cookies.txt ./
 fi
 httrack http://localhost/domjudge/$SCRAPEURL --assume html=text/html -*jury* -*doc* -*login* -*logout*
+rm index.html
 
 cd $DIR
 for file in `find $URL -name *.html`
