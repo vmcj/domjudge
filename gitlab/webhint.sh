@@ -105,9 +105,9 @@ fi
 curl -sL https://deb.nodesource.com/setup_10.x -o nodesource_setup.sh
 bash nodesource_setup.sh
 
-sudo apt-get install -y nodejs npm
+sudo apt-get install -y nodejs
 npm i -g hint
-npm i -g npx
+#npm i -g npx
 
 apt update
 
