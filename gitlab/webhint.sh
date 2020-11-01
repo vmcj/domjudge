@@ -130,8 +130,8 @@ for file in `find $URL -name *.html`
 do
 	section_start ${file//\//} $file
 	npx hint --formatters json --telemetry=off $file
-	FOUND=`npx hint --formatters stylist --telemetry=off $file | wc -l`
-	FOUNDERR=$((FOUND+FOUNDERR))
+	FOUND=`npx hint --formatters stylish --telemetry=off $file | wc -l`
+	FOUNDERR=$((FOUND+FOUNDERR-6)) #6 Text lines which are not errors
 	section_end $file
 done
 # Do not hard error yet
