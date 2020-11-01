@@ -51,8 +51,7 @@ check_webhint_balloon:
   artifacts:
     when: always
     paths:
-      - public
-      - w3cHtmlpublic.json
+      - publicballoon
 
 check_webhint_team:
   stage: test
@@ -79,8 +78,7 @@ check_webhint_team:
   artifacts:
     when: always
     paths:
-      - public
-      - w3cHtmlpublic.json
+      - publicteam
 
 check_webhint_public:
   stage: test
@@ -107,8 +105,7 @@ check_webhint_public:
   artifacts:
     when: always
     paths:
-      - public
-      - w3cHtmlpublic.json
+      - publicpublic
 
 check_w3c_html_css_svg_public:
   stage: test
