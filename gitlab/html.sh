@@ -31,17 +31,17 @@ GITSHA=$(git rev-parse HEAD || true)
 
 # We use the admin user as its already there for the tests
 echo "DELETE FROM userrole WHERE userid=1;" | mysql domjudge
-if [ "$2" == "team" ]; then
+if [ "$1" == "team" ]; then
 	# Add team to admin user
 	echo "INSERT INTO userrole (userid, roleid) VALUES (1, 3);" | mysql domjudge
 	echo "UPDATE user SET teamid = 1 WHERE userid = 1;" | mysql domjudge
-elif [ "$2" == "balloon" ]; then
+elif [ "$1" == "balloon" ]; then
 	# Add balloon to admin user
 	echo "INSERT INTO userrole (userid, roleid) VALUES (1, 4);" | mysql domjudge
-elif [ "$2" == "jury" ]; then
+elif [ "$1" == "jury" ]; then
 	# Add jury to admin user
 	echo "INSERT INTO userrole (userid, roleid) VALUES (1, 2);" | mysql domjudge
-elif [ "$2" == "admin" ]; then
+elif [ "$1" == "admin" ]; then
 	# Add jury to admin user
 	echo "INSERT INTO userrole (userid, roleid) VALUES (1, 1);" | mysql domjudge
 fi
