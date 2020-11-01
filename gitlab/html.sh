@@ -153,13 +153,13 @@ do
 	#fi
 	#FOUNDERR=$((NEWFOUNDERRORS+FOUNDERR))
 	#else
-	#	$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-html --format json $url 2> result.json #; RES=$((RES+$?))
-	#	NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-html --format gnu $url 2>&1 | grep -v "Attribute “loading” not allowed on element" | grep -v "Element “style” not allowed as child of element" | wc -l`
-	#fi
-	#FOUNDERR=$((NEWFOUNDERRORS+FOUNDERR))
+	$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-html --format json $url 2> result.json #; RES=$((RES+$?))
     #trace_off
-    #python3 gitlab/jsontogitlab.py w3cHtml$url.json
+    	python3 gitlab/jsontogitlab.py w3cHTML$url.json
     #trace_on
+	NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-html --format gnu $url 2>&1 | grep -v "Attribute “loading” not allowed on element" | grep -v "Element “style” not allowed as child of element" | wc -l`
+	#fi
+	FOUNDERR=$((NEWFOUNDERRORS+FOUNDERR))
 done
 # Do not hard error yet
 # exit $RES
