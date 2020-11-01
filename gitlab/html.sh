@@ -146,8 +146,8 @@ do
     #trace_off
 	python3 -m "json.tool" < result.json > w3cSVG$url.json
     #trace_on
-	#NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-svg --format gnu $url 2>&1 | wc -l`
-	#FOUNDERR=$((NEWFOUNDERRORS+FOUNDERR))
+	NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-svg --format gnu $url 2>&1 | wc -l`
+	FOUNDERR=$((NEWFOUNDERRORS+FOUNDERR))
 
 	#$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-svg --format json $url 2> result.json #; RES=$((RES+$?))
 	#fi
@@ -155,11 +155,16 @@ do
 	#else
 	$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-html --format json $url 2> result.json #; RES=$((RES+$?))
     #trace_off
-    	python3 gitlab/jsontogitlab.py w3cHTML$url.json
+	python3 -m "json.tool" < result.json > w3cHTML$url.json
+    #trace_on
+    #trace_off
     #trace_on
 	NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-html --format gnu $url 2>&1 | grep -v "Attribute “loading” not allowed on element" | grep -v "Element “style” not allowed as child of element" | wc -l`
 	#fi
 	FOUNDERR=$((NEWFOUNDERRORS+FOUNDERR))
+    	python3 gitlab/jsontogitlab.py w3cCSS$url.json
+    	python3 gitlab/jsontogitlab.py w3cSVG$url.json
+    	python3 gitlab/jsontogitlab.py w3cHTML$url.json
 done
 # Do not hard error yet
 # exit $RES
