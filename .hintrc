@@ -4,6 +4,7 @@
     ],
     "hints": {
         "meta-viewport": "off",
-	"compat-api/html": "off"
+	"compat-api/html": "off",
+	"meta-charset-utf-8": "off"
     }
 }
