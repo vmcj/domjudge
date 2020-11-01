@@ -29,8 +29,22 @@ GITSHA=$(git rev-parse HEAD || true)
 # Set up
 "$( dirname "${BASH_SOURCE[0]}" )"/base.sh
 
-# Add jury to dummy user
-echo "INSERT INTO userrole (userid, roleid) VALUES (3, 2);" | mysql domjudge
+# We use the admin user as its already there for the tests
+echo "DELETE FROM userrole WHERE userid=1;" | mysql domjudge
+if [ "$2" == "team" ]; then
+	# Add team to admin user
+	echo "INSERT INTO userrole (userid, roleid) VALUES (1, 3);" | mysql domjudge
+	echo "UPDATE user SET teamid = 1 WHERE userid = 1;" | mysql domjudge
+elif [ "$2" == "balloon" ]; then
+	# Add balloon to admin user
+	echo "INSERT INTO userrole (userid, roleid) VALUES (1, 4);" | mysql domjudge
+elif [ "$2" == "jury" ]; then
+	# Add jury to admin user
+	echo "INSERT INTO userrole (userid, roleid) VALUES (1, 2);" | mysql domjudge
+elif [ "$2" == "admin" ]; then
+	# Add jury to admin user
+	echo "INSERT INTO userrole (userid, roleid) VALUES (1, 1);" | mysql domjudge
+fi
 
 # Add netrc file for dummy user login
 echo "machine localhost login dummy password dummy" > ~/.netrc
@@ -70,30 +84,39 @@ sudo /usr/sbin/php-fpm7.2
 section_end setup
 
 ADMINPASS=$(cat etc/initial_admin_password.secret)
-export COOKIEJAR
-COOKIEJAR=$(mktemp --tmpdir)
-export CURLOPTS="--fail -sq -m 30 -b $COOKIEJAR"
+#export COOKIEJAR
+#COOKIEJAR=$(mktemp --tmpdir)
+#export CURLOPTS="--fail -sq -m 30 -b $COOKIEJAR"
 
 # Make an initial request which will get us a session id, and grab the csrf token from it
-CSRFTOKEN=$(curl $CURLOPTS -c $COOKIEJAR "http://localhost/domjudge/login" 2>/dev/null | sed -n 's/.*_csrf_token.*value="\(.*\)".*/\1/p')
+#CSRFTOKEN=$(curl $CURLOPTS -c $COOKIEJAR "http://localhost/domjudge/login" 2>/dev/null | sed -n 's/.*_csrf_token.*value="\(.*\)".*/\1/p')
 # Make a second request with our session + csrf token to actually log in
-curl $CURLOPTS -c $COOKIEJAR -F "_csrf_token=$CSRFTOKEN" -F "_username=admin" -F "_password=$ADMINPASS" "http://localhost/domjudge/login"
+#curl $CURLOPTS -c $COOKIEJAR -F "_csrf_token=$CSRFTOKEN" -F "_username=admin" -F "_password=$ADMINPASS" "http://localhost/domjudge/login"
 
 cd $DIR
 
-cp $COOKIEJAR cookies.txt
-sed -i 's/#HttpOnly_//g' cookies.txt
-sed -i 's/\t0\t/\t1999999999\t/g' cookies.txt
+if [ "$1" == "public" ]; then
+	echo "Do not login"
+else
+	STANDARDS="WCAG2A Section508"
+	export COOKIEJAR
+	COOKIEJAR=$(mktemp --tmpdir)
+	export CURLOPTS="--fail -sq -m 30 -b $COOKIEJAR"
+	# Make an initial request which will get us a session id, and grab the csrf token from it
+	CSRFTOKEN=$(curl $CURLOPTS -c $COOKIEJAR "http://localhost/domjudge/login" 2>/dev/null | sed -n 's/.*_csrf_token.*value="\(.*\)".*/\1/p')
+	# Make a second request with our session + csrf token to actually log in
+	curl $CURLOPTS -c $COOKIEJAR -F "_csrf_token=$CSRFTOKEN" -F "_username=admin" -F "_password=$ADMINPASS" "http://localhost/domjudge/login"                                                                          cp $COOKIEJAR cookies.txt                                                                                                                                                                                          sed -i 's/#HttpOnly_//g' cookies.txt                                                                                                                                                                               sed -i 's/\t0\t/\t1999999999\t/g' cookies.txt                                                                                                                                                              fi 
+
 wget https://github.com/validator/validator/releases/latest/download/vnu.linux.zip
 unzip -q vnu.linux.zip
 #RES=0
 FOUNDERR=0
-ACCEPTEDERR=0
-if [ "$1" == "css" ]; then
-ACCEPTEDERR=0
-elif [ "$1" == "svg" ]; then
-ACCEPTEDERR=0
-fi
+ACCEPTEDERR=1000
+#if [ "$1" == "css" ]; then
+#ACCEPTEDERR=0
+#elif [ "$1" == "svg" ]; then
+#ACCEPTEDERR=0
+#fi
 
 for url in public
 do
@@ -102,17 +125,21 @@ do
     cp $DIR/cookies.txt ./
 	httrack http://localhost/domjudge/$url --assume html=text/html -*doc* -*logout*
 	cd $DIR
-	if [ "$1" == "css" ]; then
+	#if [ "$1" == "css" ]; then
 		$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-css --format json $url 2> result.json #; RES=$((RES+$?))
 		NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-css --format gnu $url 2>&1 | grep -v "css/*bootstrap*.css" | wc -l`
-	elif [ "$1" == "svg" ]; then
+	#fi
+	FOUNDERR=$((NEWFOUNDERRORS+FOUNDERR))
+	#elif [ "$1" == "svg" ]; then
 		$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-svg --format json $url 2> result.json #; RES=$((RES+$?))
 		NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-svg --format gnu $url 2>&1 | wc -l`
-	else
-		$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-html --format json $url 2> result.json #; RES=$((RES+$?))
-		NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-html --format gnu $url 2>&1 | grep -v "Attribute “loading” not allowed on element" | grep -v "Element “style” not allowed as child of element" | wc -l`
-	fi
+	#fi
 	FOUNDERR=$((NEWFOUNDERRORS+FOUNDERR))
+	#else
+	#	$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-html --format json $url 2> result.json #; RES=$((RES+$?))
+	#	NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-html --format gnu $url 2>&1 | grep -v "Attribute “loading” not allowed on element" | grep -v "Element “style” not allowed as child of element" | wc -l`
+	#fi
+	#FOUNDERR=$((NEWFOUNDERRORS+FOUNDERR))
 	python3 -m "json.tool" < result.json > w3cHtml$url.json
     trace_off
     python3 gitlab/jsontogitlab.py w3cHtml$url.json
