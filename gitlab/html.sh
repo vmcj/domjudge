@@ -126,7 +126,11 @@ for url in public
 do
 	mkdir $url
 	cd $url
-    	cp $DIR/cookies.txt ./
+	if [ "$1" == "public" ]; then
+		echo "public uses no cookie"
+	else
+    		cp $DIR/cookies.txt ./
+	fi
 	httrack http://localhost/domjudge/$url --assume html=text/html -*doc* -*logout*
 	rm index.html
 	cd $DIR
