@@ -88,7 +88,13 @@ wget https://github.com/validator/validator/releases/latest/download/vnu.linux.z
 unzip -q vnu.linux.zip
 #RES=0
 FOUNDERR=0
-ACCEPTEDERR=1096
+ACCEPTEDERR=0
+if [ "$1" == "css" ]; then
+ACCEPTEDERR=0
+elif [ "$1" == "svg" ]; then
+ACCEPTEDERR=0
+fi
+
 for url in public
 do
 	mkdir $url
@@ -98,7 +104,7 @@ do
 	cd $DIR
 	if [ "$1" == "css" ]; then
 		$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-css --format json $url 2> result.json #; RES=$((RES+$?))
-		NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-css --format gnu $url 2>&1 | wc -l`
+		NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-css --format gnu $url 2>&1 | grep -v "css/*bootstrap*.css" | wc -l`
 	elif [ "$1" == "svg" ]; then
 		$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-svg --format json $url 2> result.json #; RES=$((RES+$?))
 		NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-svg --format gnu $url 2>&1 | wc -l`
