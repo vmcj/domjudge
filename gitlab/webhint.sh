@@ -129,7 +129,7 @@ cd $DIR
 for file in `find $URL -name *.html`
 do
 	section_start ${file//\//} $file
-	npx hint --formatters json $file
+	npx hint --formatters json --telemetry=off $file
 	section_end $file
 done
 # Do not hard error yet
