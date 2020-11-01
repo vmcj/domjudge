@@ -139,8 +139,8 @@ do
     #trace_off
 	python3 -m "json.tool" < result.json > w3cCSS$url.json
     #trace_on
-	#NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-css --format gnu $url 2>&1 | grep -v "css/boot" | wc -l`
-	#FOUNDERR=$((NEWFOUNDERRORS+FOUNDERR))
+	NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-css --format gnu $url 2>&1 | grep -v "css/boot" | wc -l`
+	FOUNDERR=$((NEWFOUNDERRORS+FOUNDERR))
 
 	$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-svg --format json $url 2> result.json #; RES=$((RES+$?))
     #trace_off
