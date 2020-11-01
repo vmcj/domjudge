@@ -105,7 +105,11 @@ else
 	# Make an initial request which will get us a session id, and grab the csrf token from it
 	CSRFTOKEN=$(curl $CURLOPTS -c $COOKIEJAR "http://localhost/domjudge/login" 2>/dev/null | sed -n 's/.*_csrf_token.*value="\(.*\)".*/\1/p')
 	# Make a second request with our session + csrf token to actually log in
-	curl $CURLOPTS -c $COOKIEJAR -F "_csrf_token=$CSRFTOKEN" -F "_username=admin" -F "_password=$ADMINPASS" "http://localhost/domjudge/login"                                                                          cp $COOKIEJAR cookies.txt                                                                                                                                                                                          sed -i 's/#HttpOnly_//g' cookies.txt                                                                                                                                                                               sed -i 's/\t0\t/\t1999999999\t/g' cookies.txt                                                                                                                                                              fi 
+	curl $CURLOPTS -c $COOKIEJAR -F "_csrf_token=$CSRFTOKEN" -F "_username=admin" -F "_password=$ADMINPASS" "http://localhost/domjudge/login"
+	cp $COOKIEJAR cookies.txt
+	sed -i 's/#HttpOnly_//g' cookies.txt
+	sed -i 's/\t0\t/\t1999999999\t/g' cookies.txt
+fi 
 
 wget https://github.com/validator/validator/releases/latest/download/vnu.linux.zip
 unzip -q vnu.linux.zip
@@ -122,7 +126,7 @@ for url in public
 do
 	mkdir $url
 	cd $url
-    cp $DIR/cookies.txt ./
+    	cp $DIR/cookies.txt ./
 	httrack http://localhost/domjudge/$url --assume html=text/html -*doc* -*logout*
 	cd $DIR
 	#if [ "$1" == "css" ]; then
