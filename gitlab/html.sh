@@ -131,7 +131,7 @@ do
 	cd $DIR
 	#if [ "$1" == "css" ]; then
 		$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-css --format json $url 2> result.json #; RES=$((RES+$?))
-		NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-css --format gnu $url 2>&1 | grep -v "css/*bootstrap*.css" | wc -l`
+		NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-css --format gnu $url 2>&1 | grep -v "css/boot" | wc -l`
 	#fi
 	FOUNDERR=$((NEWFOUNDERRORS+FOUNDERR))
 	#elif [ "$1" == "svg" ]; then
