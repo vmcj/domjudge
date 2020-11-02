@@ -20,7 +20,7 @@
         {%- for idx, type in viewTypes %}
 
             <label class="btn btn-secondary {% if idx == view %}active{% endif %}">
-                <input type="radio" name="viewtype" autocomplete="off" value="{{ type }}"
+                <input type="radio" name="viewtype" value="{{ type }}"
                        {% if idx == view %}checked{% endif %}> {{ type }}
             </label>
         {%- endfor %}
