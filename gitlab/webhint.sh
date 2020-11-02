@@ -131,7 +131,11 @@ do
 	section_start ${file//\//} $file
 	npx hint --formatters json --telemetry=off $file
 	FOUND=`npx hint --formatters stylish --telemetry=off $file | wc -l`
-	FOUNDERR=$((FOUND+FOUNDERR-6)) #6 Text lines which are not errors
+	CORR=6
+	if [ "$FOUND" -gt 0 ]; then
+		CORR=0
+	fi
+	FOUNDERR=$((FOUND+FOUNDERR-CORR)) #6 Text lines which are not errors
 	section_end $file
 done
 # Do not hard error yet
