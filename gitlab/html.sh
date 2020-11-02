@@ -131,10 +131,11 @@ do
 	else
     		cp $DIR/cookies.txt ./
 	fi
-	httrack http://localhost/domjudge/$url -*doc* -*logout*
+	httrack http://localhost/domjudge/$url --preserve -*doc* -*logout*
 	rm index.html
 	rm localhost/domjudge/css/bootstrap.min25fe.css
 	rm localhost/domjudge/css/select2-bootstrap.min25fe.css
+	rm localhost/domjudge/jury/config/check/phpinfo.htm || true
 	cd $DIR
 	$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-css --format json $url 2> result.json #; RES=$((RES+$?))
     #trace_off
