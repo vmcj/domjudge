@@ -122,7 +122,7 @@ cd $URL
 if [ "$1" == "team" ]; then
 	cp $DIR/cookies.txt ./
 fi
-httrack http://localhost/domjudge/$SCRAPEURL --assume html=text/html -*jury* -*doc* -*login* -*logout*
+httrack http://localhost/domjudge/$SCRAPEURL −−preserve -*jury* -*doc* -*login* -*logout*
 rm index.html
 
 cd $DIR
