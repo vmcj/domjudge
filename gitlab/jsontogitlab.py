@@ -18,6 +18,8 @@ def sec_end(job):
 with open(sys.argv[1],'r') as f:
     data = json.load(f, encoding='utf-8')
     for message in data['messages']:
+        if 'Element �\udce2\udc80style�\udce2\udc80 not allowed as child of element' in message['message']:
+            continue
         mtyp = message['type'].encode('utf-8', 'ignore')
         murl = message['url'].encode('utf-8', 'ignore')
         mmes = message['message'].encode('utf-8', 'ignore')
