@@ -126,8 +126,8 @@ httrack http://localhost/domjudge/$SCRAPEURL −−preserve -*jury* -*doc* -*log
 rm index.html
 
 cd $DIR
-sed -i 's/Mirrored/c\' ./ 
-sed -i 's/HTTrack/c\' ./ 
+find ./ -type f -exec sed -i 's/.*Mirrored.*//g' {} +
+find ./ -type f -exec sed -i 's/.*Added by.*//g' {} +
 for file in `find $URL -name *.html`
 do
 	section_start ${file//\//} $file

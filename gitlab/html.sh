@@ -136,6 +136,8 @@ do
 	rm localhost/domjudge/css/bootstrap.min25fe.css
 	rm localhost/domjudge/css/select2-bootstrap.min25fe.css
 	rm localhost/domjudge/jury/config/check/phpinfo.htm || true
+	find ./ -type f -exec sed -i 's/.*Mirrored.*//g' {} +
+	find ./ -type f -exec sed -i 's/.*Added by.*//g' {} +
 	cd $DIR
 	$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-css --format json $url 2> result.json #; RES=$((RES+$?))
     #trace_off
