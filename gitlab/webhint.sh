@@ -124,10 +124,12 @@ if [ "$1" == "team" ]; then
 fi
 httrack http://localhost/domjudge/$SCRAPEURL −−preserve -*jury* -*doc* -*login* -*logout*
 rm index.html
-
-cd $DIR
 find ./ -type f -exec sed -i 's/.*Mirrored.*//g' {} +
 find ./ -type f -exec sed -i 's/.*Added by.*//g' {} +
+
+cd $DIR
+ls .hintrc
+
 for file in `find $URL -name *.html`
 do
 	section_start ${file//\//} $file
