@@ -129,10 +129,12 @@ find ./ -type f -exec sed -i 's/.*Added by.*//g' {} +
 
 cd $DIR
 ls .hintrc
+cat .hintrc
 
 for file in `find $URL -name *.html`
 do
 	section_start ${file//\//} $file
+	ls
 	npx hint --formatters json --telemetry=off $file
 	FOUND=`npx hint --formatters stylish --telemetry=off $file | wc -l`
 	FOUNDERR=$((FOUND+FOUNDERR)) #Number of errors is lower than reported
