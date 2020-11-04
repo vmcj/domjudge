@@ -133,9 +133,9 @@ do
 	fi
 	httrack http://localhost/domjudge/$url --preserve -*doc* -*team* -*jury* -*logout*
 	rm index.html
-	rm localhost/domjudge/css/bootstrap.min25fe.css
-	rm localhost/domjudge/css/select2-bootstrap.min25fe.css
-	rm localhost/domjudge/jury/config/check/phpinfo.htm || true
+	rm -f localhost/domjudge/css/bootstrap.min25fe.css
+	rm -f localhost/domjudge/css/select2-bootstrap.min25fe.css
+	rm -f localhost/domjudge/jury/config/check/phpinfo.htm
 	find ./ -type f -exec sed -i 's/.*Mirrored.*//g' {} +
 	find ./ -type f -exec sed -i 's/.*Added by.*//g' {} +
 	cd $DIR
