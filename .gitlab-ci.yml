@@ -182,7 +182,7 @@ check_w3c_html_css_svg_public:
       -v $CI_PROJECT_DIR:$CI_PROJECT_DIR \
       --net=host \
       -e "TERM=xterm-256color" -e "HOME=$HOME" -e "USER=$USER" -e "MARIADB_PORT_3306_TCP_ADDR=$MARIADB_PORT_3306_TCP_ADDR" -e "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD" \
-      domjudge/gitlabci:1.0 /bin/bash -eo pipefail -c "umask 0002; cd $CI_PROJECT_DIR; script --return -qfc \"./gitlab/html.sh public\" /dev/null | ts \"[%F %T]\" "
+      domjudge/gitlabci:1.0 /bin/bash -eo pipefail -c "umask 0002; cd $CI_PROJECT_DIR; script --return -qfc \"./gitlab/w3c.sh public\" /dev/null | ts \"[%F %T]\" "
   artifacts:
     when: always
     paths:
@@ -212,7 +212,7 @@ check_w3c_html_css_svg_balloon:
       -v $CI_PROJECT_DIR:$CI_PROJECT_DIR \
       --net=host \
       -e "TERM=xterm-256color" -e "HOME=$HOME" -e "USER=$USER" -e "MARIADB_PORT_3306_TCP_ADDR=$MARIADB_PORT_3306_TCP_ADDR" -e "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD" \
-      domjudge/gitlabci:1.0 /bin/bash -eo pipefail -c "umask 0002; cd $CI_PROJECT_DIR; script --return -qfc \"./gitlab/html.sh balloon\" /dev/null | ts \"[%F %T]\" "
+      domjudge/gitlabci:1.0 /bin/bash -eo pipefail -c "umask 0002; cd $CI_PROJECT_DIR; script --return -qfc \"./gitlab/w3c.sh balloon\" /dev/null | ts \"[%F %T]\" "
   artifacts:
     when: always
     paths:
@@ -242,7 +242,7 @@ check_w3c_html_css_svg_jury:
       -v $CI_PROJECT_DIR:$CI_PROJECT_DIR \
       --net=host \
       -e "TERM=xterm-256color" -e "HOME=$HOME" -e "USER=$USER" -e "MARIADB_PORT_3306_TCP_ADDR=$MARIADB_PORT_3306_TCP_ADDR" -e "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD" \
-      domjudge/gitlabci:1.0 /bin/bash -eo pipefail -c "umask 0002; cd $CI_PROJECT_DIR; script --return -qfc \"./gitlab/html.sh jury\" /dev/null | ts \"[%F %T]\" "
+      domjudge/gitlabci:1.0 /bin/bash -eo pipefail -c "umask 0002; cd $CI_PROJECT_DIR; script --return -qfc \"./gitlab/w3c.sh jury\" /dev/null | ts \"[%F %T]\" "
   artifacts:
     when: always
     paths:
@@ -272,7 +272,7 @@ check_w3c_html_css_svg_admin:
       -v $CI_PROJECT_DIR:$CI_PROJECT_DIR \
       --net=host \
       -e "TERM=xterm-256color" -e "HOME=$HOME" -e "USER=$USER" -e "MARIADB_PORT_3306_TCP_ADDR=$MARIADB_PORT_3306_TCP_ADDR" -e "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD" \
-      domjudge/gitlabci:1.0 /bin/bash -eo pipefail -c "umask 0002; cd $CI_PROJECT_DIR; script --return -qfc \"./gitlab/html.sh admin\" /dev/null | ts \"[%F %T]\" "
+      domjudge/gitlabci:1.0 /bin/bash -eo pipefail -c "umask 0002; cd $CI_PROJECT_DIR; script --return -qfc \"./gitlab/w3c.sh admin\" /dev/null | ts \"[%F %T]\" "
   artifacts:
     when: always
     paths:
@@ -302,7 +302,7 @@ check_w3c_html_css_svg_team:
       -v $CI_PROJECT_DIR:$CI_PROJECT_DIR \
       --net=host \
       -e "TERM=xterm-256color" -e "HOME=$HOME" -e "USER=$USER" -e "MARIADB_PORT_3306_TCP_ADDR=$MARIADB_PORT_3306_TCP_ADDR" -e "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD" \
-      domjudge/gitlabci:1.0 /bin/bash -eo pipefail -c "umask 0002; cd $CI_PROJECT_DIR; script --return -qfc \"./gitlab/html.sh team\" /dev/null | ts \"[%F %T]\" "
+      domjudge/gitlabci:1.0 /bin/bash -eo pipefail -c "umask 0002; cd $CI_PROJECT_DIR; script --return -qfc \"./gitlab/w3c.sh team\" /dev/null | ts \"[%F %T]\" "
   artifacts:
     when: always
     paths:
