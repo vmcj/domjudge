@@ -190,6 +190,8 @@ check_w3c_html_css_svg_public:
       - w3cCSSpublic.json
       - w3cSVGpublic.json
       - w3cHTMLpublic.json
+      - htmltmp.out
+      - htmltmp.err
 
 check_w3c_html_css_svg_balloon:
   stage: test
@@ -220,6 +222,8 @@ check_w3c_html_css_svg_balloon:
       - w3cCSSpublic.json
       - w3cSVGpublic.json
       - w3cHTMLpublic.json
+      - htmltmp.out
+      - htmltmp.err
 
 check_w3c_html_css_svg_jury:
   stage: test
@@ -250,6 +254,8 @@ check_w3c_html_css_svg_jury:
       - w3cCSSpublic.json
       - w3cSVGpublic.json
       - w3cHTMLpublic.json
+      - htmltmp.out
+      - htmltmp.err
 
 check_w3c_html_css_svg_admin:
   stage: test
@@ -280,6 +286,8 @@ check_w3c_html_css_svg_admin:
       - w3cCSSpublic.json
       - w3cSVGpublic.json
       - w3cHTMLpublic.json
+      - htmltmp.out
+      - htmltmp.err
 
 check_w3c_html_css_svg_team:
   stage: test
@@ -310,6 +318,8 @@ check_w3c_html_css_svg_team:
       - w3cCSSpublic.json
       - w3cSVGpublic.json
       - w3cHTMLpublic.json
+      - htmltmp.out
+      - htmltmp.err
 
 check_wcag_admin:
   stage: test
