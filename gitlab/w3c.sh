@@ -144,6 +144,10 @@ do
     	python3 gitlab/jsontogitlab.py w3cHTML$url.json
     #trace_on
     	$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-html --format gnu $url 1> htmltmp.out 2> htmltmp.err
+	cat htmltmp.out
+	cat htmltmp.err
+	NEWFOUNDERRORS=`cat htmltmp.err | grep -v "loading"`
+	echo $NEWFOUNDERRORS | wc -l
     	#cat htmltmp | grep -v "loading" | grep -v "not allowed as child of element"
 	#NEWFOUNDERRORS=`cat htmltmp | grep -v "loading" | grep -v "not allowed as child of element" | wc -l`
     	#NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-html --format gnu $url 2>&1 | grep -v "Attribute “loading” not allowed on element" | grep -v "Element “style” not allowed as child of element" | wc -l`
