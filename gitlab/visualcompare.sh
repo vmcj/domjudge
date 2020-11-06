@@ -9,6 +9,8 @@ apt install -y openimageio-tools imagemagick
 
 mkdir failingchanges
 
+printenv
+
 for file in `ls screenshotspr`
 do
 	PR=screenshotspr/$file
