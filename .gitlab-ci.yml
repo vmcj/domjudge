@@ -161,6 +161,12 @@ visual_pr:
      - screenshotspr
      - public
 
+doc_complexity:
+  stage: test
+  image: phpdoc/phpdoc
+  script:
+    - /opt/phpdoc/bin/phpdoc webapp/src
+
 visual_master:
   <<: *retry_job
   <<: *short_job
