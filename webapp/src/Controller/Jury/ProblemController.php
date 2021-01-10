@@ -201,6 +201,81 @@ class ProblemController extends BaseController
     }
 
     /**
+     * @Route("/upload", name="jury_upload_zip_problem")
+     * @IsGranted("ROLE_ADMIN")
+     */
+    public function uploadZipToContestAction(Request $request) : Response
+    {
+        $formData = [
+            'contest' => $this->dj->getCurrentContest(),
+        ];
+        $form = $this->createForm(ProblemUploadMultipleType::class, $formData);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $formData = $form->getData();
+
+            /** @var UploadedFile[] $archives */
+            $archives = $formData['archives'];
+            /** @var Problem|null $newProblem */
+            $newProblem = null;
+            /** @var Contest|null $contest */
+            $contest = $formData['contest'] ?? null;
+            if ($contest === null) {
+                $contestId = null;
+            } else {
+                $contestId = $contest->getCid();
+            }
+            $allMessages = [];
+            foreach ($archives as $archive) {
+                try {
+                    $zip = $this->dj->openZipFile($archive->getRealPath());
+                    $clientName = $archive->getClientOriginalName();
+                    $messages = [];
+                    if ($contestId === null) {
+                        $contest = null;
+                    } else {
+                        $contest = $this->em->getRepository(Contest::class)->find($contestId);
+                    }
+                    $newProblem = $this->importProblemService->importZippedProblem(
+                        $zip, $clientName, null, $contest, $messages
+                    );
+                    $allMessages = array_merge($allMessages, $messages);
+                    if ($newProblem) {
+                        $this->dj->auditlog('problem', $newProblem->getProbid(), 'upload zip',
+                            $clientName);
+                    } else {
+                        $message = '<ul>' . implode('', array_map(function (string $message) {
+                                return sprintf('<li>%s</li>', $message);
+                            }, $allMessages)) . '</ul>';
+                        $this->addFlash('danger', $message);
+                        return $this->redirectToRoute('jury_problems');
+                    }
+                } catch (Exception $e) {
+                    $allMessages[] = $e->getMessage();
+                } finally {
+                    if (isset($zip)) {
+                        $zip->close();
+                    }
+                }
+            }
+
+            if (!empty($allMessages)) {
+                $message = '<ul>' . implode('', array_map(function (string $message) {
+                        return sprintf('<li>%s</li>', $message);
+                    }, $allMessages)) . '</ul>';
+
+                $this->addFlash('info', $message);
+            }
+
+            if (count($archives) === 1 && $newProblem !== null) {
+                return $this->redirectToRoute('jury_problem', ['probId' => $newProblem->getProbid()]);
+            }
+        }
+        return $this->redirectToRoute('jury_problems');
+    }
+
+    /**
      * @throws NonUniqueResultException
      */
     #[Route(path: '/problemset', name: 'jury_problemset')]
