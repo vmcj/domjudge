@@ -213,6 +213,9 @@
             "webapp/config/routes/nelmio_api_doc.yaml"
         ]
     },
+    "niels-de-blaauw/php-doc-check": {
+        "version": "v0.2.2"
+    },
     "nikic/php-parser": {
         "version": "v4.2.4"
     },
@@ -657,6 +660,9 @@
     "twig/twig": {
         "version": "v2.11.3"
     },
+    "ulrichsg/getopt-php": {
+        "version": "v3.4.0"
+    },
     "webmozart/assert": {
         "version": "1.4.0"
     },
@@ -665,6 +671,9 @@
     },
     "willdurand/negotiation": {
         "version": "v2.3.1"
+    },
+    "wp-cli/php-cli-tools": {
+        "version": "v0.11.11"
     },
     "zendframework/zend-code": {
         "version": "3.3.1"

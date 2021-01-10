@@ -93,6 +93,7 @@
 		"twig/twig": "^2.11"
 	},
 	"require-dev": {
+		"niels-de-blaauw/php-doc-check": "^0.2.0@dev",
 		"symfony/debug-bundle": "4.4.*",
 		"symfony/maker-bundle": "^1.13",
 		"symfony/phpunit-bridge": "^4.4",
