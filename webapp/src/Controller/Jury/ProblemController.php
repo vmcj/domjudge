@@ -195,6 +195,7 @@ class ProblemController extends BaseController
         $data = [
             'problems' => $problems_table,
             'table_fields' => $table_fields,
+            'num_actions' => $this->isGranted('ROLE_ADMIN') ? 4 : 1,
         ];
 
         return $this->render('jury/problems.html.twig', $data);
@@ -276,6 +277,8 @@ class ProblemController extends BaseController
     }
 
     /**
+     * @Route("/{problemId<\d+>}/export", name="jury_export_problem")
+     * @IsGranted("ROLE_JURY")
      * @throws NonUniqueResultException
      */
     #[Route(path: '/problemset', name: 'jury_problemset')]

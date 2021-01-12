@@ -125,18 +125,18 @@ class ImportExportController extends BaseController
             return $this->redirectToRoute('jury_import_export');
         }
 
-        $currentContestFormData = [
+        $problemFormData = [
             'contest' => $this->dj->getCurrentContest(),
         ];
-        $problemForm = $this->createForm(ProblemUploadType::class, $currentContestFormData);
+        $problemForm = $this->createForm(ProblemUploadMultipleType::class, $problemFormData);
 
         $problemForm->handleRequest($request);
 
         if ($problemForm->isSubmitted() && $problemForm->isValid()) {
-            $problemFormData = $problemForm->getData();
+            $formData = $problemForm->getData();
 
-            /** @var UploadedFile $archive */
-            $archive = $problemFormData['archive'];
+            /** @var UploadedFile[] $archives */
+            $archives = $problemFormData['archives'];
             /** @var Problem|null $newProblem */
             $newProblem = null;
             /** @var Contest|null $contest */
@@ -175,6 +175,86 @@ class ImportExportController extends BaseController
                 if (!empty($allMessages[$type])) {
                     $this->addFlash($type, implode("\n", $allMessages[$type]));
                 }
+            $contest = $formData['contest'] ?? null;
+            if ($contest === null) {
+                $contestId = null;
+            } else {
+                $contestId = $contest->getCid();
+            }
+            $allMessages = [];
+            foreach ($archives as $archive) {
+                try {
+                    $zip = $this->dj->openZipFile($archive->getRealPath());
+                    $clientName = $archive->getClientOriginalName();
+                    $messages = [];
+                    if ($contestId === null) {
+                        $contest = null;
+                    } else {
+                        $contest = $this->em->getRepository(Contest::class)->find($contestId);
+                    }
+                    $newProblem = $this->importProblemService->importZippedProblem(
+                        $zip, $clientName, null, $contest, $messages
+                    );
+                    $allMessages = array_merge($allMessages, $messages);
+                    if ($newProblem) {
+                        $this->dj->auditlog('problem', $newProblem->getProbid(), 'upload zip',
+                            $clientName);
+                    } else {
+                        $message = '<ul>' . implode('', array_map(function (string $message) {
+                                return sprintf('<li>%s</li>', $message);
+                            }, $allMessages)) . '</ul>';
+                        $this->addFlash('danger', $message);
+                        return $this->redirectToRoute('jury_problems');
+                    }
+                } catch (Exception $e) {
+                    $allMessages[] = $e->getMessage();
+                } finally {
+                    if (isset($zip)) {
+                        $zip->close();
+                    }
+                }
+            }
+
+            if (!empty($allMessages)) {
+                $message = '<ul>' . implode('', array_map(function (string $message) {
+                        return sprintf('<li>%s</li>', $message);
+                    }, $allMessages)) . '</ul>';
+
+                $this->addFlash('info', $message);
+            }
+
+            if (count($archives) === 1 && $newProblem !== null) {
+                return $this->redirectToRoute('jury_problem', ['probId' => $newProblem->getProbid()]);
+            } else {
+                return $this->redirectToRoute('jury_problems');
+            }
+        }
+
+        /** @var TeamCategory[] $teamCategories */
+        $teamCategories = $this->em->createQueryBuilder()
+            ->from(TeamCategory::class, 'c', 'c.categoryid')
+            ->select('c.sortorder')
+            ->where('c.visible = 1')
+            ->groupBy('c.sortorder')
+            ->orderBy('c.sortorder')
+            ->getQuery()
+            ->getResult();
+        $sortOrders     = array_map(function ($teamCategory) {
+            return $teamCategory["sortorder"];
+        }, $teamCategories);
+
+        $problemForm->handleRequest($request);
+
+    /**
+     * @Route("/contest-yaml", name="jury_import_export_yaml")
+     * @throws Exception
+     */
+    public function contestYamlAction(Request $request) : Response
+    {
+        $exportForm = $this->createForm(ContestExportType::class);
+
+            if (!empty($allMessages)) {
+                $this->addFlash('info', implode("\n", $allMessages));
             }
 
             if ($newProblem !== null) {
