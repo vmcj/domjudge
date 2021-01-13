@@ -12,8 +12,7 @@ use App\Form\Type\ContestExportType;
 use App\Form\Type\ContestImportType;
 use App\Form\Type\ICPCCmsType;
 use App\Form\Type\JsonImportType;
-use App\Form\Type\ProblemsImportType;
-use App\Form\Type\ProblemUploadType;
+use App\Form\Type\ProblemUploadMultipleType;
 use App\Form\Type\TsvImportType;
 use App\Service\ConfigurationService;
 use App\Service\DOMJudgeService;
@@ -243,7 +242,14 @@ class ImportExportController extends BaseController
             return $teamCategory["sortorder"];
         }, $teamCategories);
 
-        $problemForm->handleRequest($request);
+        return $this->render('jury/import_export.html.twig', [
+            'tsv_form' => $tsvForm->createView(),
+            'json_form' => $jsonForm->createView(),
+            'icpccms_form' => $icpcCmsForm->createView(),
+            'problem_form' => $problemForm->createView(),
+            'sort_orders' => $sortOrders,
+        ]);
+    }
 
     /**
      * @Route("/contest-yaml", name="jury_import_export_yaml")
