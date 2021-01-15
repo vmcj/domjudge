@@ -132,7 +132,7 @@ class ImportExportController extends BaseController
         $problemForm->handleRequest($request);
 
         if ($problemForm->isSubmitted() && $problemForm->isValid()) {
-            $formData = $problemForm->getData();
+            $problemFormData = $problemForm->getData();
 
             /** @var UploadedFile[] $archives */
             $archives = $problemFormData['archives'];
