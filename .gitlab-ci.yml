@@ -241,3 +241,15 @@ integration_mariadb:
     - name: mariadb
       alias: sqlserver
 
+php-cs-fixer:
+  image: 
+    name: cytopia/php-cs-fixer
+    entrypoint: [""]
+  script:
+    - /usr/bin/php-cs-fixer fix --dry-run --diff .
+
+php linter:
+  stage: test
+  image: pipelinecomponents/php-linter:latest
+  script:
+    - parallel-lint --colors .
