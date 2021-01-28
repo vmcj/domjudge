@@ -245,8 +245,12 @@ php-cs-fixer:
   image: 
     name: cytopia/php-cs-fixer
     entrypoint: [""]
+  artifacts:
+    when: on_failure
+    reports:
+      codequality: code-quality.json
   script:
-    - /usr/bin/php-cs-fixer fix --dry-run --diff .
+    - /usr/bin/php-cs-fixer fix --format=gitlab --dry-run --diff . > code-quality.json
 
 php linter:
   stage: test
