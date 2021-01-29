@@ -257,3 +257,23 @@ php linter:
   image: pipelinecomponents/php-linter:latest
   script:
     - parallel-lint --colors .
+
+phpcs PSR12:
+  stage: test
+  image: pipelinecomponents/php-codesniffer:latest
+  script:
+    - phpcs -s -p --colors --extensions=php --standard=PSR12 .
+
+php-compatibility 7.3:
+  stage: test
+  image: pipelinecomponents/php-codesniffer:latest
+  parallel:
+    matrix:
+      - PHPVERSION: ["7.2","7.3","7.4"]
+  script:
+    - >
+      phpcs -s -p --colors
+      --standard=PHPCompatibility
+      --extensions=php
+      --runtime-set testVersion ${PHPVERSION} .
+
