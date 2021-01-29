@@ -249,8 +249,11 @@ php-cs-fixer:
     when: always
     reports:
       codequality: code-quality.json
+    paths:
+      - code-quality_debug.json
   script:
     - /usr/bin/php-cs-fixer fix --format=gitlab --dry-run --diff . > code-quality.json || true
+    - cp code-quality.json code_quality_debug.json
 
 php linter:
   stage: test
