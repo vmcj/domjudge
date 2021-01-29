@@ -165,25 +165,25 @@ abstract class BaseTest extends WebTestCase
      *
      * @param mixed    $configValue
      */
-    protected function withChangedConfiguration(
-        string $configKey,
-        $configValue,
-        callable $callback
-    ) : void
-    {
-        $config   = self::$container->get(ConfigurationService::class);
-        $eventLog = self::$container->get(EventLogService::class);
-        $dj       = self::$container->get(DOMJudgeService::class);
-
-        // Build up the data to set
-        $dataToSet = [$configKey => $configValue];
-
-        // Save the changes
-        $config->saveChanges($dataToSet, $eventLog, $dj);
-
-        // Call the callback
-        $callback();
-    }
+      protected function withChangedConfiguration(
+          string $configKey,
+          $configValue,
+          callable $callback
+      ) : void
+      {
+          $config   = self::$container->get(ConfigurationService::class);
+          $eventLog = self::$container->get(EventLogService::class);
+          $dj       = self::$container->get(DOMJudgeService::class);
+  
+          // Build up the data to set
+          $dataToSet = [$configKey => $configValue];
+  
+          // Save the changes
+          $config->saveChanges($dataToSet, $eventLog, $dj);
+  
+          // Call the callback
+          $callback();
+      }
 
     protected function verifyPageResponse(
         string $method,
