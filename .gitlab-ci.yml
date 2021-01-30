@@ -242,6 +242,7 @@ integration_mariadb:
       alias: sqlserver
 
 php-cs-fixer:
+  <<: *tiny_job
   image:
     name: cytopia/php-cs-fixer
     entrypoint: [""]
@@ -256,6 +257,7 @@ php-cs-fixer:
     - cp code-quality.json code_quality_debug.json
 
 php linter:
+  <<: *tiny_job
   stage: test
   image: pipelinecomponents/php-linter:latest
   script:
@@ -267,7 +269,16 @@ phpcs_PSR12:
   stage: test
   image: pipelinecomponents/php-codesniffer:latest
   script:
-    - phpcs -s -p --colors --extensions=php --standard=PSR12 .
+    - git fetch
+    - git checkout -B master origin/master
+    - git branch --set-upstream-to=origin/master master
+    - git pull
+    - git checkout $CI_COMMIT_SHA
+    - for file in `git diff master --name-only`; do
+    -   if [[ $file =~ \.php$ ]];
+    -     phpcs -s -p --colors --extensions=php --standard=PSR12 $file
+    -   fi
+    - done
 
 phpcs_compatibility:
   <<: *tiny_job
