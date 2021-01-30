@@ -241,55 +241,55 @@ integration_mariadb:
     - name: mariadb
       alias: sqlserver
 
-      #php-cs-fixer:
-      #  <<: *tiny_job
-      #  image:
-      #    name: cytopia/php-cs-fixer
-      #    entrypoint: [""]
-      #  artifacts:
-      #    when: always
-      #    reports:
-      #      codequality: code-quality.json
-      #    paths:
-      #      - code_quality_debug.json
-      #  script:
-      #    - /usr/bin/php-cs-fixer fix --format=gitlab --dry-run --diff . > code-quality.json || true
-      #    - cp code-quality.json code_quality_debug.json
-      #
-      #php linter:
-      #  <<: *tiny_job
-      #  stage: test
-      #  image: pipelinecomponents/php-linter:latest
-      #  script:
-      #    - ls
-      #    - parallel-lint --colors .
-      #
-      #phpcs_PSR12:
-      #  <<: *tiny_job
-      #  stage: test
-      #  image: domjudge/gitlabci:2.1
-      #  script:
-      #    - git fetch
-      #    - git checkout -B master origin/master
-      #    - git branch --set-upstream-to=origin/master master
-      #    - git pull
-      #    - git checkout $CI_COMMIT_SHA
-      #    - gitlab/psr12.sh
-      #
-      #phpcs_compatibility:
-      #  <<: *tiny_job
-      #  stage: test
-      #  image: pipelinecomponents/php-codesniffer:latest
-      #  before_script:
-      #    - set -euxo pipefail
-      #    - export PS4='[$?] $'
-      #  parallel:
-      #    matrix:
-      #      - PHPVERSION: ["7.2","7.3","7.4"]
-      #  script:
-      #    - >
-      #      phpcs -s -p --colors
-      #      --standard=PHPCompatibility
-      #      --extensions=php
-      #      --runtime-set testVersion $PHPVERSION .
-      #
+#php-cs-fixer:
+#  <<: *tiny_job
+#  image:
+#    name: cytopia/php-cs-fixer
+#    entrypoint: [""]
+#  artifacts:
+#    when: always
+#    reports:
+#      codequality: code-quality.json
+#    paths:
+#      - code_quality_debug.json
+#  script:
+#    - /usr/bin/php-cs-fixer fix --format=gitlab --dry-run --diff . > code-quality.json || true
+#    - cp code-quality.json code_quality_debug.json
+#
+#php linter:
+#  <<: *tiny_job
+#  stage: test
+#  image: pipelinecomponents/php-linter:latest
+#  script:
+#    - ls
+#    - parallel-lint --colors .
+#
+#phpcs_PSR12:
+#  <<: *tiny_job
+#  stage: test
+#  image: domjudge/gitlabci:2.1
+#  script:
+#    - git fetch
+#    - git checkout -B master origin/master
+#    - git branch --set-upstream-to=origin/master master
+#    - git pull
+#    - git checkout $CI_COMMIT_SHA
+#    - gitlab/psr12.sh
+#
+#phpcs_compatibility:
+#  <<: *tiny_job
+#  stage: test
+#  image: pipelinecomponents/php-codesniffer:latest
+#  before_script:
+#    - set -euxo pipefail
+#    - export PS4='[$?] $'
+#  parallel:
+#    matrix:
+#      - PHPVERSION: ["7.2","7.3","7.4"]
+#  script:
+#    - >
+#      phpcs -s -p --colors
+#      --standard=PHPCompatibility
+#      --extensions=php
+#      --runtime-set testVersion $PHPVERSION .
+#
