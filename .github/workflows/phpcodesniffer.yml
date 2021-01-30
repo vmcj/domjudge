@@ -18,5 +18,5 @@ jobs:
         with:
           files: "**.php" # you may customize glob as needed
           phpcs_path: php phpcs.phar
-          standard: psr12
+          standard: .gitlab/workflows/phpruleset.xml
           fail_on_warnings: false
