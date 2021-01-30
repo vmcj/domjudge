@@ -1,0 +1,33 @@
+name: "php-codesniffer2"
+
+on:
+  pull_request:
+    paths:
+      - "**.php"
+      - ".github/workflows/phpcs.xml"
+      - ".github/workflows/phpcs.yml"
+  push:
+    paths:
+      - "**.php"
+      - ".github/workflows/phpcs.xml"
+      - ".github/workflows/phpcs.yml"
+
+jobs:
+  phpsniffer2:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # important!
+      - uses: tinovyatkin/action-php-codesniffer@v1
+        with:
+          # files to check
+          files: **.php # optional, default is **.php
+          # scope to annotate errors or warnings - either "file" to check entire file or "blame" to check only lines changed by author of current PR
+          scope: blame # optional, default is blame
+          # path to phpcs executable
+          phpcs_path: # optional, default is phpcs
+          # Code style standard name (PEAR, ) or path to a phpcs.xml file
+          standard: PSR-12
+          # optional
+

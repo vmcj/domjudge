@@ -1,0 +1,27 @@
+name: "php-codesniffer 1/2"
+
+on:
+  pull_request:
+    paths:
+      - "**.php"
+      - ".github/workflows/phpcs.xml"
+      - ".github/workflows/phpcs.yml"
+  push:
+    paths:
+      - "**.php"
+      - ".github/workflows/phpcs.xml"
+      - ".github/workflows/phpcs.yml"
+
+jobs:
+  phpsniffer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # important!
+      - uses: pipeline-components/php-codesniffer@v0.12.3
+        with:
+          # Directory to check
+          directory: . # optional, default is .
+          # Additional options
+
