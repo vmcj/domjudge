@@ -7,15 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: phpstan (PHP Static Analysis)
-        uses: actions-x/phpstan@v1
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+      - name: PHPStan
+        uses: chindit/actions-phpstan@master
         with:
-          installComposer: # default is 1
-          phpstanVersion: # default is none
-          level: # default is max
-          paths: # optional
-          configPath: # optional
-          useBundled: # default is 0
+          # Arguments to add to PHPStan
+          arguments: 'webapps/src --level=7'
   lint:
     runs-on: ubuntu-latest
     steps:
