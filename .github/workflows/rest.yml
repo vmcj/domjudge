@@ -3,17 +3,6 @@ name: PHP Rest
 # Controls when the action will run. 
 on: ['push','pull_request']
 jobs:
-  stan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
-      - name: PHPStan
-        uses: chindit/actions-phpstan@master
-        with:
-          # Arguments to add to PHPStan
-          arguments: 'webapps/src --level=7'
   lint:
     runs-on: ubuntu-latest
     steps:
