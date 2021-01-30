@@ -259,6 +259,7 @@ php linter:
   stage: test
   image: pipelinecomponents/php-linter:latest
   script:
+    - ls
     - parallel-lint --colors .
 
 phpcs_PSR12:
