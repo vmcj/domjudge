@@ -1,4 +1,4 @@
-name: PHP Analyse
+name: PHP CodeSniffer
 
 # Controls when the action will run. 
 on: ['push','pull_request']
@@ -19,18 +19,3 @@ jobs:
           files: "**.php" # you may customize glob as needed
           phpcs_path: php phpcs.phar
           standard: phpcs.xml
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: PHP Lint
-        uses: michaelw90/PHP-Lint@2.1.0
-      - name: phpstan (PHP Static Analysis)
-        uses: actions-x/phpstan@v1
-        with:
-          installComposer: # default is 1
-          phpstanVersion: # default is none
-          level: # default is max
-          paths: # optional
-          configPath: # optional
-          useBundled: # default is 0
