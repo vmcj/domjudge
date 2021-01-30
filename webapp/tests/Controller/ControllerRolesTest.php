@@ -105,15 +105,11 @@ class ControllerRolesTest extends BaseTest
     {
         static::$roles = $roles;
         $this->logIn();
-        $urlsToCheck2 = [];
         $urlsFoundPerRole = [];
         foreach ($roleBaseURL as $baseURL) {
-            $urlsToCheck2 = array_merge($urlsToCheck2, $this->crawlPageGetLinks($baseURL, 200));
             $urlsFoundPerRole[] = $this->crawlPageGetLinks($baseURL, 200);
         }
         $urlsToCheck = array_merge([], ...$urlsFoundPerRole);
-        var_dump($urlsToCheck);
-        var_dump($urlsToCheck2);
 
         // Find all pages, currently this sometimes breaks as some routes have the same logic
         if ($allPages) {
