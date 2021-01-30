@@ -67,7 +67,7 @@ check_w3c_css:
   <<: *retry_job
   <<: *tiny_job
   stage: test
-  image: 
+  image:
     name: cyb3rjak3/html5validator
     entrypoint: [""]
   script:
@@ -186,7 +186,7 @@ visual_master:
     paths:
      - screenshotsmaster
      - public
-    
+
 visual_compare:
   <<: *retry_job
   <<: *tiny_job
@@ -242,7 +242,7 @@ integration_mariadb:
       alias: sqlserver
 
 php-cs-fixer:
-  image: 
+  image:
     name: cytopia/php-cs-fixer
     entrypoint: [""]
   artifacts:
@@ -267,9 +267,12 @@ phpcs PSR12:
   script:
     - phpcs -s -p --colors --extensions=php --standard=PSR12 .
 
-php-compatibility 7.3:
+php-compatibility:
   stage: test
   image: pipelinecomponents/php-codesniffer:latest
+  before_script:
+    - set -euxo pipefail
+    - export PS4='(${BASH_SOURCE}:${LINENO}): - [ $? ] $ '
   parallel:
     matrix:
       - PHPVERSION: ["7.2","7.3","7.4"]
@@ -278,5 +281,5 @@ php-compatibility 7.3:
       phpcs -s -p --colors
       --standard=PHPCompatibility
       --extensions=php
-      --runtime-set testVersion ${PHPVERSION} .
+      --runtime-set testVersion $PHPVERSION .
 
