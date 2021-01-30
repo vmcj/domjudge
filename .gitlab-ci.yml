@@ -286,7 +286,7 @@ phpcs_compatibility:
   image: pipelinecomponents/php-codesniffer:latest
   before_script:
     - set -euxo pipefail
-    - export PS4='${BASH_SOURCE}:${LINENO}:[$?] $'
+    - export PS4='[$?] $'
   parallel:
     matrix:
       - PHPVERSION: ["7.2","7.3","7.4"]
