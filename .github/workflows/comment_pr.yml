@@ -15,11 +15,12 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
             });
-            var b = await github.pulls.listReviews({
+            var bt = await github.pulls.listReviews({
               pull_number: context.payload.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
             });
+            var b = bt.data
             //await github.pulls.createReview({
             //  pull_number: context.payload.number,
             //  owner: context.repo.owner,
