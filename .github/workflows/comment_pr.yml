@@ -10,9 +10,16 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            #const diff_url = context.payload.pull_request.diff_url
-            #const result = await github.request(diff_url)
-            #console.log(result)
-            const pay = context.payload
-            console.log(pay)
-            # console.log(context.payload.pull_request)
+            context.pulls.createReview({
+              pull_number: 14,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'thanks'
+              event: 'REQUEST_CHANGES'
+              comments: [
+                {
+                  path: gitlab/workflows/comment_pr.yml,
+                  line: 1,
+                  body: 'thanks'
+                }
+            })
