@@ -10,12 +10,12 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            await github.pulls.listFiles({
+            var a = await github.pulls.listFiles({
               pull_number: 14,
               owner: context.repo.owner,
               repo: context.repo.repo,
             });
-            await github.pulls.listReviews({
+            var b = await github.pulls.listReviews({
               pull_number: 14,
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -27,6 +27,10 @@ jobs:
             //  body: "yes"
             //})
             console.log(context.repo)
+            console.log(context)
+            console.log(github)
+            console.log(a)
+            console.log(b)
 
             
             // Get a list of all issues created by the PR opener
