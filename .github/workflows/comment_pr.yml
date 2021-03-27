@@ -15,6 +15,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
             })
+            console.log(context.repo)
 
             
             // Get a list of all issues created by the PR opener
