@@ -3,23 +3,43 @@ name: Comment on PR
 on: pull_request
 
 jobs:
-  diff:
+  welcome:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/github-script@v3
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            context.pulls.createReview({
+            await context.pulls.createReview({
               pull_number: 14,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'thanks'
-              event: 'REQUEST_CHANGES'
-              comments: [
-                {
-                  path: gitlab/workflows/comment_pr.yml,
-                  line: 1,
-                  body: 'thanks'
-                }
-            })
+            }
+
+            
+            // Get a list of all issues created by the PR opener
+            // See: https://octokit.github.io/rest.js/#pagination
+            //const creator = context.payload.sender.login
+            //const opts = github.issues.listForRepo.endpoint.merge({
+            //  ...context.issue,
+            //  creator,
+            //  state: 'all'
+            //})
+            //const issues = await github.paginate(opts)
+
+            //for (const issue of issues) {
+            //  if (issue.number === context.issue.number) {
+            //    continue
+            //  }
+
+            //  if (issue.pull_request) {
+            //    return // Creator is already a contributor.
+            //  }
+            //}
+
+            //await github.issues.createComment({
+            //  issue_number: context.issue.number,
+            //  owner: context.repo.owner,
+            //  repo: context.repo.repo,
+            //  body: 'Welcome, new contributor!'
+            //})
