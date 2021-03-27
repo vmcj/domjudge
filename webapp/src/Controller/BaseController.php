@@ -129,7 +129,6 @@ abstract class BaseController extends AbstractController
      * @param EventLogService        $eventLogService
      * @param KernelInterface        $kernel
      * @param                        $entity
-     * @param string                 $description
      * @param string                 $redirectUrl
      * @throws DBALException
      * @throws NoResultException
@@ -142,13 +141,13 @@ abstract class BaseController extends AbstractController
         EventLogService $eventLogService,
         KernelInterface $kernel,
         $entity,
-        string $description,
         string $redirectUrl
     ) : Response {
         // Determine all the relationships between all tables using Doctrine cache
         $dir       = realpath(sprintf('%s/src/Entity', $kernel->getProjectDir()));
         $files     = glob($dir . '/*.php');
         $relations = [];
+        $description = $entity->getShortDesc();
         foreach ($files as $file) {
             $parts      = explode('/', $file);
             $shortClass = str_replace('.php', '', $parts[count($parts) - 1]);

@@ -951,7 +951,7 @@ class ProblemController extends BaseController
         }
 
         return $this->deleteEntity($request, $this->em, $this->dj, $this->eventLogService, $this->kernel,
-                                   $problem, $problem->getShortDesc(), $this->generateUrl('jury_problems'));
+                                   $problem, $this->generateUrl('jury_problems'));
     }
 
     /**
@@ -985,8 +985,7 @@ class ProblemController extends BaseController
         $probId = $attachment->getProblem()->getProbid();
 
         return $this->deleteEntity($request, $this->em, $this->dj, $this->eventLogService, $this->kernel,
-            $attachment, $attachment->getName(),
-            $this->generateUrl('jury_problem', ['probId' => $probId]));
+            $attachment, $this->generateUrl('jury_problem', ['probId' => $probId]));
     }
 
     /**
