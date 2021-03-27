@@ -10,7 +10,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            await context.pulls.createReview({
+            await github.pulls.createReview({
               pull_number: 14,
               owner: context.repo.owner,
               repo: context.repo.repo,
