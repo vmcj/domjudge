@@ -20,12 +20,12 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
             });
-            #await github.pulls.createReview({
-            #  pull_number: 14,
-            #  owner: context.repo.owner,
-            #  repo: context.repo.repo,
-            #  body: "yes"
-            #})
+            //await github.pulls.createReview({
+            //  pull_number: 14,
+            //  owner: context.repo.owner,
+            //  repo: context.repo.repo,
+            //  body: "yes"
+            //})
             console.log(context.repo)
 
             
