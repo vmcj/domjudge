@@ -14,6 +14,7 @@ jobs:
               pull_number: 14,
               owner: context.repo.owner,
               repo: context.repo.repo,
+              body: "yes"
             })
             console.log(context.repo)
 
