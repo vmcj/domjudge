@@ -30,9 +30,13 @@ jobs:
             //console.log(context)
             //console.log(github)
             //console.log(a)
-            b.forEach(function(entry) {
-              console.log(entry.user);
-            });
+            for (index = 0; index < b.length; ++index) {
+              console.log(b[index]);
+              console.log(b[index].user);
+            }
+            //b.forEach(function(entry) {
+            //  console.log(entry.user);
+            //});
             //console.log(b)
 
             
