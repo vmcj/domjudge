@@ -26,11 +26,14 @@ jobs:
             //  repo: context.repo.repo,
             //  body: "yes"
             //})
-            console.log(context.repo)
-            console.log(context)
-            console.log(github)
-            console.log(a)
-            console.log(b)
+            //console.log(context.repo)
+            //console.log(context)
+            //console.log(github)
+            //console.log(a)
+            b.forEach(function(entry) {
+              console.log(entry.user);
+            });
+            //console.log(b)
 
             
             // Get a list of all issues created by the PR opener
