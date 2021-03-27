@@ -11,17 +11,17 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             var a = await github.pulls.listFiles({
-              pull_number: 14,
+              pull_number: context.payload.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
             });
             var b = await github.pulls.listReviews({
-              pull_number: 14,
+              pull_number: context.payload.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
             });
             //await github.pulls.createReview({
-            //  pull_number: 14,
+            //  pull_number: context.payload.number,
             //  owner: context.repo.owner,
             //  repo: context.repo.repo,
             //  body: "yes"
