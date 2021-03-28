@@ -147,6 +147,7 @@ class RejudgingController extends BaseController
                 'rejudgingid' => $rejudging->getRejudgingid(),
                 'repeat_rejudgingid' => $rejudging->getRepeatedRejudging()?->getRejudgingid(),
             ];
+
         }
 
         // Filter the table to include only the rejudgings without repetition and for rejudgings with repetition the one
