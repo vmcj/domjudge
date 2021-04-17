@@ -26,6 +26,9 @@
     "dflydev/dot-access-data": {
         "version": "v3.0.1"
     },
+    "dbrekelmans/bdi": {
+        "version": "0.3"
+    },
     "doctrine/annotations": {
         "version": "2.0",
         "recipe": {
@@ -243,6 +246,9 @@
     },
     "php-http/promise": {
         "version": "1.1.0"
+    },
+    "php-webdriver/webdriver": {
+        "version": "1.10.0"
     },
     "phpdocumentor/reflection-common": {
         "version": "1.0.1"
