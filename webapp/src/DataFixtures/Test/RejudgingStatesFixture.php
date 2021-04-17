@@ -10,6 +10,7 @@ use App\Entity\Submission;
 use App\Entity\Team;
 use App\Entity\User;
 use App\Utils\Utils;
+use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
 class RejudgingStatesFixture extends AbstractTestDataFixture
