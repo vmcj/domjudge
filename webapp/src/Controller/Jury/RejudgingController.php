@@ -69,6 +69,16 @@ class RejudgingController extends BaseController
         }
         /** @var Rejudging[] $rejudgings */
         $rejudgings = $queryBuilder->orderBy('r.rejudgingid', 'DESC')
+        /** @var Rejudging[] $rejudgings */
+        /*$rejudgings = $this->em->createQueryBuilder()
+            ->select('r')
+            ->from(Rejudging::class, 'r');
+        if ($curContest !== NULL) {
+            $rejudgings = $rejudgings->join('r.submissions', 's')
+                ->andWhere('s.contest = :contest')
+                ->setParameter(':contest', $curContest->getCid());
+        }
+        $rejudgings = $rejudgings->orderBy('r.rejudgingid', 'DESC')*/
             ->getQuery()->getResult();
 
         $table_fields = [

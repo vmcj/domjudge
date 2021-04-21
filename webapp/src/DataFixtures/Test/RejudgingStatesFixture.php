@@ -3,6 +3,8 @@
 namespace App\DataFixtures\Test;
 
 use App\Entity\Contest;
+use App\Entity\ContestProblem;
+use App\Entity\Judgehost;
 use App\Entity\Judging;
 use App\Entity\Language;
 use App\Entity\Rejudging;
@@ -22,6 +24,7 @@ class RejudgingStatesFixture extends AbstractTestDataFixture
         $rejudgingStages[] = ['0Percent_2',null,2,0,['demo']];
         $rejudgingStages[] = ['Finished',true,1,0,['demo']];
         $rejudgingStages[] = ['Canceled',false,2,0,['demo']];
+        //$rejudgingStages[] = ['MultiContest',NULL,1,0,['demo','demoprac']];
         return $rejudgingStages;
     }
 

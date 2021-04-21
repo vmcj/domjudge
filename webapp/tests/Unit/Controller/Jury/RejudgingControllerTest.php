@@ -134,6 +134,22 @@ class RejudgingControllerTest extends BaseTestCase
                     if ($stage[1] === null) {
                         $todo++;
                     }
+    /*public function provideShownRejudgings(): Generator
+    {
+        // The case where no contest is active/chosen/current
+        $show = [];
+        foreach(RejudgingStatesFixture::rejudgingStages() as $stage){
+            $show[] = $stage[0];
+        }
+        yield [Null, $show, []];
+
+        // Rejudging during a contest
+        foreach(['demoprac','demo'] as $contestName) {
+            $show = [];
+            $hidden = [];
+            foreach(RejudgingStatesFixture::rejudgingStages() as $stage){
+                if(in_array($contestName, $stage[4])){
+                    $show[] = $stage[0];*/
                 } else {
                     $hidden[] = $stage[0];
                 }
