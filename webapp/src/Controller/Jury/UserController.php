@@ -64,6 +64,11 @@ class UserController extends BaseController
      */
     protected $tokenStorage;
 
+    /**
+     * @var int
+     */
+    protected $minPasswordLength = 10;
+
     public function __construct(
         EntityManagerInterface $em,
         DOMJudgeService $dj,
@@ -237,6 +242,14 @@ class UserController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if (strlen($user->getPlainPassword())<$this->minPasswordLength) {
+                $this->addFlash('danger', "Password should be " . $this->minPasswordLength . "+ chars.");
+                return $this->render('jury/user_edit.html.twig', [
+                    'user' => $user,
+                    'form' => $form->createView(),
+                    'min_password_length' => $this->minPasswordLength,
+                ]);
+            }
             $this->saveEntity($this->em, $this->eventLogService, $this->dj, $user,
                               $user->getUserid(),
                               false);
@@ -260,8 +273,9 @@ class UserController extends BaseController
         }
 
         return $this->render('jury/user_edit.html.twig', [
-            'user' => $user,
-            'form' => $form->createView(),
+            'user'                => $user,
+            'form'                => $form->createView(),
+            'min_password_length' => $this->minPasswordLength,
         ]);
     }
 
@@ -311,6 +325,7 @@ class UserController extends BaseController
         return $this->render('jury/user_add.html.twig', [
             'user' => $user,
             'form' => $form->createView(),
+            'min_password_length' => $this->minPasswordLength,
         ]);
     }
 
