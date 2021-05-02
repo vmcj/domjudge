@@ -99,6 +99,7 @@
 		"symfony/debug-bundle": "4.4.*",
 		"symfony/maker-bundle": "^1.13",
 		"symfony/phpunit-bridge": "^4.4",
+		"symfony/process": "4.4.*",
 		"symfony/var-dumper": "4.4.*"
 	},
 	"autoload": {
