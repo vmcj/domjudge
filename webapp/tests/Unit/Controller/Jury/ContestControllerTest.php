@@ -20,4 +20,8 @@ class ContestControllerTest extends JuryControllerTest
                                         'deleteurl' => '/jury/contests/2/problems/3/delete',
                                         'selector'  => 'Boolean switch search',
                                         'fixture'   => NULL];
+    protected static $addForm          = 'contest[';
+    protected static $addEntitiesShown = ['shortname','name'];
+    protected static $addEntities      = [['name' => 'New Contest',
+                                          'shortname' => 'nc']];
 }
