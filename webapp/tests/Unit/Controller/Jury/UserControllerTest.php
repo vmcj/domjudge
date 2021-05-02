@@ -61,5 +61,12 @@ class UserControllerTest extends JuryControllerTest
                                                     ['username' => 'singlerole-7', 'name' => 'Single Role-7',
                                                     'user_roles' => ['7' => '8']],
                                                     ['username' => 'singlerole-8', 'name' => 'Single Role-8',
-                                                    'user_roles' => ['8' => '9']]];
+                                                    'user_roles' => ['8' => '9']]],
+                                                    ['username' => 'newuser',
+                                                    'name' => 'New User',
+                                                    'plainPassword' => 'passwordpassword'],
+                                                    ['username' => 'ipauth',
+                                                    'name' => 'Auth via IP',
+                                                    'ipAddress' => '10.10.10.10',
+                                                    'plainPassword' => 'passwordpassword'];
 }

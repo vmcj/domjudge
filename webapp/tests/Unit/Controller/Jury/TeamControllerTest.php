@@ -36,5 +36,18 @@ class TeamControllerTest extends JuryControllerTest
                                                   'comments' => 'This is a team with a user',
                                                   'enabled' => '1',
                                                   'addUserForTeam' => true,
-                                                  'users.0.username' => 'linkeduser']];
+                                                  'users.0.username' => 'linkeduser'],
+                                                 ['name' => 'New Team',
+                                                  'displayName' => 'Display name',
+                                                  'icpcid' => '123',
+                                                  'category' => '1',
+                                                  'members' => 'Alice, Bob & Charlie',
+                                                  'affiliation' => '1',
+                                                  'penalty' => '100',
+                                                  'room' => 'Room 404',
+                                                  'comments' => 'Team has additional equipment',
+                                                  'contests' => '1',
+                                                  'enabled' => '1',
+                                                  'addUserForTeam' => '1',
+                                                  'users' => ['0' => ['username' => 'teamuser']]]]];
 }

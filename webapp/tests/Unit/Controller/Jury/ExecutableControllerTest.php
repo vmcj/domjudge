@@ -17,5 +17,10 @@ class ExecutableControllerTest extends JuryControllerTest
     protected static $defaultEditEntityName   = 'adb';
     protected static $addForm                 = 'executable_upload[';
     protected static $addEntitiesShown        = ['type'];
-    protected static $addEntities             = [];
+    protected static $addEntities             = [];/*['type' => 'compare',
+                                           'archives' => ''],
+                                          ['type' => 'compile',
+                                           'archives' => ''],
+                                          ['type' => 'run',
+                                           'archives' => '']];*/
 }
