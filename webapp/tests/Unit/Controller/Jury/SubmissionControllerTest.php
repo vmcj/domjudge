@@ -20,7 +20,7 @@ class SubmissionControllerTest extends BaseTest
     }
 
     /**
-     * Test the filtered views do throw server errors
+     * Test the filtered views have correct queries
      *
      * @dataProvider provideViews
      */
@@ -37,5 +37,10 @@ class SubmissionControllerTest extends BaseTest
                 yield [$view, $fixtures];
             }
         }
+    }
+
+    public function testJudgeRemaining(): void
+    {
+        $this->loadFixture("WrongAnswerSubmission");
     }
 }

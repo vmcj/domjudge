@@ -19,6 +19,8 @@ class SampleSubmissionsFixture extends AbstractTestDataFixture
             // team name,         problem shortname, language, submittime,            entry point, result
             ['DOMjudge',          'hello',           'cpp',    '2021-01-01 12:34:56', null,        'success'],
             ['Example teamname',  'boolfind',        'java',   '2021-03-04 12:00:00', 'Main',      'wrong-answer'],
+            ['Example teamname',  'fltcmp',          'java',   '2021-03-05 11:09:45', 'Main',      'wrong-answer'],
+            ['Example teamname',  'fltcmp',          'java',   '2021-03-05 11:12:05', 'Main',      'wrong-answer'],
         ];
 
         /** @var Contest $contest */
@@ -34,6 +36,9 @@ class SampleSubmissionsFixture extends AbstractTestDataFixture
                 ->setLanguage($manager->getRepository(Language::class)->find($submissionItem[2]))
                 ->setSubmittime(Utils::toEpochFloat($submissionItem[3]))
                 ->setEntryPoint($submissionItem[4]);
+            if ($submissionItem[5] !== 'wrong-answer') {
+                $problem->getProblems();
+            }
             $judging = (new Judging())
                 ->setContest($contest)
                 ->setStarttime(Utils::toEpochFloat($submissionItem[3]))
