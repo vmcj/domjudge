@@ -945,7 +945,8 @@ class SubmissionController extends BaseController
         } else {
             $numRequested = $this->em->getConnection()->executeUpdate(
                 'UPDATE judgetask SET valid=1'
-                . ' WHERE jobid=:jobid',
+                . ' WHERE jobid=:jobid'
+                . ' AND judgehostid IS NULL',
                 [
                     ':jobid' => $judgingId,
                 ]
