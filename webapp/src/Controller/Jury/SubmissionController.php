@@ -483,6 +483,7 @@ class SubmissionController extends BaseController
                 $cnt++;
                 /** @var JudgingRun $firstJudgingRun */
                 $firstJudgingRun = $runResult[0]->getFirstJudgingRun();
+                dump($firstJudgingRun);
                 if ($firstJudgingRun !== null && $firstJudgingRun->getRunresult() === null) {
                     $runsOutstanding = true;
                 }
@@ -592,6 +593,9 @@ class SubmissionController extends BaseController
                 'url' => $this->generateUrl('jury_submission', ['submitId' => $submission->getSubmitid()]),
             ];
         }
+
+        dump($runsOutstanding);
+        dump($selectedJudging);
 
         return $this->render('jury/submission.html.twig', $twigData);
     }
