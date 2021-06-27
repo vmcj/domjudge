@@ -31,6 +31,8 @@ class SampleSubmissionsFixture extends AbstractTestDataFixture
         $contest = $manager->getRepository(Contest::class)->findOneBy(['shortname' => 'demo']);
         $judgehost = (new Judgehost)
             ->setHostname('fixture-judgehost');
+        $manager->persist($judgehost);
+        $manager->flush();
         foreach ($submissionData as $index => $submissionItem) {
             $problem = $contest->getProblems()->filter(function (ContestProblem $problem) use ($submissionItem) {
                 return $problem->getShortname() === $submissionItem[1];
