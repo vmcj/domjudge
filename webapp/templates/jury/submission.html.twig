@@ -387,7 +387,7 @@
                             {% if selectedJudging is not null and not selectedJudging.judgeCompletely and runsOutstanding %}
                                 <form action="{{ path('jury_submission_request_remaining', {'judgingId': selectedJudging.judgingid}) }}" method="post"
                                       style="display: inline; ">
-                                    <input type="submit" class="btn btn-outline-secondary btn-sm" value="judge remaining" />
+                                    <input type="submit" id="trigger-judge-remaining" class="btn btn-outline-secondary btn-sm" value="Judge remaining" />
                                 </form>
                             {% endif %}
                         </td>

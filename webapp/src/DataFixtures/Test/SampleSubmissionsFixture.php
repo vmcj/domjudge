@@ -17,23 +17,24 @@ use Doctrine\Persistence\ObjectManager;
 
 class SampleSubmissionsFixture extends AbstractTestDataFixture
 {
+    public static $submissionData = [
+        // team name,         problem shortname, language, submittime,            entry point, result,         #tests
+        ['DOMjudge',          'hello',           'cpp',    '2021-01-01 12:34:56', null,        'correct',      1],
+        ['Example teamname',  'boolfind',        'java',   '2021-03-04 12:00:00', 'Main',      'wrong-answer', 1],
+        ['Example teamname',  'fltcmp',          'java',   '2021-03-05 11:12:05', 'Main',      'correct',      3],
+        //['Example teamname',  'fltcmp',          'java',   '2021-03-05 11:09:45', 'Main',      'wrong-answer', 3],
+        ['Example teamname',  'fltcmp',          'java',   '2021-03-05 11:12:05', 'Main',      'wrong-answer', 3],
+    ];
+    
     public function load(ObjectManager $manager): void
     {
-        $submissionData = [
-            // team name,         problem shortname, language, submittime,            entry point, result
-            ['DOMjudge',          'hello',           'cpp',    '2021-01-01 12:34:56', null,        'correct'],
-            ['Example teamname',  'boolfind',        'java',   '2021-03-04 12:00:00', 'Main',      'wrong-answer'],
-            ['Example teamname',  'fltcmp',          'java',   '2021-03-05 11:09:45', 'Main',      'wrong-answer'],
-            ['Example teamname',  'fltcmp',          'java',   '2021-03-05 11:12:05', 'Main',      'wrong-answer'],
-        ];
-
         /** @var Contest $contest */
         $contest = $manager->getRepository(Contest::class)->findOneBy(['shortname' => 'demo']);
         $judgehost = (new Judgehost)
             ->setHostname('fixture-judgehost');
         $manager->persist($judgehost);
         $manager->flush();
-        foreach ($submissionData as $index => $submissionItem) {
+        foreach ($this::$submissionData as $index => $submissionItem) {
             $problem = $contest->getProblems()->filter(function (ContestProblem $problem) use ($submissionItem) {
                 return $problem->getShortname() === $submissionItem[1];
             })->first();
@@ -81,7 +82,7 @@ class SampleSubmissionsFixture extends AbstractTestDataFixture
                     ->setJudging($judging)
                     ->setJudgeTask($judgeTask)
                     ->setTestcase($testCase);
-                if ($submissionItem[5] === 'success' || $rank === 1) {
+                if ($submissionItem[5] === 'correct' || $rank === 1) {
                     $judgingRun = $judgingRun
                         ->setRuntime(1)
                         ->setRunresult($submissionItem[5])
