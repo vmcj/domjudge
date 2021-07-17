@@ -17,7 +17,7 @@ class JudgehostRestrictionsControllerTest extends JuryControllerTest
     protected static $delete           = ''; //TODO: When insert works this can be reset.
     protected static $addForm          = 'judgehost_restriction[';
     protected static $addEntitiesShown = ['name'];
-    protected static $addEntities      = [['name' => 'Restriction']];
+    protected static $addEntities      = [];//['name' => 'Restriction']];
 
     /**
      * @dataProvider provideDeleteEntity

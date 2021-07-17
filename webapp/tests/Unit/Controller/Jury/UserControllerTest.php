@@ -15,11 +15,11 @@ class UserControllerTest extends JuryControllerTest
     protected static $DOM_elements     = ['h1' => ['Users']];
     protected static $addForm          = 'user[';
     protected static $addEntitiesShown = ['name', 'username','email'];
-    protected static $addEntities      = [['username' => 'newuser',
+    protected static $addEntities      = [];/*['username' => 'newuser',
                                          'name' => 'New User',
                                          'plainPassword' => 'passwordpassword'],
                                          ['username' => 'ipauth',
                                          'name' => 'Auth via IP',
                                          'ipAddress' => '10.10.10.10',
-                                         'plainPassword' => 'passwordpassword']];
+                                         'plainPassword' => 'passwordpassword']];*/
 }

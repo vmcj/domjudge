@@ -21,5 +21,5 @@ class ProblemControllerTest extends JuryControllerTest
                                         'fixture'   => AddProblemAttachmentFixture::class];
     protected static $addForm          = 'problem[';
     protected static $addEntitiesShown = ['name'];
-    protected static $addEntities      = [['name' => 'Problem']];
+    protected static $addEntities      = [];//['name' => 'Problem']];
 }

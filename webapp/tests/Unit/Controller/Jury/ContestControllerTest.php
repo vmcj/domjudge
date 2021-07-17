@@ -6,6 +6,7 @@ use App\Entity\Contest;
 
 class ContestControllerTest extends JuryControllerTest
 {
+    protected static $interest       = 'contest';
     protected static $baseUrl        = '/jury/contests';
     protected static $exampleEntries = ['Demo contest','Demo practice session'];
     protected static $shortTag       = 'contest';
@@ -22,6 +23,101 @@ class ContestControllerTest extends JuryControllerTest
                                         'fixture'   => NULL];
     protected static $addForm          = 'contest[';
     protected static $addEntitiesShown = ['shortname','name'];
-    protected static $addEntities      = [['name' => 'New Contest',
-                                          'shortname' => 'nc']];
+    protected static $addEntities      = [['shortname' => 'nc',
+                                           'name' => 'New Contest',
+                                           'activatetimeString' => '2021-07-17 16:08:00 Europe/Amsterdam',
+                                           'starttimeString' => '2021-07-17 16:09:00 Europe/Amsterdam',
+                                           'freezetimeString' => '2021-07-17 16:10:00 Europe/Amsterdam',
+                                           'endtimeString' => '2021-07-17 16:11:00 Europe/Amsterdam',
+                                           'unfreezetimeString' => '2021-07-17 16:12:00 Europe/Amsterdam',
+                                           'deactivatetimeString' => '2021-07-17 16:13:00 Europe/Amsterdam',
+                                           'processBalloons' => '1',
+                                           'processAwards' => '1',
+                                           'enabled' => '1',
+                                           'openToAllTeams' => '1',
+                                           'public' => '1',
+                                           'starttimeEnabled' => '1',
+                                           'goldAwards' => '1',
+                                           'silverAwards' => '1',
+                                           'bronzeAwards' => '1',
+                                           'awardsCategories' => ['0' => '2']],
+                                          ['shortname' => 'rel',
+                                           'name' => 'Relative contest',
+                                           'activatetimeString' => '-1:00',
+                                           'starttimeString' => '1990-07-17 16:00:00 America/Noronha',
+                                           'freezetimeString' => '+1:00',
+                                           'endtimeString' => '+1:00:01.13',
+                                           'unfreezetimeString' => '+0005:50:50.123456',
+                                           'deactivatetimeString' => '+9999:50:50.123456'],
+                                          ['shortname' => 'na',
+                                           'name' => 'No Awards',
+                                           'processAwards' => '0',
+                                           'awardsCategories' => []],
+                                          ['shortname' => 'na2',
+                                           'name' => 'No Awards 2',
+                                           'processAwards' => '0'],
+                                          ['shortname' => 'npub',
+                                           'name' => 'Not Public',
+                                           'public' => '0'],
+                                          ['shortname' => 'dst',
+                                           'name' => 'Disable startTime',
+                                           'starttimeEnabled' => '0'],
+                                          ['shortname' => 'nbal',
+                                           'name' => 'No balloons',
+                                           'processBalloons' => '0'],
+                                          ['shortname' => 'dis',
+                                           'name' => 'Disabled',
+                                           'enabled' => '0'],
+                                          ['shortname' => 'nall',
+                                           'name' => 'Private contest',
+                                           'openToAllTeams' => '0'],
+                                          ['shortname' => 'za',
+                                           'name' => 'Zero Awards',
+                                           'goldAwards' => '0',
+                                           'silverAwards' => '0',
+                                           'bronzeAwards' => '0',
+                                           'processAwards' => '1',
+                                           'awardsCategories' => ['0' => '2']],
+                                          ['shortname' => 'tz',
+                                           'name' => 'Timezones',
+                                           'activatetimeString' => '1990-07-17 16:00:00 Africa/Douala',
+                                           'starttimeString' => '1990-07-17 16:00:00 Etc/GMT+2',
+                                           'freezetimeString' => '1990-07-17 16:00:00 America/Paramaribo'],
+                                        ];
+
+/*contest[_shortname]	"short_nam3"
+contest[_name]	"long_name"
+contest[_activatetimeString]	"2021-07-17+16:08:00+Europe/Amsterdam"
+contest[_starttimeString]	"2021-07-17+16:09:00+Europe/Amsterdam"
+contest[_freezetimeString]	"2021-07-17+16:10:00+Europe/Amsterdam"
+contest[_endtimeString]	"2021-07-17+16:11:00+Europe/Amsterdam"
+contest[_unfreezetimeString]	"2021-07-17+16:12:00+Europe/Amsterdam"
+contest[_deactivatetimeString]	"2021-07-17+16:13:00+Europe/Amsterdam"
+contest[_processBalloons]	"1"
+contest[_processAwards]	"1"
+contest[_public]	"1"
+contest[_openToAllTeams]	"1"
+contest[_enabled]	"1"
+contest[_goldAwards]	"1"
+contest[_silverAwards]	"2"
+contest[_bronzeAwards]	"3"
+contest[_awardsCategories][]	[…]
+0	"2"
+1	"3"
+contest[starttimeEnabled]	"1"
+contest[problems][0][problem]	"2"
+contest[problems][0][shortname]	"fcmp"
+contest[problems][0][points]	"2"
+contest[problems][0][allowSubmit]	"1"
+contest[problems][0][allowJudge]	"1"
+contest[problems][0][color]	"#eea060"
+contest[problems][0][lazyEvalResults]	"0"
+contest[problems][1][problem]	"1"
+contest[problems][1][shortname]	"hw"
+contest[problems][1][points]	"1"
+contest[problems][1][allowSubmit]	"1"
+contest[problems][1][allowJudge]	"1"
+contest[problems][1][color]	"#ffb733"
+contest[problems][1][lazyEvalResults]	"0"
+contest[save]	""*/
 }

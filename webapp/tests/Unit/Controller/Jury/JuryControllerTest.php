@@ -29,6 +29,7 @@ abstract class JuryControllerTest extends BaseTest
     protected static $addFormName       = '';
     protected static $deleteExtra       = NULL;
     protected static $addEntities       = [];
+    protected static $interest          = 'no';
 
     public function __construct($name = null, array $data = [], $dataName = '')
     {
@@ -171,12 +172,26 @@ abstract class JuryControllerTest extends BaseTest
             self::assertSelectorExists('a:contains(' . $this->addButton . ')');
             foreach (static::$addEntities as $element) {
                 $formFields = [];
+                // First fill with default values, the 0th item of the array
+                foreach (static::$addEntities[0] as $id=>$field) {
+                    $formFields[static::$addForm . $id . "]"] = $field;
+                }
+                // Overwrite with data to test with.
                 foreach ($element as $id=>$field) {
                     $formFields[static::$addForm . $id . "]"] = $field;
                 }
                 $this->verifyPageResponse('GET', static::$baseUrl . static::$add, 200);
+                $file = '/domjudge/dumped_pre_'.static::$interest.'.html';
+                $content = $this->getCurrentCrawler()->html();
+                file_put_contents($file, $content);
                 $this->client->submitForm('Save', $formFields, 'POST');
-            }
+                $file = '/domjudge/dumped_post_'.static::$interest.'.html';
+                $content = $this->getCurrentCrawler()->html();
+                file_put_contents($file, $content);
+                }
+            $file = '/domjudge/dumped.html';
+            $content = $this->getCurrentCrawler()->html();
+            file_put_contents($file, $content);
             $this->verifyPageResponse('GET', static::$baseUrl, 200);
             foreach (static::$addEntities as $element) {
                 foreach ($element as $id=>$value) {

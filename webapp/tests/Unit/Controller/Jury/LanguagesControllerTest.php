@@ -15,7 +15,7 @@ class LanguagesControllerTest extends JuryControllerTest
     protected static $DOM_elements     = ['h1' => ['Languages']];
     protected static $addForm          = 'language[';
     protected static $addEntitiesShown = ['langid','externalid'];
-    protected static $addEntities      = [['langid' => 'ns',
+    protected static $addEntities      = [];/*['langid' => 'ns',
                                            'externalid' => 'ns',
-                                           'name' => 'Name script']];
+                                           'name' => 'Name script']];*/
 }
