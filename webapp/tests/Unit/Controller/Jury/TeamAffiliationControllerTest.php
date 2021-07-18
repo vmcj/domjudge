@@ -15,6 +15,14 @@ class TeamAffiliationControllerTest extends JuryControllerTest
     protected static $DOM_elements     = ['h1' => ['Affiliations']];
     protected static $addForm          = 'team_affiliation[';
     protected static $addEntitiesShown = ['shortname','name'];
-    protected static $addEntities      = [];/*['name' => 'New Affil',
-                                           'shortname' => 'short']];*/
+    protected static $addEntities      = [['shortname' => 'short',
+                                           'name' => 'New Affil',
+                                           'country' => 'NLD',
+                                           'comments' => 'Lorem ipsum dolor sit amet.'],
+                                          ['shortname' => 'cl',
+                                           'name' => 'Countryless',
+                                           'country' => ''],
+                                          ['shortname' => 'com',
+                                           'name' => 'No comment',
+                                           'comments' => 'Lorem ipsum dolor sit amet.']];
 }

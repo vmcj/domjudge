@@ -15,5 +15,28 @@ class TeamCategoryControllerTest extends JuryControllerTest
     protected static $DOM_elements     = ['h1' => ['Categories']];
     protected static $addForm          = 'team_category[';
     protected static $addEntitiesShown = ['name'];
-    protected static $addEntities      = [];//['name' => 'New Category']];
+    protected static $addEntities      = [['name' => 'New Category',
+                                           'sortorder' => '1',
+                                           'color' => '#123456',
+                                           'visible' => '1',
+                                           'allow_self_registration' => '0'],
+                                          ['name' => 'Secondary',
+                                           'sortorder' => '2'],
+                                          ['name' => 'Colorless',
+                                           'color' => ''],
+                                          ['name' => 'NameColor',
+                                           'color' => 'yellow'],
+                                          ['name' => 'Visible',
+                                           'visible' => '1'],
+                                          ['name' => 'SelfRegistered',
+                                           'allow_self_registration' => '1']];
 }
+
+/*
+team_category[name]	"Cat"
+team_category[sortorder]	"1"
+team_category[color]	""
+team_category[visible]	"1"
+team_category[allow_self_registration]	"0"
+team_category[save]	""
+*/
