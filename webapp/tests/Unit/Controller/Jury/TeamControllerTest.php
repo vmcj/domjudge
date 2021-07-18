@@ -6,6 +6,7 @@ use App\Entity\Team;
 
 class TeamControllerTest extends JuryControllerTest
 {
+    protected static $interest       = 'team';
     protected static $baseUrl        = '/jury/teams';
     protected static $exampleEntries = ['exteam','DOMjudge','System','UU'];
     protected static $shortTag       = 'team';
@@ -13,9 +14,9 @@ class TeamControllerTest extends JuryControllerTest
     protected static $getIDFunc      = 'getTeamid';
     protected static $className      = Team::class;
     protected static $DOM_elements   = ['h1' => ['Teams']];
-    protected static $addForm          = 'team_category[';
-    protected static $addEntitiesShown = ['name'];
-    protected static $addEntities      = [['name' => 'New Team',
+    protected static $addForm          = 'team[';
+    protected static $addEntitiesShown = ['name','icpcid','displayName','room'];
+    protected static $addEntities      = [];/*['name' => 'New Team',
                                            'displayName' => 'Display name',
                                            'icpcid' => '123',
                                            'category' => '1',
@@ -23,11 +24,11 @@ class TeamControllerTest extends JuryControllerTest
                                            'affiliation' => '1',
                                            'penalty' => '100',
                                            'room' => 'Room 404',
-                                           'Comments' => 'Team has additional equipment',
+                                           'comments' => 'Team has additional equipment',
                                            'contests' => '1',
                                            'enabled' => '1',
                                            'addUserForTeam' => '1',
-                                           'users' => ['0' => ['username' => 'teamuser']]]];
+                                           'users' => ['0' => ['username' => 'teamuser']]]];*/
 
 /*
 team[name]	"Name"

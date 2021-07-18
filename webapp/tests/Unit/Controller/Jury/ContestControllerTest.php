@@ -107,40 +107,4 @@ class ContestControllerTest extends JuryControllerTest
                                                                   'color' => 'yellow',
                                                                   'lazyEvalResults' => '1']]]*/
                                         ];
-
-/*contest[_shortname]	"short_nam3"
-contest[_name]	"long_name"
-contest[_activatetimeString]	"2021-07-17+16:08:00+Europe/Amsterdam"
-contest[_starttimeString]	"2021-07-17+16:09:00+Europe/Amsterdam"
-contest[_freezetimeString]	"2021-07-17+16:10:00+Europe/Amsterdam"
-contest[_endtimeString]	"2021-07-17+16:11:00+Europe/Amsterdam"
-contest[_unfreezetimeString]	"2021-07-17+16:12:00+Europe/Amsterdam"
-contest[_deactivatetimeString]	"2021-07-17+16:13:00+Europe/Amsterdam"
-contest[_processBalloons]	"1"
-contest[_processAwards]	"1"
-contest[_public]	"1"
-contest[_openToAllTeams]	"1"
-contest[_enabled]	"1"
-contest[_goldAwards]	"1"
-contest[_silverAwards]	"2"
-contest[_bronzeAwards]	"3"
-contest[_awardsCategories][]	[…]
-0	"2"
-1	"3"
-contest[starttimeEnabled]	"1"
-contest[problems][0][problem]	"2"
-contest[problems][0][shortname]	"fcmp"
-contest[problems][0][points]	"2"
-contest[problems][0][allowSubmit]	"1"
-contest[problems][0][allowJudge]	"1"
-contest[problems][0][color]	"#eea060"
-contest[problems][0][lazyEvalResults]	"0"
-contest[problems][1][problem]	"1"
-contest[problems][1][shortname]	"hw"
-contest[problems][1][points]	"1"
-contest[problems][1][allowSubmit]	"1"
-contest[problems][1][allowJudge]	"1"
-contest[problems][1][color]	"#ffb733"
-contest[problems][1][lazyEvalResults]	"0"
-contest[save]	""*/
 }

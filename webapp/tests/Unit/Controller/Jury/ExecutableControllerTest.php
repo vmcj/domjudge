@@ -14,7 +14,7 @@ class ExecutableControllerTest extends JuryControllerTest
     protected static $className        = Executable::class;
     protected static $DOM_elements     = ['h1' => ['Executables']];
     protected static $addForm          = 'executable_upload[';
-    protected static $addEntitiesShown = ['shortname','name'];
+    protected static $addEntitiesShown = ['type'];
     protected static $addEntities      = [];/*['type' => 'compare',
                                            'archives' => ''],
                                           ['type' => 'compile',

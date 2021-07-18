@@ -35,42 +35,4 @@ class ProblemControllerTest extends JuryControllerTest
                                            'memlimit' => '', 'outputlimit' => ''],
                                           ['name' => 'Args',
                                            'specialCompareArgs' => 'args']];
-    /*-----------------------------7565748554281264687511896730
-Content-Disposition: form-data; name="problem[name]"
-
-NewProblem
------------------------------7565748554281264687511896730
-Content-Disposition: form-data; name="problem[timelimit]"
-
-1
------------------------------7565748554281264687511896730
-Content-Disposition: form-data; name="problem[memlimit]"
-
-
------------------------------7565748554281264687511896730
-Content-Disposition: form-data; name="problem[outputlimit]"
-
-
------------------------------7565748554281264687511896730
-Content-Disposition: form-data; name="problem[problemtextFile]"; filename=""
-Content-Type: application/octet-stream
-
-
------------------------------7565748554281264687511896730
-Content-Disposition: form-data; name="problem[runExecutable]"
-
-boolfind_run
------------------------------7565748554281264687511896730
-Content-Disposition: form-data; name="problem[compareExecutable]"
-
-boolfind_cmp
------------------------------7565748554281264687511896730
-Content-Disposition: form-data; name="problem[specialCompareArgs]"
-
-
------------------------------7565748554281264687511896730
-Content-Disposition: form-data; name="problem[save]"
-
-
------------------------------7565748554281264687511896730--*/
 }

@@ -20,7 +20,7 @@ class JudgehostRestrictionsControllerTest extends JuryControllerTest
     protected static $addEntities      = [['name' => 'Restriction',
                                            'contests' => ['0' => '1', '1' => '2'],
                                            'problems' => ['0' => '1', '1' => '2'],
-                                           'languages' => ['0' => '1', '1' => '2'],
+                                           'languages' => ['0' => 'adb', '1' => 'awk'],
                                            'rejudge_own' => '1'],
                                           ['name' => 'NonRestricted',
                                            'contests' => [],
