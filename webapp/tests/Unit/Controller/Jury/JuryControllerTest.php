@@ -184,6 +184,7 @@ abstract class JuryControllerTest extends BaseTest
                 $file = '/domjudge/dumped_pre_'.static::$interest.'.html';
                 $content = $this->getCurrentCrawler()->html();
                 file_put_contents($file, $content);
+                //dump(static::$interest, $formFields);
                 $this->client->submitForm('Save', $formFields, 'POST');
                 $file = '/domjudge/dumped_post_'.static::$interest.'.html';
                 $content = $this->getCurrentCrawler()->html();
