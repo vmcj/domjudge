@@ -6,6 +6,8 @@ use App\Entity\Team;
 
 class TeamControllerTest extends JuryControllerTest
 {
+    protected static $identifingEditAttribute = 'name';
+    protected static $defaultEditEntityName   = 'DOMjudge';
     protected static $baseUrl          = '/jury/teams';
     protected static $exampleEntries   = ['exteam','DOMjudge','System','UU'];
     protected static $shortTag         = 'team';

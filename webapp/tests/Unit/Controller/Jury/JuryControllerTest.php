@@ -19,7 +19,7 @@ abstract class JuryControllerTest extends BaseTest
     protected        $roles             = ['admin'];
     protected        $addButton         = '';
     protected static $rolesView         = ['admin','jury'];
-    protected static $rolesDisallowed   = ['team'];
+    protected static $rolesDisallowed   = ['team',''];
     protected static $exampleEntries    = ['overwrite_in_class'];
     protected static $prefixURL         = 'http://localhost';
     protected static $add               = '/add';
@@ -33,6 +33,7 @@ abstract class JuryControllerTest extends BaseTest
     protected static $deleteExtra       = null;
     protected static $addEntities       = [];
     protected static $addEntitiesCount  = [];
+    protected static $defaultEditEntityName = null;
 
     public function __construct($name = null, array $data = [], $dataName = '')
     {
@@ -250,6 +251,91 @@ abstract class JuryControllerTest extends BaseTest
     }
 
     /**
+     * Test that admin can add edit an entity for this controller
+     * 
+     * @dataProvider provideEditEntities
+     */
+    public function testCheckEditEntityAdmin(string $identifier, object $formData): void
+    {
+        $this->roles = ['admin'];
+        $this->logOut();
+        $this->logIn();
+        $this->verifyPageResponse('GET', static::$baseUrl, 200);
+        if (static::$edit !== '') {
+            $crawler = $this->getCurrentCrawler();
+            $editLink = $crawler->selectLink($identifier);
+            $this->verifyPageResponse('GET', $editLink, 200);
+            /*self::assertSelectorExists('a:contains(' . $this->addButton . ')');
+            foreach (static::$addEntities as $element) {
+                $formFields = [];
+                // First fill with default values, the 0th item of the array
+                foreach (static::$addEntities[0] as $id=>$field) {
+                    // We can not set checkboxes directly, so skip them for now
+                    if (is_bool($field)) {
+                        continue;
+                    }
+                    $formId = str_replace('.', '][', $id);
+                    $formFields[static::$addForm . $formId . "]"] = $field;
+                }
+                // Overwrite with data to test with.
+                foreach ($element as $id=>$field) {
+                    // We can not set checkboxes directly, so skip them for now
+                    if (is_bool($field)) {
+                        continue;
+                    }
+                    $formId = str_replace('.', '][', $id);
+                    $formFields[static::$addForm . $formId . "]"] = $field;
+                }
+                $this->verifyPageResponse('GET', static::$baseUrl . static::$add, 200);
+                $button = $this->client->getCrawler()->selectButton('Save');
+                $form = $button->form($formFields, 'POST');
+                $formName = str_replace('[', '', static::$addForm);
+                // Set checkboxes
+                foreach (static::$addEntities[0] as $id=>$field) {
+                    if (!is_bool($field)) {
+                        continue;
+                    }
+                    if ($field) {
+                        $form[$formName][$id]->tick();
+                    } else {
+                        $form[$formName][$id]->untick();
+                    }
+                }
+                foreach ($element as $id=>$field) {
+                    if (!is_bool($field)) {
+                        continue;
+                    }
+                    if ($field) {
+                        $form[$formName][$id]->tick();
+                    } else {
+                        $form[$formName][$id]->untick();
+                    }
+                }
+                $this->client->submit($form);
+                }
+            $this->verifyPageResponse('GET', static::$baseUrl, 200);
+            foreach (static::$addEntities as $element) {
+                foreach ($element as $id=>$value) {
+                    if (in_array($id, static::$addEntitiesShown)) {
+                        self::assertSelectorExists('body:contains("' . $element[$id] . '")');
+                    }
+                }
+            }*/
+        }
+    }
+
+    public function provideEditEntities(): Generator
+    {
+        foreach (static::$addEntities as $row) {
+            $formdata = [];
+            foreach (static::$addEntities[0] as $key=>$value) {
+                $formdata[$key] = array_key_exists($key,$row) ? $row[$key] : $value; 
+            }
+            yield[static::$addEntitiesShown[0], $formdata];
+        }
+    }
+
+    /**
      * Test that the standard user can delete an entity
      *
      * @dataProvider provideDeleteEntity
@@ -280,7 +366,7 @@ abstract class JuryControllerTest extends BaseTest
      */
     public function provideDeleteEntity(): Generator
     {
-        if (static::$delete !== '') {
+        if (static::$delete != '') {
             foreach (static::$deleteEntities as $name => $entityList) {
                 foreach ($entityList as $entity) {
                     yield [$name, $entity];
@@ -307,4 +393,62 @@ abstract class JuryControllerTest extends BaseTest
             self::assertTrue(True, "Test skipped");
         }
     }
+
+    public function getEditEntityUrl(): string
+    {
+        $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
+        $defaultEntity = $em->getRepository(static::$className)
+                            ->findOneBy([static::$identifingEditAttribute => static::$defaultEditEntityName]);
+        //return $this->generateUrl('jury_executable_edit', ['execId' => $defaultEntity->getExecid()]);
+        return static::$baseUrl.'/'.$defaultEntity->{static::$getIDFunc}().static::$edit;
+    }
+
+
+    /*
+     * test that a jury member cannot edit the entity.
+     */
+    public function CheckEditEntityJury(): void
+    {
+        if (static::$defaultEditEntityName === null) {
+            static::markTestSkipped("No default entity provided to edit.");
+        }
+        $editUrl = $this->getEditEntityUrl();
+        $this->roles = ['jury'];
+        $this->logOut();
+        $this->logIn();
+        $this->verifyPageResponse('GET', static::$baseUrl, 200);
+        self::assertSelectorNotExists(sprintf('td > a[href="%s"] > i.fas.fa-edit', $editUrl)); // The edit button is not displayed
+        $this->verifyPageResponse('GET', $editUrl, 403);
+    }
+
+    /*
+     * test that the admin can edit the default entity with different values
+     * dataProvider provideEditEntityValues
+     */
+    public function CheckEditEntityAdmin(): void
+    {
+        if (static::$defaultEditEntityName === null) {
+            static::markTestSkipped("No default entity provided to edit.");
+        }
+        $editUrl = $this->getEditEntityUrl();
+        $this->roles = ['admin'];
+        $this->logOut();
+        $this->logIn();
+        $this->verifyPageResponse('GET', static::$baseUrl, 200);
+        dump(sprintf('a[href="%s"]', $editUrl));
+        self::assertSelectorExists(sprintf('td > a[href="%s"] > i.fas.fa-edit', $editUrl)); // The edit button is not displayed
+        /*if (static::$add !== '') {
+            self::assertSelectorNotExists('a:contains(' . $this->addButton . ')');
+        }
+        $this->verifyPageResponse('GET', static::$deleteExtra['pageurl'], 403);
+        $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
+        $defaultEntity = $em->getRepository(static::$className)->findOneBy([$identifingAttribute => $$name]);*/
+        /*    $contest = $contest->setDeactivatetimeString("'2099-01-02 07:07:07'");
+            $cid = $contest->getCid();
+        }
+        $this->loadFixture(RejudgingStatesFixture::class);
+        $this->client->request('GET', '/team/change-contest/' . $cid);
+        */
+    }
+    //public function provideEditEntityValues
 }
