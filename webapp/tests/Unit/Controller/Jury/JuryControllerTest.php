@@ -313,21 +313,6 @@ abstract class JuryControllerTest extends BaseTest
         $this->verifyPageResponse('GET', static::$baseUrl, 200);
         self::assertSelectorNotExists(sprintf('td > a[href="%s"] > i.fas.fa-edit', $editUrl)); // The edit button is not displayed
         $this->verifyPageResponse('GET', $editUrl, 403);
-        /*if (static::$add !== '') {
-            self::assertSelectorNotExists('a:contains(' . $this->addButton . ')');
-        }
-        $this->verifyPageResponse('GET', static::$deleteExtra['pageurl'], 403);
-        $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
-        if (static::$defaultEditEntity === null) {
-            static::markTestSkipped("No default entity provided to edit.");
-        }
-        $defaultEntity = $em->getRepository(static::$className)->findOneBy([$identifingAttribute => $$name]);*/
-        /*    $contest = $contest->setDeactivatetimeString("'2099-01-02 07:07:07'");
-            $cid = $contest->getCid();
-        }
-        $this->loadFixture(RejudgingStatesFixture::class);
-        $this->client->request('GET', '/team/change-contest/' . $cid);
-        */
     }
 
     /*
