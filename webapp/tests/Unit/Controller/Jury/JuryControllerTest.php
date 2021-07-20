@@ -16,19 +16,20 @@ use Generator;
  */
 abstract class JuryControllerTest extends BaseTest
 {
-    protected        $roles             = ['admin'];
-    protected        $addButton         = '';
-    protected static $rolesView         = ['admin','jury'];
-    protected static $rolesDisallowed   = ['team'];
-    protected static $exampleEntries    = ['overwrite_in_class'];
-    protected static $prefixURL         = 'http://localhost';
-    protected static $add               = '/add';
-    protected static $edit              = '/edit';
-    protected static $delete            = '/delete';
-    protected static $shortTag          = '';
-    protected static $addForm           = '';
-    protected static $deleteExtra       = NULL;
-    protected static $addEntities       = [];
+    protected        $roles                 = ['admin'];
+    protected        $addButton             = '';
+    protected static $rolesView             = ['admin','jury'];
+    protected static $rolesDisallowed       = ['team'];
+    protected static $exampleEntries        = ['overwrite_in_class'];
+    protected static $prefixURL             = 'http://localhost';
+    protected static $add                   = '/add';
+    protected static $edit                  = '/edit';
+    protected static $delete                = '/delete';
+    protected static $shortTag              = '';
+    protected static $addForm               = '';
+    protected static $deleteExtra           = null;
+    protected static $addEntities           = [];
+    protected static $defaultEditEntityName = null;
 
     public function __construct($name = null, array $data = [], $dataName = '')
     {
@@ -286,4 +287,77 @@ abstract class JuryControllerTest extends BaseTest
             self::assertTrue(True, "Test skipped");
         }
     }
+
+    public function getEditEntityUrl(): string
+    {
+        $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
+        $defaultEntity = $em->getRepository(static::$className)
+                            ->findOneBy([static::$identifingEditAttribute => static::$defaultEditEntityName]);
+        //return $this->generateUrl('jury_executable_edit', ['execId' => $defaultEntity->getExecid()]);
+        return static::$baseUrl.'/'.$defaultEntity->{static::$getIDFunc}().static::$edit;
+    }
+
+
+    /*
+     * test that a jury member cannot edit the entity.
+     */
+    public function testCheckEditEntityJury(): void
+    {
+        if (static::$defaultEditEntityName === null) {
+            static::markTestSkipped("No default entity provided to edit.");
+        }
+        $editUrl = $this->getEditEntityUrl();
+        $this->roles = ['jury'];
+        $this->logOut();
+        $this->logIn();
+        $this->verifyPageResponse('GET', static::$baseUrl, 200);
+        self::assertSelectorNotExists(sprintf('td > a[href="%s"] > i.fas.fa-edit', $editUrl)); // The edit button is not displayed
+        $this->verifyPageResponse('GET', $editUrl, 403);
+        /*if (static::$add !== '') {
+            self::assertSelectorNotExists('a:contains(' . $this->addButton . ')');
+        }
+        $this->verifyPageResponse('GET', static::$deleteExtra['pageurl'], 403);
+        $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
+        if (static::$defaultEditEntity === null) {
+            static::markTestSkipped("No default entity provided to edit.");
+        }
+        $defaultEntity = $em->getRepository(static::$className)->findOneBy([$identifingAttribute => $$name]);*/
+        /*    $contest = $contest->setDeactivatetimeString("'2099-01-02 07:07:07'");
+            $cid = $contest->getCid();
+        }
+        $this->loadFixture(RejudgingStatesFixture::class);
+        $this->client->request('GET', '/team/change-contest/' . $cid);
+        */
+    }
+
+    /*
+     * test that the admin can edit the default entity with different values
+     * dataProvider provideEditEntityValues
+     */
+    public function testCheckEditEntityAdmin(): void
+    {
+        if (static::$defaultEditEntityName === null) {
+            static::markTestSkipped("No default entity provided to edit.");
+        }
+        $editUrl = $this->getEditEntityUrl();
+        $this->roles = ['admin'];
+        $this->logOut();
+        $this->logIn();
+        $this->verifyPageResponse('GET', static::$baseUrl, 200);
+        dump(sprintf('a[href="%s"]', $editUrl));
+        self::assertSelectorExists(sprintf('td > a[href="%s"] > i.fas.fa-edit', $editUrl)); // The edit button is not displayed
+        /*if (static::$add !== '') {
+            self::assertSelectorNotExists('a:contains(' . $this->addButton . ')');
+        }
+        $this->verifyPageResponse('GET', static::$deleteExtra['pageurl'], 403);
+        $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
+        $defaultEntity = $em->getRepository(static::$className)->findOneBy([$identifingAttribute => $$name]);*/
+        /*    $contest = $contest->setDeactivatetimeString("'2099-01-02 07:07:07'");
+            $cid = $contest->getCid();
+        }
+        $this->loadFixture(RejudgingStatesFixture::class);
+        $this->client->request('GET', '/team/change-contest/' . $cid);
+        */
+    }
+    //public function provideEditEntityValues
 }
