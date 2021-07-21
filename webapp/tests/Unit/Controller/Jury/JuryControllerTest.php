@@ -301,7 +301,7 @@ abstract class JuryControllerTest extends BaseTest
     /*
      * test that a jury member cannot edit the entity.
      */
-    public function testCheckEditEntityJury(): void
+    public function CheckEditEntityJury(): void
     {
         if (static::$defaultEditEntityName === null) {
             static::markTestSkipped("No default entity provided to edit.");
@@ -319,7 +319,7 @@ abstract class JuryControllerTest extends BaseTest
      * test that the admin can edit the default entity with different values
      * dataProvider provideEditEntityValues
      */
-    public function testCheckEditEntityAdmin(): void
+    public function CheckEditEntityAdmin(): void
     {
         if (static::$defaultEditEntityName === null) {
             static::markTestSkipped("No default entity provided to edit.");
