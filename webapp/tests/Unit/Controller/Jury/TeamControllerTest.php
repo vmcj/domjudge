@@ -13,8 +13,8 @@ class TeamControllerTest extends JuryControllerTest
     protected static $getIDFunc               = 'getTeamid';
     protected static $className               = Team::class;
     protected static $DOM_elements            = ['h1' => ['Teams']];
-    protected static $identifingEditAttribute = 'shortname';
-    protected static $defaultEditEntityName   = 'UU';
+    protected static $identifingEditAttribute = 'name';
+    protected static $defaultEditEntityName   = 'DOMjudge';
     protected static $addForm                 = 'team[';
     protected static $addEntitiesShown        = ['name','icpcid','displayName','room'];
     protected static $addEntities             = [['name' => 'New Team',
