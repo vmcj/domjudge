@@ -25,6 +25,7 @@ abstract class JuryControllerTest extends BaseTest
     protected static $add                   = '/add';
     protected static $edit                  = '/edit';
     protected static $delete                = '/delete';
+    protected static $deleteEntities        = [];
     protected static $shortTag              = '';
     protected static $addForm               = '';
     protected static $deleteExtra           = null;
@@ -239,20 +240,18 @@ abstract class JuryControllerTest extends BaseTest
         $this->logOut();
         $this->logIn();
         $this->verifyPageResponse('GET', static::$baseUrl, 200);
-        if (static::$delete !== '') {
-            // Find a CID we can delete
-            $em = self::$container->get('doctrine')->getManager();
-            $ent = $em->getRepository(static::$className)->findOneBy([$identifier => $entityShortName]);
-            self::assertSelectorExists('i[class*=fa-trash-alt]');
-            self::assertSelectorExists('body:contains("' . $entityShortName . '")');
-            $this->verifyPageResponse(
-                'GET',
-                static::$baseUrl . '/' . $ent->{static::$getIDFunc}() . static::$delete,
-                200
-            );
-            $this->client->submitForm('Delete', []);
-            self::assertSelectorNotExists('body:contains("' . $entityShortName . '")');
-        }
+        // Find a CID we can delete
+        $em = self::$container->get('doctrine')->getManager();
+        $ent = $em->getRepository(static::$className)->findOneBy([$identifier => $entityShortName]);
+        self::assertSelectorExists('i[class*=fa-trash-alt]');
+        self::assertSelectorExists('body:contains("' . $entityShortName . '")');
+        $this->verifyPageResponse(
+            'GET',
+            static::$baseUrl . '/' . $ent->{static::$getIDFunc}() . static::$delete,
+            200
+        );
+        $this->client->submitForm('Delete', []);
+        self::assertSelectorNotExists('body:contains("' . $entityShortName . '")');
     }
 
     /**
@@ -260,14 +259,14 @@ abstract class JuryControllerTest extends BaseTest
      */
     public function provideDeleteEntity(): Generator
     {
-        if (static::$delete !== '') {
+        if (static::$delete != '') {
             foreach (static::$deleteEntities as $name => $entityList) {
                 foreach ($entityList as $entity) {
                     yield [$name, $entity];
                 }
             }
         } else {
-            yield ['nothing', 'toDelete'];
+            self::markTestSkipped("No deletable entity.");
         }
     }
 
