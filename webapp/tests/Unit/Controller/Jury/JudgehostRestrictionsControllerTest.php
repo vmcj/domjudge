@@ -3,6 +3,7 @@
 namespace App\Tests\Unit\Controller\Jury;
 
 use App\DataFixtures\Test\AddJudgehostRestrictionFixture;
+use App\DataFixtures\Test\SampleJudgehostRestrictionFixture;
 use App\Entity\JudgehostRestriction;
 
 class JudgehostRestrictionsControllerTest extends JuryControllerTest
@@ -16,7 +17,7 @@ class JudgehostRestrictionsControllerTest extends JuryControllerTest
     protected static $DOM_elements            = ['h1' => ['Judgehost restrictions']];
     protected static $identifingEditAttribute = 'name';
     protected static $defaultEditEntityName   = null;
-    protected static $delete                  = ''; //TODO: When insert works this can be reset.
+    protected static $deleteFixtures          = [SampleJudgehostRestrictionFixture::class];
     protected static $addForm                 = 'judgehost_restriction[';
     protected static $addEntitiesShown        = ['name'];
     protected static $addEntities             = [['name' => 'Restriction',

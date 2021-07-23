@@ -26,6 +26,7 @@ abstract class JuryControllerTest extends BaseTest
     protected static $edit                  = '/edit';
     protected static $delete                = '/delete';
     protected static $deleteEntities        = [];
+    protected static $deleteFixtures        = [];
     protected static $shortTag              = '';
     protected static $addForm               = '';
     protected static $deleteExtra           = null;
@@ -239,6 +240,7 @@ abstract class JuryControllerTest extends BaseTest
         $this->roles = ['admin'];
         $this->logOut();
         $this->logIn();
+        $this->loadFixtures(static::$deleteFixtures);
         $this->verifyPageResponse('GET', static::$baseUrl, 200);
         // Find a CID we can delete
         $em = self::$container->get('doctrine')->getManager();
