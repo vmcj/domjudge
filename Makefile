@@ -39,6 +39,8 @@ install:
 all: build
 build: domserver judgehost
 
+heroku: domserver
+
 ifeq ($(SUBMITCLIENT_ENABLED),yes)
 build: submitclient
 endif
@@ -329,4 +331,4 @@ clean-autoconf:
         clean-autoconf $(addprefix maintainer-,conf install uninstall) \
         config submitclient distdocs composer-dependencies \
         composer-dependencies-dev \
-        coverity-conf coverity-build
+        coverity-conf coverity-build heroku
