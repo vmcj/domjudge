@@ -9,7 +9,7 @@ use App\Entity\JudgehostRestriction;
 class JudgehostRestrictionsControllerTest extends JuryControllerTest
 {
     protected static $identifingEditAttribute = 'name';
-    protected static $defaultEditEntityName   = null;
+    protected static $defaultEditEntityName   = 'NoRestriction';
     protected static $baseUrl          = '/jury/judgehost-restrictions';
     protected static $exampleEntries   = ['No'];
     protected static $shortTag         = 'judgehost restriction';
@@ -19,6 +19,7 @@ class JudgehostRestrictionsControllerTest extends JuryControllerTest
     protected static $DOM_elements     = ['h1' => ['Judgehost restrictions']];
     protected static $deleteFixtures   = [SampleJudgehostRestrictionFixture::class];
     protected static $addForm          = 'judgehost_restriction[';
+    protected static $addEntitiesCount = ['contests','problems','languages'];
     protected static $addEntitiesShown = ['name'];
     protected static $addEntities      = [['name' => 'Restriction',
                                            'contests' => ['0' => '1', '1' => '2'],
@@ -29,6 +30,9 @@ class JudgehostRestrictionsControllerTest extends JuryControllerTest
                                            'contests' => [],
                                            'problems' => [],
                                            'languages' => []],
+                                          ['name' => 'HighCountNumbers',
+                                           'languages' => ['0' => 'adb', '1' => 'awk', '2' => 'swift',
+                                                           '3' => 'r', '4' => 'rb', '5' => 'plg']],
                                           ['name' => 'NoJudgeOwn',
                                            'rejudge_own' => '0']];
 

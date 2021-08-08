@@ -19,7 +19,7 @@ abstract class JuryControllerTest extends BaseTest
     protected        $roles             = ['admin'];
     protected        $addButton         = '';
     protected static $rolesView         = ['admin','jury'];
-    protected static $rolesDisallowed   = ['team',''];
+    protected static $rolesDisallowed   = ['team'];
     protected static $exampleEntries    = ['overwrite_in_class'];
     protected static $prefixURL         = 'http://localhost';
     protected static $add               = '/add';
@@ -34,7 +34,8 @@ abstract class JuryControllerTest extends BaseTest
     protected static $addEntities       = [];
     protected static $addEntitiesCount  = [];
     protected static $defaultEditEntityName = null;
-
+    protected static $addEntitiesCount  = [];
+    
     public function __construct($name = null, array $data = [], $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
@@ -203,6 +204,8 @@ abstract class JuryControllerTest extends BaseTest
                         $formFields[static::$addForm . $formId . "]"] = $field;
                     }
                 }
+                var_dump(static::$addPlus);
+                if (static::$addPlus === 'extensions') { var_dump($formFields); }
                 $this->verifyPageResponse('GET', static::$baseUrl . static::$add, 200);
                 $button = $this->client->getCrawler()->selectButton('Save');
                 $form = $button->form($formFields, 'POST');
@@ -227,7 +230,12 @@ abstract class JuryControllerTest extends BaseTest
                         }
                     }
                 }
+                //if (static::$addPlus === 'problems') { var_dump($form); }
                 $this->client->submit($form);
+                // Dump all data for now...
+                $myfile = fopen(static::$addPlus . date("Y-m-d-h-M-s") . rand(0,1000) . '.htm', "w");
+                fwrite($myfile, $this->getCurrentCrawler()->html());
+                fclose($myfile);
             }
             $this->verifyPageResponse('GET', static::$baseUrl, 200);
             foreach (static::$addEntities as $element) {
@@ -255,15 +263,22 @@ abstract class JuryControllerTest extends BaseTest
      * 
      * @dataProvider provideEditEntities
      */
-    public function testCheckEditEntityAdmin(string $identifier, object $formData): void
+    public function testCheckEditEntityAdmin(string $identifier, array $formDataKeys, array $formDataValues): void
     {
         $this->roles = ['admin'];
         $this->logOut();
         $this->logIn();
+        $this->loadFixtures(static::$deleteFixtures);
         $this->verifyPageResponse('GET', static::$baseUrl, 200);
         if (static::$edit !== '') {
+            if ($identifier !== '2demoprac') { return; }
             $crawler = $this->getCurrentCrawler();
-            $editLink = $crawler->selectLink($identifier);
+            /*Foreach ($crawler->filter('a') as $node) {
+                var_dump($node->text);
+            }*/
+            $singlePageLink = $crawler->selectLink($identifier)->link()->getUri();
+            $this->verifyPageResponse('GET', $singlePageLink, 200);
+            $editLink = $crawler->selectLink('Edit')->link()->getUri();
             $this->verifyPageResponse('GET', $editLink, 200);
             /*self::assertSelectorExists('a:contains(' . $this->addButton . ')');
             foreach (static::$addEntities as $element) {
@@ -327,11 +342,13 @@ abstract class JuryControllerTest extends BaseTest
     public function provideEditEntities(): Generator
     {
         foreach (static::$addEntities as $row) {
-            $formdata = [];
+            $formdataKeys = [];
+            $formdataValues = [];
             foreach (static::$addEntities[0] as $key=>$value) {
-                $formdata[$key] = array_key_exists($key,$row) ? $row[$key] : $value; 
+                $formdataKeys[] = $key;
+                $formdataValues[] = array_key_exists($key,$row) ? $row[$key] : $value;
             }
-            yield[static::$addEntitiesShown[0], $formdata];
+            yield [static::$defaultEditEntityName, $formdataKeys, $formdataValues];
         }
     }
 
