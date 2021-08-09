@@ -26,6 +26,8 @@ class VarargsLogMessageProcessor implements ProcessorInterface
             $record['message'] = $res;
             $record['context'] = [];
         }
+        
+        var_log($record);
 
         return $record;
     }
