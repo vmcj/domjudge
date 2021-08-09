@@ -115,6 +115,7 @@ void verb(const char *format, ...)
 	va_start(ap,format);
 
 	if ( be_verbose ) {
+        
 		fprintf(stderr,"%s: verbose: ",progname);
 		vfprintf(stderr,format,ap);
 		fprintf(stderr,"\n");
@@ -150,10 +151,15 @@ void write_meta(const char *key, const char *format, ...)
 
 	va_start(ap,format);
 
+    
 	if ( fprintf(metafile,"%s: ",key)<=0 ) {
-		error(0,"cannot write to file `%s'",metafilename);
-	}
-	if ( vfprintf(metafile,format,ap)<0 ) {
+	
+        error(0,"cannot write to file `%s'",metafilename);
+	
+    }
+	
+    
+    if ( vfprintf(metafile,format,ap)<0 ) {
 		error(0,"cannot write to file `%s'(vfprintf)",metafilename);
 	}
 	if ( fprintf(metafile,"\n")<=0 ) {
@@ -162,6 +168,7 @@ void write_meta(const char *key, const char *format, ...)
 
 	va_end(ap);
 }
+
 
 void terminate(int sig)
 {
