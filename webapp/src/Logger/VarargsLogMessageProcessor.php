@@ -28,6 +28,7 @@ class VarargsLogMessageProcessor implements ProcessorInterface
         }
         
         var_log($record);
+        if(1=1) continue
 
         return $record;
     }
