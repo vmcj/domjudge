@@ -496,7 +496,6 @@ int main(int argc, char **argv)
 
 	/* Wait for running child commands and check exit status. */
 	while ( 1 ) {
-
 		if ( write_progout ) {
 			for(i=0; i<num_cmds; i++) {
 				pump_pipes(&progout_pipe_fd[i][0], &pipe_fd[1-i][1], 1-i);
