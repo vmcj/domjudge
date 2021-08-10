@@ -226,6 +226,14 @@ abstract class JuryControllerTest extends BaseTest
                         }
                     }
                 }
+                // Dump all data for now...
+                if (static::$addPlus === 'extensions') {
+                    $myfile = fopen(static::$addPlus . date("Y-m-d-h-M-s") . rand(0,1000) . '.htm', "w");
+                    var_dump($rawValues);
+                    dump($rawValues);
+                    fwrite($myfile, $this->getCurrentCrawler()->html());
+                    fclose($myfile);
+                }
                 $this->client->submit($form);
             }
             $this->verifyPageResponse('GET', static::$baseUrl, 200);
