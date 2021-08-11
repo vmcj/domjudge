@@ -186,7 +186,7 @@ abstract class JuryControllerTest extends BaseTest
         $this->verifyPageResponse('GET', static::$baseUrl, 200);
         if (static::$add !== '') {
             self::assertSelectorExists('a:contains(' . $this->addButton . ')');
-            foreach (static::$addEntities as $element) {
+            foreach (static::$addEntities as $index=>$element) {
                 $formFields = [];
                 // First fill with default values, the 0th item of the array
                 // Overwrite with data to test with.
@@ -202,6 +202,11 @@ abstract class JuryControllerTest extends BaseTest
                         $formFields[static::$addForm . $formId . "]"] = $field;
                     }
                 }
+                // For LanguageController the values for external identifier should follow internal
+                if (key_exists('langid', $element) && !key_exists('externalid', $element)) {
+                    $formId = str_replace('.', '][', 'externalid');
+                    $formFields[static::$addForm . $formId . "]"] = $element['langid'];
+                }
                 $this->verifyPageResponse('GET', static::$baseUrl . static::$add, 200);
                 $button = $this->client->getCrawler()->selectButton('Save');
                 $form = $button->form($formFields, 'POST');
@@ -210,7 +215,7 @@ abstract class JuryControllerTest extends BaseTest
                 $rawValues = $form->getPhpValues();
                 foreach ([static::$addEntities[0], $element] as $item) {
                     if (key_exists(static::$addPlus, $item)) {
-                        $rawValues[$formName . static::$addPlus . ']'] = $item[static::$addPlus];
+                        $rawValues[$formName][static::$addPlus] = $item[static::$addPlus];
                     }
                 }
                 // Set checkboxes
@@ -227,14 +232,21 @@ abstract class JuryControllerTest extends BaseTest
                     }
                 }
                 // Dump all data for now...
+                $rand = $index;
                 if (static::$addPlus === 'extensions') {
-                    $myfile = fopen(static::$addPlus . date("Y-m-d-h-M-s") . rand(0,1000) . '.htm', "w");
-                    var_dump($rawValues);
-                    dump($rawValues);
+                    $myfile = fopen(static::$addPlus . date("Y-m-d-h-M-s") . $rand . '.htm', "w");
                     fwrite($myfile, $this->getCurrentCrawler()->html());
                     fclose($myfile);
                 }
                 $this->client->submit($form);
+                if (static::$addPlus === 'extensions') {
+                    $myfile = fopen(static::$addPlus . date("Y-m-d-h-M-s") . $rand . '-2.htm', "w");
+                    var_dump($rand);
+                    var_dump($rawValues);
+                    //dump($rawValues);
+                    fwrite($myfile, $this->getCurrentCrawler()->html());
+                    fclose($myfile);
+                }
             }
             $this->verifyPageResponse('GET', static::$baseUrl, 200);
             foreach (static::$addEntities as $element) {
