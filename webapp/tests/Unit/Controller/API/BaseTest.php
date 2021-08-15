@@ -10,6 +10,8 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 
 abstract class BaseTest extends BaseBaseTest
 {
+    protected static $rootEndpoints = ['contests','judgehosts'];
+    
     /** @var KernelBrowser */
     protected $client;
 
@@ -124,6 +126,15 @@ abstract class BaseTest extends BaseBaseTest
         return json_decode($response->getContent(), true);
     }
 
+    public function helperGetEndpointURL(string $apiEndpoint): string {
+        if (in_array($apiEndpoint, static::$rootEndpoints)) {
+            return '/'.$apiEndpoint;
+        } else {
+            $contestId = $this->getDemoContestId();
+            return "/contests/$contestId/$apiEndpoint";
+        }
+    }
+
     /**
      * Test that the list action returns the expected objects
      */
@@ -132,12 +143,7 @@ abstract class BaseTest extends BaseBaseTest
         if (($apiEndpoint = $this->apiEndpoint) === null) {
             static::markTestSkipped('No endpoint defined');
         }
-        if ($apiEndpoint === 'contests') {
-            $url = '/contests';
-        } else {
-            $contestId = $this->getDemoContestId();
-            $url = "/contests/$contestId/$apiEndpoint";
-        }
+        $url = $this->helperGetEndpointURL($apiEndpoint);
         $objects = $this->verifyApiJsonResponse('GET', $url, 200, $this->apiUser);
 
         static::assertIsArray($objects);
@@ -194,12 +200,7 @@ abstract class BaseTest extends BaseBaseTest
             }
             return $id;
         }, array_keys($this->expectedObjects));
-        if ($apiEndpoint === 'contests') {
-            $url = '/contests';
-        } else {
-            $contestId = $this->getDemoContestId();
-            $url = "/contests/$contestId/$apiEndpoint";
-        }
+        $url = $this->helperGetEndpointURL($apiEndpoint);
         $objects = $this->verifyApiJsonResponse('GET', $url . "?" . http_build_query(['ids' => $expectedObjectIds]), 200, $this->apiUser);
 
         // Verify we got exactly enough objects
@@ -228,8 +229,8 @@ abstract class BaseTest extends BaseBaseTest
         if (($apiEndpoint = $this->apiEndpoint) === null) {
             static::markTestSkipped('No endpoint defined');
         }
-        if ($apiEndpoint === 'contests') {
-            // We can not test this, since /contests always exists. Assert that true is true to not make the test risky
+        if (in_array($apiEndpoint, static::$rootEndpoints)) {
+            // We can not test this, since e.g. /contests always exists. Assert that true is true to not make the test risky
             static::assertTrue(true);
             return;
         }
@@ -246,12 +247,7 @@ abstract class BaseTest extends BaseBaseTest
         if (($apiEndpoint = $this->apiEndpoint) === null) {
             static::markTestSkipped('No endpoint defined');
         }
-        if ($apiEndpoint === 'contests') {
-            $url = '/contests';
-        } else {
-            $contestId = $this->getDemoContestId();
-            $url = "/contests/$contestId/$apiEndpoint";
-        }
+        $url = $this->helperGetEndpointURL($apiEndpoint);
         $response = $this->verifyApiJsonResponse('GET', $url . "?" . http_build_query(['ids' => 2]), 400, $this->apiUser);
         static::assertEquals("'ids' should be an array of ID's to fetch", $response['message']);
     }
@@ -269,12 +265,7 @@ abstract class BaseTest extends BaseBaseTest
             return $this->resolveReference($id);
         }, array_keys($this->expectedObjects));
         $ids = array_merge($expectedObjectIds, $this->expectedAbsent);
-        if ($apiEndpoint === 'contests') {
-            $url = '/contests';
-        } else {
-            $contestId = $this->getDemoContestId();
-            $url = "/contests/$contestId/$apiEndpoint";
-        }
+        $url = $this->helperGetEndpointURL($apiEndpoint);
         $response = $this->verifyApiJsonResponse('GET', $url . "?" . http_build_query(['ids' => $ids]), 404, $this->apiUser);
         static::assertEquals('One or more objects not found', $response['message']);
     }
@@ -297,12 +288,8 @@ abstract class BaseTest extends BaseBaseTest
         if (($apiEndpoint = $this->apiEndpoint) === null) {
             static::markTestSkipped('No endpoint defined');
         }
-        if ($apiEndpoint === 'contests') {
-            $url = "/contests/$id";
-        } else {
-            $contestId = $this->getDemoContestId();
-            $url = "/contests/$contestId/$apiEndpoint/$id";
-        }
+        $url = $this->helperGetEndpointURL($apiEndpoint);
+        var_dump($apiEndpoint, $url);
         $object = $this->verifyApiJsonResponse('GET', $url, 200, $this->apiUser);
         static::assertIsArray($object);
 
@@ -322,7 +309,7 @@ abstract class BaseTest extends BaseBaseTest
     /**
      * Test that the single action returns the correct error when the contest is not found
      */
-    public function testSingleContestNotFound()
+    /*public function testSingleContestNotFound()
     {
         if (($apiEndpoint = $this->apiEndpoint) === null) {
             static::markTestSkipped('No endpoint defined');
@@ -337,19 +324,20 @@ abstract class BaseTest extends BaseBaseTest
         }
         $respone = $this->verifyApiJsonResponse('GET', $url, 404, $this->apiUser);
         static::assertEquals($message, $respone['message']);
-    }
+    }*/
 
     /**
      * Test that the endpoint does not return anything for objects that don't exist
      *
      * @dataProvider provideSingleNotFound
      */
-    public function testSingleNotFound(string $id)
+    /*public function testSingleNotFound(string $id)
     {
         $id = $this->resolveReference($id);
         if (($apiEndpoint = $this->apiEndpoint) === null) {
             static::markTestSkipped('No endpoint defined');
         }
+        $url = $this->helperGetEndpointURL($apiEndpoint);
         if ($apiEndpoint === 'contests') {
             $url = "/contests/$id";
         } else {
@@ -357,12 +345,12 @@ abstract class BaseTest extends BaseBaseTest
             $url = "/contests/$contestId/$apiEndpoint/$id";
         }
         $this->verifyApiJsonResponse('GET', $url, 404, $this->apiUser);
-    }
+    }*/
 
-    public function provideSingleNotFound(): Generator
+    /*public function provideSingleNotFound(): Generator
     {
         foreach ($this->expectedAbsent as $id) {
             yield [$id];
         }
-    }
+    }*/
 }
