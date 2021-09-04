@@ -10,7 +10,28 @@ use Generator;
 
 class ScoreboardControllerTest extends BaseTestCase
 {
-    protected static array $fixtures = [SampleEventsFixture::class];
+    protected static array $fixtures = [ExtendDemoPracticeSessionTimeFixture::class, SampleEventsFixture::class];
+    protected $apiEndpoint = 'scoreboard';
+    protected $expectedObjects = [
+        '1' => [
+            "problem_id"   => "1",
+            "from_team_id" => "2",
+            "to_team_id"   => null,
+            "reply_to_id"  => null,
+            "time"         => "2018-02-11T21:47:18.901+00:00",
+            "contest_time" => "-16525:12:41.098",
+            "text"         => "Can you tell me how to solve this problem?",
+        ],
+        '2' => [
+            "problem_id"   => "1",
+            "from_team_id" => null,
+            "to_team_id"   => "2",
+            "reply_to_id"  => "1",
+            "time"         => "2018-02-11T21:47:57.689+00:00",
+            "contest_time" => "-16525:12:02.310",
+            "text"         => "> Can you tell me how to solve this problem?\r\n\r\nNo, read the problem statement.",
+        ],
+    ];
 
     /**
      * Test that the given user has the correct access to the scoreboard for the given contest.
@@ -29,6 +50,7 @@ class ScoreboardControllerTest extends BaseTestCase
         $contestId = $this->resolveEntityId(Contest::class, (string)$contestId);
         $url = "/contests/$contestId/scoreboard";
         $scoreboard = $this->verifyApiJsonResponse('GET', $url, $expectedAllowedAccess ? 200 : 404, $user);
+        var_dump($scoreboard);
         self::assertNotEmpty($scoreboard);
     }
 
@@ -84,4 +106,12 @@ class ScoreboardControllerTest extends BaseTestCase
         yield [['country=USA'], 0];
         yield [['category=2'], 0];
     }
+
+    /*public function testScoreboardContent(int $contestId): void
+    {}
+
+    public function provideScoreboardAccess(): Generator
+    {
+        yield [2, 2];
+    }*/
 }
