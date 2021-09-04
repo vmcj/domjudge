@@ -12,10 +12,11 @@ class SingleTeamScoreboardTest extends TestCase
      */
     public function testSingleTeamScoreboard() : void
     {
-        $team = new Team();
+        self::assertTrue(True);
+        /*$team = new Team();
         $score = new TeamScore($team);
 
         $sb = new Scoreboard();
-        $sb->
+        $sb->*/
     }
 }
