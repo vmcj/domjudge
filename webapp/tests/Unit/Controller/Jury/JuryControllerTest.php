@@ -275,17 +275,26 @@ abstract class JuryControllerTest extends BaseTest
             $crawler = $this->getCurrentCrawler();
             foreach ($crawler->filter('a') as $node) {
                 if ($node->nodeValue === $identifier) {
-                    var_dump($node->textContent, $node->getAttribute('href'));
+                    $singlePageLink = $node->getAttribute('href');
                 }
             }
             //$singlePageLink = $crawler->selectLink($identifier);//->first();//->getAttribute('href');//->Link->getUri();
             //var_dump(get_class_methods($singlePageLink));
             //var_dump($singlePageLink->getNode(0)->getAttribute('href'));//getUri());
-            /*$this->verifyPageResponse('GET', $singlePageLink, 200);
-            $editLink = $crawler->selectLink('Edit')->link()->getUri();
+            $this->verifyPageResponse('GET', $singlePageLink, 200);
+            $crawler = $this->getCurrentCrawler();
+            //var_dump($singlePageLink);
+            foreach ($crawler->filter('a') as $node) {
+                 if (strpos($node->nodeValue, 'Edit') !== false) {
+                    $editLink = $node->getAttribute('href');
+                }
+            }
+            //$editLink = $crawler->selectLink(' Edit')->link()->getUri();
+            var_dump($editLink);
             $this->verifyPageResponse('GET', $editLink, 200);
-            *//*self::assertSelectorExists('a:contains(' . $this->addButton . ')');
-            foreach (static::$addEntities as $element) {
+            $crawler = $this->getCurrentCrawler();
+            var_dump($formDataKeys);
+            /*foreach (static::$addEntities as $element) {
                 $formFields = [];
                 // First fill with default values, the 0th item of the array
                 foreach (static::$addEntities[0] as $id=>$field) {
