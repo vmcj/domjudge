@@ -33,7 +33,9 @@ abstract class JuryControllerTest extends BaseTest
     protected static $deleteExtra       = null;
     protected static $addEntities       = [];
     protected static $addEntitiesCount  = [];
-    protected static $defaultEditEntityName = null;
+    protected static $defaultEditEntityName  = null;
+    protected static $specialFieldOnlyUpdate = [];
+    protected static $editEntitiesSkipFields = [];
     
     public function __construct($name = null, array $data = [], $dataName = '')
     {
@@ -203,8 +205,8 @@ abstract class JuryControllerTest extends BaseTest
                         $formFields[static::$addForm . $formId . "]"] = $field;
                     }
                 }
-                var_dump(static::$addPlus);
-                if (static::$addPlus === 'extensions') { var_dump($formFields); }
+                //var_dump(static::$addPlus);
+                //if (static::$addPlus === 'extensions') { var_dump($formFields); }
                 $this->verifyPageResponse('GET', static::$baseUrl . static::$add, 200);
                 $button = $this->client->getCrawler()->selectButton('Save');
                 $form = $button->form($formFields, 'POST');
@@ -291,8 +293,8 @@ abstract class JuryControllerTest extends BaseTest
                 }
             }
             //$editLink = $crawler->selectLink(' Edit')->link()->getUri();
-            var_dump($editLink);
-            var_dump($this->roles);
+            // var_dump($editLink);
+            //var_dump($this->roles);
             $this->verifyPageResponse('GET', $editLink, 200);
             $crawler = $this->getCurrentCrawler();
             //var_dump($formDataKeys);
@@ -367,6 +369,12 @@ abstract class JuryControllerTest extends BaseTest
             $formdataValues = [];
             foreach (static::$addEntities[0] as $key=>$value) {
                 if (!in_array($key,static::$editEntitiesSkipFields)) {
+                    // There are some special fields like passwords which we only update when set.
+                    if (in_array($key, static::$specialFieldOnlyUpdate) &&
+                        !array_key_exists($key, $row)
+                    ) {
+                        continue;
+                    }
                     $formdataKeys[] = $key;
                     $formdataValues[] = array_key_exists($key,$row) ? $row[$key] : $value;
                 }
@@ -465,7 +473,7 @@ abstract class JuryControllerTest extends BaseTest
      * test that the admin can edit the default entity with different values
      * dataProvider provideEditEntityValues
      */
-    public function CheckEditEntityAdmin(): void
+    public function CheckEditEntityAdmin2(): void
     {
         if (static::$defaultEditEntityName === null) {
             static::markTestSkipped("No default entity provided to edit.");

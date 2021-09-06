@@ -8,6 +8,8 @@ class ContestControllerTest extends JuryControllerTest
 {
     protected static $identifingEditAttribute = 'shortname';
     protected static $defaultEditEntityName   = 'demoprac';
+    protected static $editEntitiesSkipFields    = ['username'];
+    protected static $specialFieldOnlyUpdate    = ['password'];
     protected static $baseUrl        = '/jury/contests';
     protected static $exampleEntries = ['Demo contest','Demo practice session'];
     protected static $shortTag       = 'contest';
