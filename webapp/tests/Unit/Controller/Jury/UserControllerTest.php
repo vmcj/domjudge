@@ -8,6 +8,7 @@ class UserControllerTest extends JuryControllerTest
 {
     protected static $identifingEditAttribute   = 'username';
     protected static $defaultEditEntityName     = 'demo';
+    protected static $editEntitiesSkipFields    = ['username'];
     protected static $baseUrl          = '/jury/users';
     protected static $exampleEntries   = ['admin','judgehost','Administrator','team'];
     protected static $shortTag         = 'user';

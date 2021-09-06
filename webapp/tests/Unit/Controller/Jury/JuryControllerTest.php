@@ -269,8 +269,9 @@ abstract class JuryControllerTest extends BaseTest
         $this->logIn();
         $this->loadFixtures(static::$deleteFixtures);
         $this->verifyPageResponse('GET', static::$baseUrl, 200);
-        var_dump(static::$baseUrl);
+        //var_dump(static::$baseUrl);
         if (static::$edit !== '') {
+            $this->client->followRedirects(true);
             //if ($identifier !== 'demo') { return; }
             $crawler = $this->getCurrentCrawler();
             foreach ($crawler->filter('a') as $node) {
@@ -291,9 +292,24 @@ abstract class JuryControllerTest extends BaseTest
             }
             //$editLink = $crawler->selectLink(' Edit')->link()->getUri();
             var_dump($editLink);
+            var_dump($this->roles);
             $this->verifyPageResponse('GET', $editLink, 200);
             $crawler = $this->getCurrentCrawler();
-            var_dump($formDataKeys);
+            //var_dump($formDataKeys);
+            //$formFields = [];
+            foreach ($formDataKeys as $id => $key) {
+                $formFields[static::$addForm . $key . "]"] = $formDataValues[$id];
+            }
+            $button = $this->client->getCrawler()->selectButton('Save');
+            $form = $button->form($formFields, 'POST');
+            //var_dump($formFields);
+            $this->client->submit($form);
+            $this->verifyPageResponse('GET', $singlePageLink, 200);
+            foreach ($formDataValues as $id=>$element) {
+                if (in_array($formDataValues[$id], static::$addEntitiesShown)) {
+                    self::assertSelectorExists('body:contains("' . $element . '")');
+                }
+            }
             /*foreach (static::$addEntities as $element) {
                 $formFields = [];
                 // First fill with default values, the 0th item of the array
@@ -340,15 +356,7 @@ abstract class JuryControllerTest extends BaseTest
                     }
                 }
                 $this->client->submit($form);
-                }
-            $this->verifyPageResponse('GET', static::$baseUrl, 200);
-            foreach (static::$addEntities as $element) {
-                foreach ($element as $id=>$value) {
-                    if (in_array($id, static::$addEntitiesShown)) {
-                        self::assertSelectorExists('body:contains("' . $element[$id] . '")');
-                    }
-                }
-            }*/
+                }*/
         }
     }
 
@@ -358,8 +366,10 @@ abstract class JuryControllerTest extends BaseTest
             $formdataKeys = [];
             $formdataValues = [];
             foreach (static::$addEntities[0] as $key=>$value) {
-                $formdataKeys[] = $key;
-                $formdataValues[] = array_key_exists($key,$row) ? $row[$key] : $value;
+                if (!in_array($key,static::$editEntitiesSkipFields)) {
+                    $formdataKeys[] = $key;
+                    $formdataValues[] = array_key_exists($key,$row) ? $row[$key] : $value;
+                }
             }
             yield [static::$defaultEditEntityName, $formdataKeys, $formdataValues];
         }
