@@ -205,8 +205,6 @@ abstract class JuryControllerTest extends BaseTest
                         $formFields[static::$addForm . $formId . "]"] = $field;
                     }
                 }
-                //var_dump(static::$addPlus);
-                //if (static::$addPlus === 'extensions') { var_dump($formFields); }
                 $this->verifyPageResponse('GET', static::$baseUrl . static::$add, 200);
                 $button = $this->client->getCrawler()->selectButton('Save');
                 $form = $button->form($formFields, 'POST');
@@ -231,12 +229,7 @@ abstract class JuryControllerTest extends BaseTest
                         }
                     }
                 }
-                //if (static::$addPlus === 'problems') { var_dump($form); }
                 $this->client->submit($form);
-                // Dump all data for now...
-                $myfile = fopen(static::$addPlus . date("Y-m-d-h-M-s") . rand(0,1000) . '.htm', "w");
-                fwrite($myfile, $this->getCurrentCrawler()->html());
-                fclose($myfile);
             }
             $this->verifyPageResponse('GET', static::$baseUrl, 200);
             foreach (static::$addEntities as $element) {
@@ -271,40 +264,28 @@ abstract class JuryControllerTest extends BaseTest
         $this->logIn();
         $this->loadFixtures(static::$deleteFixtures);
         $this->verifyPageResponse('GET', static::$baseUrl, 200);
-        //var_dump(static::$baseUrl);
         if (static::$edit !== '') {
             $this->client->followRedirects(true);
-            //if ($identifier !== 'demo') { return; }
             $crawler = $this->getCurrentCrawler();
             foreach ($crawler->filter('a') as $node) {
                 if ($node->nodeValue === $identifier) {
                     $singlePageLink = $node->getAttribute('href');
                 }
             }
-            //$singlePageLink = $crawler->selectLink($identifier);//->first();//->getAttribute('href');//->Link->getUri();
-            //var_dump(get_class_methods($singlePageLink));
-            //var_dump($singlePageLink->getNode(0)->getAttribute('href'));//getUri());
             $this->verifyPageResponse('GET', $singlePageLink, 200);
             $crawler = $this->getCurrentCrawler();
-            //var_dump($singlePageLink);
             foreach ($crawler->filter('a') as $node) {
                  if (strpos($node->nodeValue, 'Edit') !== false) {
                     $editLink = $node->getAttribute('href');
                 }
             }
-            //$editLink = $crawler->selectLink(' Edit')->link()->getUri();
-            // var_dump($editLink);
-            //var_dump($this->roles);
             $this->verifyPageResponse('GET', $editLink, 200);
             $crawler = $this->getCurrentCrawler();
-            //var_dump($formDataKeys);
-            //$formFields = [];
             foreach ($formDataKeys as $id => $key) {
                 $formFields[static::$addForm . $key . "]"] = $formDataValues[$id];
             }
             $button = $this->client->getCrawler()->selectButton('Save');
             $form = $button->form($formFields, 'POST');
-            //var_dump($formFields);
             $this->client->submit($form);
             $this->verifyPageResponse('GET', $singlePageLink, 200);
             foreach ($formDataValues as $id=>$element) {
@@ -312,53 +293,6 @@ abstract class JuryControllerTest extends BaseTest
                     self::assertSelectorExists('body:contains("' . $element . '")');
                 }
             }
-            /*foreach (static::$addEntities as $element) {
-                $formFields = [];
-                // First fill with default values, the 0th item of the array
-                foreach (static::$addEntities[0] as $id=>$field) {
-                    // We can not set checkboxes directly, so skip them for now
-                    if (is_bool($field)) {
-                        continue;
-                    }
-                    $formId = str_replace('.', '][', $id);
-                    $formFields[static::$addForm . $formId . "]"] = $field;
-                }
-                // Overwrite with data to test with.
-                foreach ($element as $id=>$field) {
-                    // We can not set checkboxes directly, so skip them for now
-                    if (is_bool($field)) {
-                        continue;
-                    }
-                    $formId = str_replace('.', '][', $id);
-                    $formFields[static::$addForm . $formId . "]"] = $field;
-                }
-                $this->verifyPageResponse('GET', static::$baseUrl . static::$add, 200);
-                $button = $this->client->getCrawler()->selectButton('Save');
-                $form = $button->form($formFields, 'POST');
-                $formName = str_replace('[', '', static::$addForm);
-                // Set checkboxes
-                foreach (static::$addEntities[0] as $id=>$field) {
-                    if (!is_bool($field)) {
-                        continue;
-                    }
-                    if ($field) {
-                        $form[$formName][$id]->tick();
-                    } else {
-                        $form[$formName][$id]->untick();
-                    }
-                }
-                foreach ($element as $id=>$field) {
-                    if (!is_bool($field)) {
-                        continue;
-                    }
-                    if ($field) {
-                        $form[$formName][$id]->tick();
-                    } else {
-                        $form[$formName][$id]->untick();
-                    }
-                }
-                $this->client->submit($form);
-                }*/
         }
     }
 
