@@ -259,6 +259,9 @@ abstract class JuryControllerTest extends BaseTest
      */
     public function testCheckEditEntityAdmin(string $identifier, array $formDataKeys, array $formDataValues): void
     {
+        /*if ($identifier === 'demo') {
+            var_dump($formDataKeys, $formDataValues);
+        }*/
         $this->roles = ['admin'];
         $this->logOut();
         $this->logIn();
