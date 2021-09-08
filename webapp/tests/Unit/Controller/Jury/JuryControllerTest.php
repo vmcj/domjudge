@@ -287,8 +287,14 @@ abstract class JuryControllerTest extends BaseTest
             foreach ($formDataKeys as $id => $key) {
                 $formFields[static::$addForm . $key . "]"] = $formDataValues[$id];
             }
+            foreach ($formDataKeys as $id => $key) {
+                $formFields[static::$addForm . $key . "]"] = $formDataValues[$id];
+            }
             $button = $this->client->getCrawler()->selectButton('Save');
+            //var_dump($formFields);
             $form = $button->form($formFields, 'POST');
+            $this->client->submit($form);
+            var_dump($this->client->getResponse()->getStatusCode());
             self::assertNotEquals($this->client->getResponse()->getStatusCode(),500);
             $this->verifyPageResponse('GET', $singlePageLink, 200);
             foreach ($formDataValues as $id=>$element) {
@@ -306,14 +312,16 @@ abstract class JuryControllerTest extends BaseTest
             $formdataValues = [];
             foreach (static::$addEntities[0] as $key=>$value) {
                 if (!in_array($key,static::$editEntitiesSkipFields)) {
-                    // There are some special fields like passwords which we only update when set.
-                    if (in_array($key, static::$specialFieldOnlyUpdate) &&
-                        !array_key_exists($key, $row)
-                    ) {
-                        continue;
-                    }
                     $formdataKeys[] = $key;
-                    $formdataValues[] = array_key_exists($key,$row) ? $row[$key] : $value;
+                    // There are some special fields like passwords which we only update when set.
+                    if (in_array($key, static::$specialFieldOnlyUpdate)) {
+                        $value = '';
+                        //$formdataValues[] = $row[$key] ?? '';
+                        //array_key_exists($key,$row) ? $row[$key] : '';
+                    }
+                    $formdataValues[] = $row[$key] ?? $value;
+                    //array_key_exists($key,$row) ? $row[$key] : $value;
+                    //}
                 }
             }
             yield [static::$defaultEditEntityName, $formdataKeys, $formdataValues];
