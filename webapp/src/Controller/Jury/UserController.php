@@ -237,11 +237,17 @@ class UserController extends BaseController
             throw new NotFoundHttpException(sprintf('User with ID %s not found', $userId));
         }
 
+        var_dump("We get here.");
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
 
+        if ($form->isSubmitted()) { var_dump("Submitted");; }
+        //if ($form->isValid()) { var_dump("Valid"); }
+
+
         if ($form->isSubmitted() && $form->isValid()) {
+            var_dump("We get here.");
             if (strlen($user->getPlainPassword())<$this->minPasswordLength) {
                 $this->addFlash('danger', "Password should be " . $this->minPasswordLength . "+ chars.");
                 return $this->render('jury/user_edit.html.twig', [
