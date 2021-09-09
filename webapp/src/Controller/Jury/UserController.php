@@ -248,31 +248,24 @@ class UserController extends BaseController
             throw new NotFoundHttpException(sprintf('User with ID %s not found', $userId));
         }
 
-        var_dump("We get here.");
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) { var_dump("Submitted");; }
-        //if ($form->isValid()) { var_dump("Valid"); }
-
-
         if ($form->isSubmitted() && $form->isValid()) {
-            var_dump("We get here.");
-            if (strlen($user->getPlainPassword())<$this->minPasswordLength) {
-                $this->addFlash('danger', "Password should be " . $this->minPasswordLength . "+ chars.");
-                return $this->render('jury/user_edit.html.twig', [
-                    'user' => $user,
-                    'form' => $form->createView(),
-                    'min_password_length' => $this->minPasswordLength,
-                ]);
+            if ($errorResult = $this->checkPasswordLength($user, $form)) {
+                return $errorResult;
             }
             $this->saveEntity($this->em, $this->eventLogService, $this->dj, $user,
                               $user->getUserid(),
                               false);
 
+                              var_dump($this->dj->getUser()->getUserid(), $user->getUserid());
+
             // If we save the currently logged in used, update the login token
             if ($user->getUserid() === $this->dj->getUser()->getUserid()) {
+                var_dump("We touch our own user!");
+                dump("We touch our own user!");
                 $token = new UsernamePasswordToken(
                     $user,
                     null,

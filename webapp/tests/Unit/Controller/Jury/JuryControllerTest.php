@@ -293,8 +293,19 @@ abstract class JuryControllerTest extends BaseTest
             $button = $this->client->getCrawler()->selectButton('Save');
             $form = $button->form($formFields, 'POST');
             $this->client->submit($form);
+            if (!$formDataValues[array_search('enabled', $formDataKeys)]) {
+                // We reset all logins when we disable an account.
+                var_dump("Actually hit!");
+                $this->logOut();
+                $this->logIn();        
+            }
             self::assertNotEquals($this->client->getResponse()->getStatusCode(),500);
+            $html = $this->client->getCrawler()->html();
+            $file = '/domjudge/'.$identifier.$formDataValues[0].'.html';
+            file_put_contents($file, $html);
             $this->verifyPageResponse('GET', $singlePageLink, 200);
+            $file = '/domjudge/final_'.$identifier.$formDataValues[0].'.html';
+            file_put_contents($file, $html);
             foreach ($formDataValues as $id=>$element) {
                 if (in_array($formDataKeys[$id], static::$addEntitiesShown)) {
                     self::assertSelectorExists('body:contains("' . $element . '")');
