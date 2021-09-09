@@ -291,14 +291,12 @@ abstract class JuryControllerTest extends BaseTest
                 $formFields[static::$addForm . $key . "]"] = $formDataValues[$id];
             }
             $button = $this->client->getCrawler()->selectButton('Save');
-            //var_dump($formFields);
             $form = $button->form($formFields, 'POST');
             $this->client->submit($form);
-            var_dump($this->client->getResponse()->getStatusCode());
             self::assertNotEquals($this->client->getResponse()->getStatusCode(),500);
             $this->verifyPageResponse('GET', $singlePageLink, 200);
             foreach ($formDataValues as $id=>$element) {
-                if (in_array($formDataValues[$id], static::$addEntitiesShown)) {
+                if (in_array($formDataKeys[$id], static::$addEntitiesShown)) {
                     self::assertSelectorExists('body:contains("' . $element . '")');
                 }
             }
