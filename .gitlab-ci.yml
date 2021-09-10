@@ -107,8 +107,13 @@ run unit tests:
     - mariadb
   variables:
     MYSQL_ROOT_PASSWORD: password
+  parallel:
+    matrix:
+      - CONFIGFILE: ["phpunit.xml.dist","phpunit.noDBLock.xml.dist"]
   script:
-    - ./gitlab/unit-tests.sh
+    - pip install bs4
+    - pip install lxml
+    - ./gitlab/unit-tests.sh $CONFIGFILE
   artifacts:
     when: always
     paths:
