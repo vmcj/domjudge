@@ -244,17 +244,10 @@ class ImportEventFeedCommand extends Command
     }
 
     /**
-     * @inheritdoc
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     *
      * @throws TransportExceptionInterface
      * @throws NonUniqueResultException
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // Disable SQL logging if we do not run explicitly in debug mode.
         // This would cause a serious memory leak otherwise since this is a

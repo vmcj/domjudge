@@ -15,6 +15,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class CheckDatabaseConfigurationDefaultValuesCommand extends Command
 {
+    const STATUS_OK = 0;
+    const STATUS_ERROR = 1;
+
     /**
      * @var ConfigurationService
      */
@@ -85,10 +88,10 @@ class CheckDatabaseConfigurationDefaultValuesCommand extends Command
         }
         if (empty($messages)) {
             $style->success('All default values have the correct type');
-            return 0;
+            return static::STATUS_OK;
         }
         $style->error('Some default values have the wrong type:');
         $style->listing($messages);
-        return 1;
+        return static::STATUS_ERROR;
     }
 }
