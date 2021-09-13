@@ -6,9 +6,27 @@ use Generator;
 use InvalidArgumentException as GlobalInvalidArgumentException;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 
+use App\Service\ConfigurationService;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Console\Tester\CommandTester;
+use Exception;
+
 class CheckDatabaseConfigurationDefaultValuesCommandTest extends CommandTest
 {
     protected static $commandName = 'domjudge:db-config:check';
+
+    /**
+     * @var ConfigurationService
+     */
+    protected $config;
+
+    public function __construct(
+        ConfigurationService $config
+    ) {
+        $this->config = $config;
+    }
+
 
     public function provideCommandInvocations(): Generator {
         yield [[], '[OK] All default values have the correct type', true];
@@ -19,6 +37,28 @@ class CheckDatabaseConfigurationDefaultValuesCommandTest extends CommandTest
                '[OK] All default values have the correct type',
                GlobalInvalidArgumentException::class];
     }
+
+    public function testWrongBooleanExecute()
+    {
+        // First break something
+        // var_dump(get_class_methods($this->config));
+        //getConfigSpecification());
+        self::assertTrue(true);
+        $kernel = static::createKernel();
+        $container = self::$kernel;
+        $container->get('config');
+        $application = new Application($kernel);
+        $t = $application;
+        /*$command = $application->find(static::$commandName);
+        $commandTester = new CommandTester($command);
+        $commandTester->execute($commandOptions);
+        //var_dump(get_class_methods($commandTester));
+        self::assertEquals($success, !(bool)$commandTester->getStatusCode());
+        $output = $commandTester->getDisplay();
+        self::assertStringContainsString($expectedOutput, $output);*/
+    }
+
+
 }
 
 /*namespace App\Tests\Unit\Command;
