@@ -89,29 +89,26 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFilter('lineCount', $this->lineCount(...)),
             new TwigFilter('base64', 'base64_encode'),
             new TwigFilter('base64_decode', 'base64_decode'),
-            new TwigFilter('runDiff', $this->runDiff(...), ['is_safe' => ['html']]),
-            new TwigFilter('interactiveLog', $this->interactiveLog(...), ['is_safe' => ['html']]),
-            new TwigFilter('codeEditor', $this->codeEditor(...), ['is_safe' => ['html']]),
-            new TwigFilter('showDiff', $this->showDiff(...), ['is_safe' => ['html']]),
-            new TwigFilter('printContestStart', $this->printContestStart(...)),
-            new TwigFilter('assetPath', $this->dj->assetPath(...)),
-            new TwigFilter('printTimeRelative', $this->printTimeRelative(...)),
-            new TwigFilter('scoreTime', $this->scoreTime(...)),
-            new TwigFilter('statusClass', $this->statusClass(...)),
-            new TwigFilter('statusIcon', $this->statusIcon(...), ['is_safe' => ['html']]),
-            new TwigFilter('countryFlag', $this->countryFlag(...), ['is_safe' => ['html']]),
-            new TwigFilter('affiliationLogo', $this->affiliationLogo(...), ['is_safe' => ['html']]),
-            new TwigFilter('descriptionExpand', $this->descriptionExpand(...), ['is_safe' => ['html']]),
-            new TwigFilter('wrapUnquoted', $this->wrapUnquoted(...)),
-            new TwigFilter('hexColorToRGBA', $this->hexColorToRGBA(...)),
-            new TwigFilter('tsvField', $this->toTsvField(...)),
-            new TwigFilter('fileTypeIcon', $this->fileTypeIcon(...)),
-            new TwigFilter('problemBadge', $this->problemBadge(...), ['is_safe' => ['html']]),
-            new TwigFilter('printMetadata', $this->printMetadata(...), ['is_safe' => ['html']]),
-            new TwigFilter('printWarningContent', $this->printWarningContent(...), ['is_safe' => ['html']]),
-            new TwigFilter('entityIdBadge', $this->entityIdBadge(...), ['is_safe' => ['html']]),
-            new TwigFilter('medalType', $this->awards->medalType(...)),
-            new TwigFilter('numTableActions', $this->numTableActions(...)),
+            new TwigFilter('parseRunDiff', [$this, 'parseRunDiff'], ['is_safe' => ['html']]),
+            new TwigFilter('runDiff', [$this, 'runDiff'], ['is_safe' => ['html']]),
+            new TwigFilter('interactiveLog', [$this, 'interactiveLog'], ['is_safe' => ['html']]),
+            new TwigFilter('codeEditor', [$this, 'codeEditor'], ['is_safe' => ['html']]),
+            new TwigFilter('showDiff', [$this, 'showDiff'], ['is_safe' => ['html']]),
+            new TwigFilter('printContestStart', [$this, 'printContestStart']),
+            new TwigFilter('assetPath', [$this->dj, 'assetPath']),
+            new TwigFilter('printTimeRelative', [$this, 'printTimeRelative']),
+            new TwigFilter('scoreTime', [$this, 'scoreTime']),
+            new TwigFilter('statusClass', [$this, 'statusClass']),
+            new TwigFilter('statusIcon', [$this, 'statusIcon'], ['is_safe' => ['html']]),
+            new TwigFilter('countryFlag', [$this, 'countryFlag'], ['is_safe' => ['html']]),
+            new TwigFilter('descriptionExpand', [$this, 'descriptionExpand'], ['is_safe' => ['html']]),
+            new TwigFilter('wrapUnquoted', [$this, 'wrapUnquoted']),
+            new TwigFilter('hexColorToRGBA', [$this, 'hexColorToRGBA']),
+            new TwigFilter('tsvField', [$this, 'toTsvField']),
+            new TwigFilter('fileTypeIcon', [$this, 'fileTypeIcon']),
+            new TwigFilter('problemBadge', [$this, 'problemBadge'], ['is_safe' => ['html']]),
+            new TwigFilter('printMetadata', [$this, 'printMetadata'], ['is_safe' => ['html']]),
+            new TwigFilter('teamLocationImage', [$this, 'teamLocationImage']),
         ];
     }
 
@@ -1175,5 +1172,18 @@ EOF;
             $maxNumActions = max($maxNumActions, count($item['actions'] ?? []));
         }
         return $maxNumActions;
+    }
+
+    public function teamLocationImage(Team $team): ?string
+    {
+        if ($assetPath = $this->dj->assetPath((string)$team->getTeamid(), 'team_location')) {
+            return $assetPath;
+        }
+
+        if ($team->getRoom()) {
+            return $this->dj->assetPath($team->getRoom(), 'team_location');
+        }
+
+        return null;
     }
 }

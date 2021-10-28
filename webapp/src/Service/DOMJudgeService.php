@@ -74,6 +74,69 @@ class DOMJudgeService
     final public const EVAL_LAZY = 1;
     final public const EVAL_FULL = 2;
     final public const EVAL_DEMAND = 3;
+    /**
+     * @var RequestStack
+     */
+    protected $requestStack;
+
+    /**
+     * @var ParameterBagInterface
+     */
+    protected $params;
+
+    /**
+     * @var AuthorizationCheckerInterface
+     */
+    protected $authorizationChecker;
+
+    /**
+     * @var TokenStorageInterface
+     */
+    protected $tokenStorage;
+
+    /**
+     * @var HttpKernelInterface
+     */
+    protected $httpKernel;
+
+    /**
+     * @var ConfigurationService
+     */
+    protected $config;
+
+    /**
+     * @var RouterInterface
+     */
+    protected $router;
+
+    /**
+     * @var Executable|null
+     */
+    protected $defaultCompareExecutable = null;
+
+    /**
+     * @var Executable|null
+     */
+    protected $defaultRunExecutable = null;
+
+    /**
+     * @var array
+     */
+    protected $affiliationLogos;
+
+    /**
+     * @var array
+     */
+    protected $teamImages;
+
+    /**
+     * @var array
+     */
+    protected $teamLocationImages;
+
+    const DATA_SOURCE_LOCAL = 0;
+    const DATA_SOURCE_CONFIGURATION_EXTERNAL = 1;
+    const DATA_SOURCE_CONFIGURATION_AND_LIVE_EXTERNAL = 2;
 
     // Regex external identifiers must adhere to. Note that we are not checking whether it
     // does not start with a dot or dash or ends with a dot. We could but it would make the
@@ -1369,6 +1432,10 @@ class DOMJudgeService
                 break;
             case 'contest':
                 $dir = 'images/banners';
+            case 'team_location':
+                $extension = 'png';
+                $var = $this->teamLocationImages;
+                $dir = 'images/team_locations';
                 break;
         }
 
