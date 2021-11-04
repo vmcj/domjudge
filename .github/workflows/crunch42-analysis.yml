@@ -1,0 +1,72 @@
+# This workflow locates REST API file contracts
+# (Swagger or OpenAPI format, v2 and v3, JSON and YAML)
+# and runs 200+ security checks on them using 42Crunch Security Audit technology.
+#
+# Documentation is located here: https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm
+#
+# To use this workflow, you will need to complete the following setup steps.
+#
+# 1. Create a free 42Crunch account at https://platform.42crunch.com/register
+#
+# 2. Follow steps at https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm
+#    to create an API Token on the 42Crunch platform
+#
+# 3. Add a secret in GitHub as explained in https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm,
+#    store the 42Crunch API Token in that secret, and supply the secret's name as api-token parameter in this workflow
+#
+# If you have any questions or need help contact https://support.42crunch.com
+
+name: "42Crunch REST API Static Security Testing"
+
+# follow standard Code Scanning triggers
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ main ]
+  schedule:
+    - cron: '19 4 * * 3'
+
+jobs:
+  rest-api-static-security-testing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install DOMjudge
+        run: .github/workflows/baseinstall.sh
+
+      - name: Setup cert
+        continue-on-error: true
+        run: |
+          openssl req -nodes -new -x509 -keyout /tmp/server.key -out /tmp/server.crt -subj "/C=NL/ST=Noord-Holland/L=Amsterdam/O=TestingForPR/CN=localhost"
+          cat github/nginx_extra | sudo tee -a /etc/nginx/sites-enabled/domjudge
+          sudo systemctl restart nginx
+
+      - name: Dump the OpenAPI
+        run: curl --cacert /tmp/server.crt https://localhost/domjudge/api/doc.json > ./openapi.json
+
+      - name: Show the values in the API
+        run: python3 -m json.tool < ./openapi.json
+
+      - name: Find all other JSON files and delete those
+        run: |
+          rm -rf ./installdir/domserver/lib/vendor ./lib/vendor
+          rm -f ./doc/manual/sphinx-team.json ./doc/manual/sphinx-team.json
+          find ./ -name "*.json"
+
+      - name: 42Crunch REST API Static Security Testing
+        uses: 42Crunch/api-security-audit-action@v1
+        with:
+          # Please create free account at https://platform.42crunch.com/register
+          # Follow these steps to configure API_TOKEN https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm
+          api-token: ${{ secrets.API_SECRET }}
+          # Fail if any OpenAPI file scores lower than 85
+          min-score: 9
+          # Upload results to Github code scanning
+          upload-to-code-scanning: true
+          # Github token for uploading the results
+          github-token: ${{ github.token }}
+          ignore-failures: false
+
