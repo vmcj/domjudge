@@ -1,0 +1,35 @@
+name: "42Crunch REST API Static Security Testing"
+
+on:
+  push:
+
+jobs:
+  rest-api-static-security-testing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install DOMjudge
+        run: .github/workflowscripts/baseinstall.sh
+
+      - name: Dump the OpenAPI
+        run: .github/workflowscripts/getapi.sh
+
+      - name: Find all other JSON files and delete those
+        run: |
+          rm -rf ./installdir/domserver/lib/vendor ./lib/vendor
+          rm -f ./doc/manual/sphinx-team.json ./doc/manual/sphinx-team.json ./composer.json
+          find ./ -name "*.json"
+
+      - name: 42Crunch REST API Static Security Testing
+        uses: 42Crunch/api-security-audit-action@v1
+        with:
+          # Follow these steps to configure API_SECRET https://docs.42crunch.com/latest/content/tasks/integrate_github_actions.htm
+          api-token: ${{ secrets.API_SECRET }}
+          min-score: 99
+          # Upload results to Github code scanning
+          upload-to-code-scanning: true
+          # Github token for uploading the results
+          github-token: ${{ github.token }}
+          ignore-failures: false
+
