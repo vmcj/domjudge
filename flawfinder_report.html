@@ -1,0 +1,696 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf8">
+<title>Flawfinder Results</title>
+<meta name="author" content="David A. Wheeler">
+<meta name="keywords" lang="en" content="flawfinder results, security scan">
+</head>
+<body>
+<h1>Flawfinder Results</h1>
+Here are the security scan results from
+<a href="https://dwheeler.com/flawfinder">Flawfinder version 2.0.19</a>,
+(C) 2001-2019 <a href="https://dwheeler.com">David A. Wheeler</a>.
+Number of rules (primarily dangerous function names) in C/C++ ruleset: 222
+<p>
+Examining ./tests/test-memsize.cc <br>
+Examining ./tests/test-fork.c <br>
+Examining ./tests/test-compile-error.c <br>
+Examining ./tests/test-fork-parent-exit.c <br>
+Examining ./tests/test-hello.c++ <br>
+Examining ./tests/test-exitcode-4.c <br>
+Examining ./tests/stress-test-fork-setsid.c <br>
+Examining ./tests/test-exitcode-3.c <br>
+Examining ./tests/test-sourcesize.c <br>
+Examining ./tests/test-hello.c <br>
+Examining ./tests/test-fill-syslog.c <br>
+Examining ./tests/boolfind-test-timelimit.c <br>
+Examining ./tests/test-sigfpe.c <br>
+Examining ./tests/test-timelimit-bug.c <br>
+Examining ./tests/boolfind-test-correct.c <br>
+Examining ./tests/boolfind-test-correct.cc <br>
+Examining ./tests/test-permissions.c <br>
+Examining ./tests/fltcmp-test-wrong2.c <br>
+Examining ./tests/boolfind-test-loop.cc <br>
+Examining ./tests/test-float-2.c <br>
+Examining ./tests/fltcmp-test-wrong1.c <br>
+Examining ./tests/test-network.c <br>
+Examining ./tests/test-long-lines.c <br>
+Examining ./tests/test-float.c <br>
+Examining ./tests/test-hello-cpp.c <br>
+Examining ./tests/boolfind-test-extradata.cc <br>
+Examining ./tests/test-correct-output-exceeded.cc <br>
+Examining ./tests/test-expected-result.c <br>
+Examining ./tests/test-exitcode.c <br>
+Examining ./tests/test-readtestdata.c++ <br>
+Examining ./tests/test-stacksize.c <br>
+Examining ./tests/test-timelimit.c <br>
+Examining ./tests/test-output-nonewline.c <br>
+Examining ./tests/stress-test-compile-timeout.c <br>
+Examining ./tests/test-fill-stderr.cpp <br>
+Examining ./tests/test-fork-parent-exit2.c <br>
+Examining ./tests/test-suspend-ppid.c <br>
+Examining ./tests/test-float.cc <br>
+Examining ./tests/test-sleep.c <br>
+Examining ./tests/test-compile-warning.c <br>
+Examining ./tests/test-memstatic.c <br>
+Examining ./tests/test-timelimit-2.c <br>
+Examining ./tests/stress-test-reboot.c <br>
+Examining ./tests/test-binary-content.c <br>
+Examining ./tests/test-no-output.c <br>
+Examining ./tests/fltcmp-test-correct.c <br>
+Examining ./tests/test-hello-space.c <br>
+Examining ./tests/test-hello-lf-cr.c <br>
+Examining ./tests/stress-test-compile-fill-stderr.cc <br>
+Examining ./tests/test-sigsegv.c <br>
+Examining ./tests/test-exitcode-2.c <br>
+Examining ./tests/boolfind-test-no-output.c <br>
+Examining ./tests/test-binary-output.c <br>
+Examining ./tests/bad-expected-result-multiple-in-file.c <br>
+Examining ./tests/test-hello.cc <br>
+Examining ./tests/test-slow-output.cc <br>
+Examining ./tests/test-memstatic.cc <br>
+Examining ./tests/test-slow-output.c <br>
+Examining ./tests/test-multithread.c <br>
+Examining ./tests/test-compile-memory.c <br>
+Examining ./tests/stress-test-compile-fill-stderr.c <br>
+Examining ./tests/test-fill-stdout.cc <br>
+Examining ./tests/bad-expected-result-multiple-type.c <br>
+Examining ./sql/files/examples/boolfind_run/validate.cc <br>
+Examining ./sql/files/examples/boolfind_run/validate.h <br>
+Examining ./sql/files/defaultdata/compare/compare.cc <br>
+Examining ./doc/examples/example.cc <br>
+Examining ./doc/examples/example.c <br>
+Examining ./doc/examples/hello.c <br>
+Examining ./lib/lib.error.c <br>
+Examining ./lib/lib.error.h <br>
+Examining ./lib/lib.misc.h <br>
+Examining ./lib/lib.misc.c <br>
+Examining ./judge/runguard.c <br>
+Examining ./judge/evict.c <br>
+Examining ./judge/runpipe.cc <br>
+
+<h2>Final Results</h2>
+<ul>
+<li>./tests/test-compile-warning.c:13:2: <b>  [5] </b> (buffer) <i> gets:Does not check for buffer overflows (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>, <a href="https://cwe.mitre.org/data/definitions/20.html">CWE-20</a>).  Use fgets() instead.  </i>
+<pre>
+	gets(str);
+</pre>
+<li>./doc/examples/example.c:10:3: <b>  [4] </b> (buffer) <i> scanf:The scanf() family's %s operation, without a limit specification, permits buffer overflows (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>, <a href="https://cwe.mitre.org/data/definitions/20.html">CWE-20</a>).  Specify a limit to %s, or use a different input function.  </i>
+<pre>
+		scanf("%s\n", name);
+</pre>
+<li>./judge/runguard.c:195:59: <b>  [4] </b> (format) <i> printf:If format strings can be influenced by an attacker, they can be exploited (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Use a constant for the format specification.  </i>
+<pre>
+void warning(   const char *, ...) __attribute__((format (printf, 1, 2)));
+</pre>
+<li>./judge/runguard.c:196:59: <b>  [4] </b> (format) <i> printf:If format strings can be influenced by an attacker, they can be exploited (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Use a constant for the format specification.  </i>
+<pre>
+void verbose(   const char *, ...) __attribute__((format (printf, 1, 2)));
+</pre>
+<li>./judge/runguard.c:197:59: <b>  [4] </b> (format) <i> printf:If format strings can be influenced by an attacker, they can be exploited (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Use a constant for the format specification.  </i>
+<pre>
+void error(int, const char *, ...) __attribute__((format (printf, 2, 3)));
+</pre>
+<li>./judge/runguard.c:198:72: <b>  [4] </b> (format) <i> printf:If format strings can be influenced by an attacker, they can be exploited (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Use a constant for the format specification.  </i>
+<pre>
+void write_meta(const char*, const char *, ...) __attribute__((format (printf, 2, 3)));
+</pre>
+<li>./judge/runguard.c:207:3: <b>  [4] </b> (format) <i> vfprintf:If format strings can be influenced by an attacker, they can be exploited (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Use a constant for the format specification.  </i>
+<pre>
+		vfprintf(stderr,format,ap);
+</pre>
+<li>./judge/runguard.c:226:3: <b>  [4] </b> (format) <i> vfprintf:If format strings can be influenced by an attacker, they can be exploited (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Use a constant for the format specification.  </i>
+<pre>
+		vfprintf(stderr,format,ap);
+</pre>
+<li>./judge/runguard.c:256:2: <b>  [4] </b> (buffer) <i> sprintf:Does not check for buffer overflows (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Use sprintf_s, snprintf, or vsnprintf.  </i>
+<pre>
+	sprintf(errstr,"%s",progname);
+</pre>
+<li>./judge/runguard.c:262:3: <b>  [4] </b> (format) <i> vsnprintf:If format strings can be influenced by an attacker, they can be exploited, and note that sprintf variations do not always \0-terminate (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Use a constant for the format specification.  </i>
+<pre>
+		vsnprintf(errstr+errpos,errlen-errpos,format,ap);
+</pre>
+<li>./judge/runguard.c:323:7: <b>  [4] </b> (format) <i> vfprintf:If format strings can be influenced by an attacker, they can be exploited (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Use a constant for the format specification.  </i>
+<pre>
+	if ( vfprintf(metafile,format,ap)&lt;0 ) {
+</pre>
+<li>./judge/runguard.c:987:4: <b>  [4] </b> (buffer) <i> strcpy:Does not check for buffer overflows when copying to destination [MS-banned] (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Consider using snprintf, strcpy_s, or strlcpy (warning: strncpy easily misused).  </i>
+<pre>
+			strcpy(rootdir,optarg);
+</pre>
+<li>./judge/runguard.c:1014:4: <b>  [4] </b> (buffer) <i> strcpy:Does not check for buffer overflows when copying to destination [MS-banned] (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Consider using snprintf, strcpy_s, or strlcpy (warning: strncpy easily misused).  </i>
+<pre>
+			strcpy(rootchdir,optarg);
+</pre>
+<li>./judge/runguard.c:1234:3: <b>  [4] </b> (shell) <i> execvp:This causes a new program to execute and is difficult to use safely (<a href="https://cwe.mitre.org/data/definitions/78.html">CWE-78</a>).  try using a library call that implements the same functionality if available.  </i>
+<pre>
+		execvp(cmdname,cmdargs);
+</pre>
+<li>./judge/runpipe.cc:110:53: <b>  [4] </b> (format) <i> printf:If format strings can be influenced by an attacker, they can be exploited (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Use a constant for the format specification.  </i>
+<pre>
+void verb(const char *, ...) __attribute__((format (printf, 1, 2)));
+</pre>
+<li>./judge/runpipe.cc:119:3: <b>  [4] </b> (format) <i> vfprintf:If format strings can be influenced by an attacker, they can be exploited (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Use a constant for the format specification.  </i>
+<pre>
+		vfprintf(stderr,format,ap);
+</pre>
+<li>./judge/runpipe.cc:156:7: <b>  [4] </b> (format) <i> vfprintf:If format strings can be influenced by an attacker, they can be exploited (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Use a constant for the format specification.  </i>
+<pre>
+	if ( vfprintf(metafile,format,ap)&lt;0 ) {
+</pre>
+<li>./lib/lib.error.c:123:3: <b>  [4] </b> (format) <i> vfprintf:If format strings can be influenced by an attacker, they can be exploited (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Use a constant for the format specification.  </i>
+<pre>
+		vfprintf(stderr, buffer, aq);
+</pre>
+<li>./lib/lib.error.c:129:3: <b>  [4] </b> (format) <i> vfprintf:If format strings can be influenced by an attacker, they can be exploited (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Use a constant for the format specification.  </i>
+<pre>
+		vfprintf(stdlog, buffer, aq);
+</pre>
+<li>./lib/lib.error.c:191:2: <b>  [4] </b> (buffer) <i> strcat:Does not check for buffer overflows when concatenating to destination [MS-banned] (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Consider using strcat_s, strncat, strlcat, or snprintf (warning: strncat is easily misused).  </i>
+<pre>
+	strcat(buffer, errtype);
+</pre>
+<li>./lib/lib.error.c:194:26: <b>  [4] </b> (buffer) <i> strcat:Does not check for buffer overflows when concatenating to destination [MS-banned] (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Consider using strcat_s, strncat, strlcat, or snprintf (warning: strncat is easily misused).  </i>
+<pre>
+	if ( mesg != NULL )     strcat(buffer, mesg);
+</pre>
+<li>./lib/lib.error.c:199:26: <b>  [4] </b> (buffer) <i> strcat:Does not check for buffer overflows when concatenating to destination [MS-banned] (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Consider using strcat_s, strncat, strlcat, or snprintf (warning: strncat is easily misused).  </i>
+<pre>
+	if ( errdescr != NULL )	strcat(buffer, errdescr);
+</pre>
+<li>./lib/lib.error.c:281:8: <b>  [4] </b> (format) <i> vsnprintf:If format strings can be influenced by an attacker, they can be exploited, and note that sprintf variations do not always \0-terminate (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Use a constant for the format specification.  </i>
+<pre>
+	len = vsnprintf(tmp,1,mesg,aq);
+</pre>
+<li>./lib/lib.error.c:287:6: <b>  [4] </b> (format) <i> vsnprintf:If format strings can be influenced by an attacker, they can be exploited, and note that sprintf variations do not always \0-terminate (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Use a constant for the format specification.  </i>
+<pre>
+	n = vsnprintf(str,len+1,mesg,aq);
+</pre>
+<li>./lib/lib.error.h:37:61: <b>  [4] </b> (format) <i> printf:If format strings can be influenced by an attacker, they can be exploited (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Use a constant for the format specification.  </i>
+<pre>
+void  logmsg(int, const char *, ...) __attribute__((format (printf, 2, 3)));
+</pre>
+<li>./lib/lib.error.h:62:63: <b>  [4] </b> (format) <i> printf:If format strings can be influenced by an attacker, they can be exploited (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Use a constant for the format specification.  </i>
+<pre>
+void logerror (int, const char *, ...) __attribute__((format (printf, 2, 3)));
+</pre>
+<li>./lib/lib.error.h:63:63: <b>  [4] </b> (format) <i> printf:If format strings can be influenced by an attacker, they can be exploited (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Use a constant for the format specification.  </i>
+<pre>
+void error    (int, const char *, ...) __attribute__((format (printf, 2, 3), noreturn));
+</pre>
+<li>./lib/lib.error.h:64:63: <b>  [4] </b> (format) <i> printf:If format strings can be influenced by an attacker, they can be exploited (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Use a constant for the format specification.  </i>
+<pre>
+void warning  (int, const char *, ...) __attribute__((format (printf, 2, 3)));
+</pre>
+<li>./lib/lib.error.h:80:59: <b>  [4] </b> (format) <i> printf:If format strings can be influenced by an attacker, they can be exploited (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Use a constant for the format specification.  </i>
+<pre>
+char  *allocstr(const char *, ...) __attribute__((format (printf, 1, 2)));
+</pre>
+<li>./lib/lib.misc.c:43:13: <b>  [4] </b> (shell) <i> system:This causes a new program to execute and is difficult to use safely (<a href="https://cwe.mitre.org/data/definitions/78.html">CWE-78</a>).  try using a library call that implements the same functionality if available.  </i>
+<pre>
+	silenced = system(cmd);
+</pre>
+<li>./lib/lib.misc.c:103:3: <b>  [4] </b> (shell) <i> execvp:This causes a new program to execute and is difficult to use safely (<a href="https://cwe.mitre.org/data/definitions/78.html">CWE-78</a>).  try using a library call that implements the same functionality if available.  </i>
+<pre>
+		execvp(cmd,argv);
+</pre>
+<li>./sql/files/defaultdata/compare/compare.cc:32:2: <b>  [4] </b> (format) <i> vfprintf:If format strings can be influenced by an attacker, they can be exploited (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Use a constant for the format specification.  </i>
+<pre>
+	vfprintf(judgemessage, err, pvar);
+</pre>
+<li>./sql/files/defaultdata/compare/compare.cc:45:2: <b>  [4] </b> (format) <i> vfprintf:If format strings can be influenced by an attacker, they can be exploited (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Use a constant for the format specification.  </i>
+<pre>
+	vfprintf(judgemessage, err, pvar);
+</pre>
+<li>./sql/files/examples/boolfind_run/validate.h:82:5: <b>  [4] </b> (format) <i> vfprintf:If format strings can be influenced by an attacker, they can be exploited (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Use a constant for the format specification.  </i>
+<pre>
+    vfprintf(f, msg.c_str(), pvar);
+</pre>
+<li>./sql/files/examples/boolfind_run/validate.h:135:9: <b>  [4] </b> (format) <i> fprintf:If format strings can be influenced by an attacker, they can be exploited (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Use a constant for the format specification.  </i>
+<pre>
+        fprintf(stderr, USAGE, argv[0]);
+</pre>
+<li>./tests/stress-test-reboot.c:13:9: <b>  [4] </b> (shell) <i> system:This causes a new program to execute and is difficult to use safely (<a href="https://cwe.mitre.org/data/definitions/78.html">CWE-78</a>).  try using a library call that implements the same functionality if available.  </i>
+<pre>
+	return system("reboot");
+</pre>
+<li>./tests/test-binary-content.c:7:22: <b>  [4] </b> (shell) <i> system:This causes a new program to execute and is difficult to use safely (<a href="https://cwe.mitre.org/data/definitions/78.html">CWE-78</a>).  try using a library call that implements the same functionality if available.  </i>
+<pre>
+to check whether the system can handle this.
+</pre>
+<li>./tests/test-network.c:68:26: <b>  [4] </b> (format) <i> vsprintf:Potential format string problem (<a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134</a>).  Make format string constant.  </i>
+<pre>
+	if ( mesg != NULL )     vsprintf(buffer+strlen(buffer), mesg, ap);
+</pre>
+<li>./tests/test-network.c:71:26: <b>  [4] </b> (buffer) <i> strcat:Does not check for buffer overflows when concatenating to destination [MS-banned] (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Consider using strcat_s, strncat, strlcat, or snprintf (warning: strncat is easily misused).  </i>
+<pre>
+	if ( errdescr != NULL )	strcat(buffer, errdescr);
+</pre>
+<li>./judge/evict.c:110:17: <b>  [3] </b> (buffer) <i> getopt_long:Some older implementations do not protect against internal buffer overflows (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>, <a href="https://cwe.mitre.org/data/definitions/20.html">CWE-20</a>).  Check implementation on installation, or limit the size of all string inputs.  </i>
+<pre>
+	while ( (opt = getopt_long(argc,argv,"+v",long_opts,(int *) 0))!=-1 ) {
+</pre>
+<li>./judge/runguard.c:729:10: <b>  [3] </b> (buffer) <i> getenv:Environment variables are untrustable input if they can be set by an attacker.  They can have any content and length, and the same variable can be set more than once (<a href="https://cwe.mitre.org/data/definitions/807.html">CWE-807</a>, <a href="https://cwe.mitre.org/data/definitions/20.html">CWE-20</a>).  Check environment variables carefully before using them.  </i>
+<pre>
+		path = getenv("PATH");
+</pre>
+<li>./judge/runguard.c:823:8: <b>  [3] </b> (buffer) <i> realpath:This function does not protect against buffer overflows, and some implementations can overflow internally (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>/<a href="https://cwe.mitre.org/data/definitions/785.html">CWE-785</a>!).  Ensure that the destination buffer is at least of size MAXPATHLEN, andto protect against implementation problems, the input argument should also be checked to ensure it is no larger than MAXPATHLEN.  </i>
+<pre>
+		if ( realpath(CHROOT_PREFIX,path)==NULL ) {
+</pre>
+<li>./judge/runguard.c:833:8: <b>  [3] </b> (misc) <i> chroot:chroot can be very helpful, but is hard to use correctly (<a href="https://cwe.mitre.org/data/definitions/250.html">CWE-250</a>, <a href="https://cwe.mitre.org/data/definitions/22.html">CWE-22</a>).  Make sure the program immediately chdir("/"), closes file descriptors, and drops root privileges, and that all necessary files (and no more!) are in the new root.  </i>
+<pre>
+		if ( chroot(".")!=0 ) error(errno,"cannot change root to `%s'",cwd);
+</pre>
+<li>./judge/runguard.c:979:17: <b>  [3] </b> (buffer) <i> getopt_long:Some older implementations do not protect against internal buffer overflows (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>, <a href="https://cwe.mitre.org/data/definitions/20.html">CWE-20</a>).  Check implementation on installation, or limit the size of all string inputs.  </i>
+<pre>
+	while ( (opt = getopt_long(argc,argv,"+r:u:g:d:t:C:m:f:p:P:co:e:s:EV:M:vq",long_opts,(int *) 0))!=-1 ) {
+</pre>
+<li>./judge/runpipe.cc:351:17: <b>  [3] </b> (buffer) <i> getopt_long:Some older implementations do not protect against internal buffer overflows (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>, <a href="https://cwe.mitre.org/data/definitions/20.html">CWE-20</a>).  Check implementation on installation, or limit the size of all string inputs.  </i>
+<pre>
+	while ( (opt = getopt_long(argc,argv,"+o:M:v",long_opts,(int *) 0))!=-1 ) {
+</pre>
+<li>./lib/lib.error.c:96:29: <b>  [3] </b> (buffer) <i> getenv:Environment variables are untrustable input if they can be set by an attacker.  They can have any content and length, and the same variable can be set more than once (<a href="https://cwe.mitre.org/data/definitions/807.html">CWE-807</a>, <a href="https://cwe.mitre.org/data/definitions/20.html">CWE-20</a>).  Check environment variables carefully before using them.  </i>
+<pre>
+	if ( ! syslog_open &amp;&amp; (str=getenv("DJ_SYSLOG"))!=NULL ) {
+</pre>
+<li>./doc/examples/example.c:5:2: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+	char name[100];
+</pre>
+<li>./judge/evict.c:64:9: <b>  [2] </b> (misc) <i> open:Check when opening files - can an attacker redirect it (via symlinks), force the opening of special file type (e.g., device files), move things around to create a race condition, control its ancestors, or change its contents? (<a href="https://cwe.mitre.org/data/definitions/362.html">CWE-362</a>).   </i>
+<pre>
+			fd = open(entry_path, O_RDONLY, 0);
+</pre>
+<li>./judge/runguard.c:87:7: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+const char output_timelimit_str[4][16] = {
+</pre>
+<li>./judge/runguard.c:120:1: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+char  cgroupname[255];
+</pre>
+<li>./judge/runguard.c:722:2: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+	char  cwd[PATH_MAX+1];
+</pre>
+<li>./judge/runguard.c:869:2: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+	char buf[BUF_SIZE];
+</pre>
+<li>./judge/runguard.c:960:2: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+	char str[256];
+</pre>
+<li>./judge/runguard.c:1117:33: <b>  [2] </b> (misc) <i> fopen:Check when opening files - can an attacker redirect it (via symlinks), force the opening of special file type (e.g., device files), move things around to create a race condition, control its ancestors, or change its contents? (<a href="https://cwe.mitre.org/data/definitions/362.html">CWE-362</a>).   </i>
+<pre>
+	if ( outputmeta &amp;&amp; (metafile = fopen(metafilename,"w"))==NULL ) {
+</pre>
+<li>./judge/runguard.c:1197:20: <b>  [2] </b> (misc) <i> fopen:Check when opening files - can an attacker redirect it (via symlinks), force the opening of special file type (e.g., device files), move things around to create a race condition, control its ancestors, or change its contents? (<a href="https://cwe.mitre.org/data/definitions/362.html">CWE-362</a>).   </i>
+<pre>
+	if ( !fp &amp;&amp; (fp = fopen(OOM_PATH_NEW,"r+")) ) oom_path = strdup(OOM_PATH_NEW);
+</pre>
+<li>./judge/runguard.c:1198:20: <b>  [2] </b> (misc) <i> fopen:Check when opening files - can an attacker redirect it (via symlinks), force the opening of special file type (e.g., device files), move things around to create a race condition, control its ancestors, or change its contents? (<a href="https://cwe.mitre.org/data/definitions/362.html">CWE-362</a>).   </i>
+<pre>
+	if ( !fp &amp;&amp; (fp = fopen(OOM_PATH_OLD,"r+")) ) oom_path = strdup(OOM_PATH_OLD);
+</pre>
+<li>./judge/runpipe.cc:221:13: <b>  [2] </b> (misc) <i> fopen:Check when opening files - can an attacker redirect it (via symlinks), force the opening of special file type (e.g., device files), move things around to create a race condition, control its ancestors, or change its contents? (<a href="https://cwe.mitre.org/data/definitions/362.html">CWE-362</a>).   </i>
+<pre>
+		if ( (f = fopen(PROC_MAX_PIPE_SIZE, "r"))==NULL ) {
+</pre>
+<li>./judge/runpipe.cc:249:2: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+	char buf[BUF_SIZE+1];
+</pre>
+<li>./judge/runpipe.cc:449:23: <b>  [2] </b> (misc) <i> fopen:Check when opening files - can an attacker redirect it (via symlinks), force the opening of special file type (e.g., device files), move things around to create a race condition, control its ancestors, or change its contents? (<a href="https://cwe.mitre.org/data/definitions/362.html">CWE-362</a>).   </i>
+<pre>
+		if ( (progoutfile = fopen(progoutfilename,"w"))==NULL ) {
+</pre>
+<li>./judge/runpipe.cc:546:36: <b>  [2] </b> (misc) <i> fopen:Check when opening files - can an attacker redirect it (via symlinks), force the opening of special file type (e.g., device files), move things around to create a race condition, control its ancestors, or change its contents? (<a href="https://cwe.mitre.org/data/definitions/362.html">CWE-362</a>).   </i>
+<pre>
+				if ( outputmeta &amp;&amp; (metafile = fopen(metafilename,"w"))==NULL ) {
+</pre>
+<li>./lib/lib.error.c:36:28: <b>  [2] </b> (buffer) <i> memcpy:Does not check for buffer overflows when copying to destination (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Make sure destination can always hold the source data.  </i>
+<pre>
+#define va_copy(dest, src) memcpy(&amp;dest, &amp;src, sizeof(va_list))
+</pre>
+<li>./lib/lib.error.c:79:2: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+	char timestring[128];
+</pre>
+<li>./lib/lib.error.c:92:31: <b>  [2] </b> (misc) <i> fopen:Check when opening files - can an attacker redirect it (via symlinks), force the opening of special file type (e.g., device files), move things around to create a race condition, control its ancestors, or change its contents? (<a href="https://cwe.mitre.org/data/definitions/362.html">CWE-362</a>).   </i>
+<pre>
+	if ( stdlog==NULL ) stdlog = fopen(LOGFILE,"a");
+</pre>
+<li>./lib/lib.error.c:107:2: <b>  [2] </b> (buffer) <i> sprintf:Does not check for buffer overflows (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Use sprintf_s, snprintf, or vsnprintf. Risk is low because the source has a constant maximum length. </i>
+<pre>
+	sprintf(timestring+strlen(timestring), ".%03d", (int)(currtime.tv_usec/1000));
+</pre>
+<li>./lib/lib.error.c:192:2: <b>  [2] </b> (buffer) <i> strcat:Does not check for buffer overflows when concatenating to destination [MS-banned] (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Consider using strcat_s, strncat, strlcat, or snprintf (warning: strncat is easily misused). Risk is low because the source is a constant string. </i>
+<pre>
+	strcat(buffer, ": ");
+</pre>
+<li>./lib/lib.error.c:197:26: <b>  [2] </b> (buffer) <i> strcat:Does not check for buffer overflows when concatenating to destination [MS-banned] (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Consider using strcat_s, strncat, strlcat, or snprintf (warning: strncat is easily misused). Risk is low because the source is a constant string. </i>
+<pre>
+	     errdescr != NULL ) strcat(buffer, ": ");
+</pre>
+<li>./lib/lib.error.c:276:2: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+	char tmp[2];
+</pre>
+<li>./lib/lib.misc.c:29:9: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+	static char none[1] = "";
+</pre>
+<li>./lib/lib.misc.c:48:19: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+int execute(const char *cmd, const char **args, int nargs, int stdio_fd[3], int err2out)
+</pre>
+<li>./lib/lib.misc.c:48:36: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+int execute(const char *cmd, const char **args, int nargs, int stdio_fd[3], int err2out)
+</pre>
+<li>./lib/lib.misc.c:70:38: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+	for(i=0; i&lt;nargs; i++) argv[i+1] = (char *) args[i];
+</pre>
+<li>./lib/lib.misc.c:198:2: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+	char str[15];
+</pre>
+<li>./lib/lib.misc.c:209:12: <b>  [2] </b> (misc) <i> open:Check when opening files - can an attacker redirect it (via symlinks), force the opening of special file type (e.g., device files), move things around to create a race condition, control its ancestors, or change its contents? (<a href="https://cwe.mitre.org/data/definitions/362.html">CWE-362</a>).   </i>
+<pre>
+		if ( (fd=open(pidfile, O_RDWR|O_CREAT|O_EXCL, 0640))&lt;0 ) {
+</pre>
+<li>./lib/lib.misc.c:212:3: <b>  [2] </b> (buffer) <i> sprintf:Does not check for buffer overflows (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Use sprintf_s, snprintf, or vsnprintf. Risk is low because the source has a constant maximum length. </i>
+<pre>
+		sprintf(str, "%d\n", pid);
+</pre>
+<li>./lib/lib.misc.h:26:19: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+int execute(const char *, const char **, int, int[3], int)
+</pre>
+<li>./lib/lib.misc.h:26:33: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+int execute(const char *, const char **, int, int[3], int)
+</pre>
+<li>./sql/files/defaultdata/compare/compare.cc:51:2: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+	char trash[20];
+</pre>
+<li>./sql/files/defaultdata/compare/compare.cc:60:9: <b>  [2] </b> (misc) <i> open:Check when opening files - can an attacker redirect it (via symlinks), force the opening of special file type (e.g., device files), move things around to create a race condition, control its ancestors, or change its contents? (<a href="https://cwe.mitre.org/data/definitions/362.html">CWE-362</a>).   </i>
+<pre>
+	stream.open(file);
+</pre>
+<li>./sql/files/defaultdata/compare/compare.cc:68:14: <b>  [2] </b> (misc) <i> fopen:Check when opening files - can an attacker redirect it (via symlinks), force the opening of special file type (e.g., device files), move things around to create a race condition, control its ancestors, or change its contents? (<a href="https://cwe.mitre.org/data/definitions/362.html">CWE-362</a>).   </i>
+<pre>
+	FILE *res = fopen(path.c_str(), "w");
+</pre>
+<li>./sql/files/examples/boolfind_run/validate.h:80:15: <b>  [2] </b> (misc) <i> fopen:Check when opening files - can an attacker redirect it (via symlinks), force the opening of special file type (e.g., device files), move things around to create a race condition, control its ancestors, or change its contents? (<a href="https://cwe.mitre.org/data/definitions/362.html">CWE-362</a>).   </i>
+<pre>
+    FILE *f = fopen(fname.str().c_str(), "a");
+</pre>
+<li>./sql/files/examples/boolfind_run/validate.h:146:14: <b>  [2] </b> (misc) <i> open:Check when opening files - can an attacker redirect it (via symlinks), force the opening of special file type (e.g., device files), move things around to create a race condition, control its ancestors, or change its contents? (<a href="https://cwe.mitre.org/data/definitions/362.html">CWE-362</a>).   </i>
+<pre>
+    judge_in.open(argv[1], std::ios_base::in);
+</pre>
+<li>./sql/files/examples/boolfind_run/validate.h:151:15: <b>  [2] </b> (misc) <i> open:Check when opening files - can an attacker redirect it (via symlinks), force the opening of special file type (e.g., device files), move things around to create a race condition, control its ancestors, or change its contents? (<a href="https://cwe.mitre.org/data/definitions/362.html">CWE-362</a>).   </i>
+<pre>
+    judge_ans.open(argv[2], std::ios_base::in);
+</pre>
+<li>./tests/boolfind-test-correct.c:12:1: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+char answer[10];
+</pre>
+<li>./tests/boolfind-test-correct.c:13:1: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+char buf[256];
+</pre>
+<li>./tests/boolfind-test-timelimit.c:14:1: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+char answer[10];
+</pre>
+<li>./tests/boolfind-test-timelimit.c:15:1: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+char buf[256];
+</pre>
+<li>./tests/test-compile-warning.c:11:2: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+	char str[1000];
+</pre>
+<li>./tests/test-hello-lf-cr.c:12:2: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+	char hello[20] = "Hello world!";
+</pre>
+<li>./tests/test-hello-space.c:12:2: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+	char hello[20] = "Hello   	 world!";
+</pre>
+<li>./tests/test-hello.c:12:2: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+	char hello[20] = "Hello world!";
+</pre>
+<li>./tests/test-memstatic.c:14:1: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+char a[size*1024*1024];
+</pre>
+<li>./tests/test-memstatic.cc:15:1: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+char a[size*1024*1024] = { 1 };
+</pre>
+<li>./tests/test-network.c:27:7: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+const char host[255] = "google.com";
+</pre>
+<li>./tests/test-network.c:28:7: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+const char port[10]  = "80";
+</pre>
+<li>./tests/test-network.c:29:7: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+const char request[255] = "GET google.com";
+</pre>
+<li>./tests/test-network.c:34:1: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+char server_addr[NI_MAXHOST];            /* server IP address string  */
+</pre>
+<li>./tests/test-network.c:41:1: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+char buffer[BUFFERSIZE];
+</pre>
+<li>./tests/test-network.c:66:2: <b>  [2] </b> (buffer) <i> strcat:Does not check for buffer overflows when concatenating to destination [MS-banned] (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Consider using strcat_s, strncat, strlcat, or snprintf (warning: strncat is easily misused). Risk is low because the source is a constant string. </i>
+<pre>
+	strcat(buffer, "Error: ");
+</pre>
+<li>./tests/test-network.c:70:26: <b>  [2] </b> (buffer) <i> strcat:Does not check for buffer overflows when concatenating to destination [MS-banned] (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Consider using strcat_s, strncat, strlcat, or snprintf (warning: strncat is easily misused). Risk is low because the source is a constant string. </i>
+<pre>
+	     errdescr != NULL ) strcat(buffer, ": ");
+</pre>
+<li>./tests/test-network.c:85:2: <b>  [2] </b> (buffer) <i> strcat:Does not check for buffer overflows when concatenating to destination [MS-banned] (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Consider using strcat_s, strncat, strlcat, or snprintf (warning: strncat is easily misused). Risk is low because the source is a constant string. </i>
+<pre>
+	strcat(buffer,"\015\012");
+</pre>
+<li>./tests/test-permissions.c:21:2: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+	char line[256];
+</pre>
+<li>./tests/test-permissions.c:34:6: <b>  [2] </b> (misc) <i> fopen:Check when opening files - can an attacker redirect it (via symlinks), force the opening of special file type (e.g., device files), move things around to create a race condition, control its ancestors, or change its contents? (<a href="https://cwe.mitre.org/data/definitions/362.html">CWE-362</a>).   </i>
+<pre>
+	f = fopen(ROOTFILE,"r");
+</pre>
+<li>./tests/test-readtestdata.c++:50:7: <b>  [2] </b> (misc) <i> open:Check when opening files - can an attacker redirect it (via symlinks), force the opening of special file type (e.g., device files), move things around to create a race condition, control its ancestors, or change its contents? (<a href="https://cwe.mitre.org/data/definitions/362.html">CWE-362</a>).   </i>
+<pre>
+		fin.open( filepath.c_str() );
+</pre>
+<li>./tests/test-stacksize.c:16:2: <b>  [2] </b> (buffer) <i> char:Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (<a href="https://cwe.mitre.org/data/definitions/119.html">CWE-119</a>!/<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length.  </i>
+<pre>
+	char a[mb];
+</pre>
+<li>./judge/runguard.c:250:11: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+	errlen = strlen(progname)+255;
+</pre>
+<li>./judge/runguard.c:251:32: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+	if ( format!=NULL ) errlen += strlen(format);
+</pre>
+<li>./judge/runguard.c:257:11: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+	errpos = strlen(errstr);
+</pre>
+<li>./judge/runguard.c:263:13: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+		errpos += strlen(errstr+errpos);
+</pre>
+<li>./judge/runguard.c:269:14: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+			errpos += strlen(errstr+errpos);
+</pre>
+<li>./judge/runguard.c:277:13: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+		errpos += strlen(errstr+errpos);
+</pre>
+<li>./judge/runguard.c:454:24: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+	    ( cpuset!=NULL &amp;&amp; strlen(cpuset)&gt;0 );
+</pre>
+<li>./judge/runguard.c:513:23: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+	if ( cpuset!=NULL &amp;&amp; strlen(cpuset)&gt;0 ) {
+</pre>
+<li>./judge/runguard.c:587:23: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+	if ( cpuset!=NULL &amp;&amp; strlen(cpuset)&gt;0 ) {
+</pre>
+<li>./judge/runguard.c:817:12: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+		if ( cwd[strlen(cwd)-1]!='/' ) strcat(cwd,"/");
+</pre>
+<li>./judge/runguard.c:817:34: <b>  [1] </b> (buffer) <i> strcat:Does not check for buffer overflows when concatenating to destination [MS-banned] (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Consider using strcat_s, strncat, strlcat, or snprintf (warning: strncat is easily misused). Risk is low because the source is a constant character. </i>
+<pre>
+		if ( cwd[strlen(cwd)-1]!='/' ) strcat(cwd,"/");
+</pre>
+<li>./judge/runguard.c:828:25: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+		if ( strncmp(cwd,path,strlen(path))!=0 ) {
+</pre>
+<li>./judge/runguard.c:882:13: <b>  [1] </b> (buffer) <i> read:Check buffer boundaries if used in a loop including recursive loops (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>, <a href="https://cwe.mitre.org/data/definitions/20.html">CWE-20</a>).   </i>
+<pre>
+				nread = read(child_pipefd[i][PIPE_OUT], buf, BUF_SIZE);
+</pre>
+<li>./judge/runguard.c:902:14: <b>  [1] </b> (buffer) <i> read:Check buffer boundaries if used in a loop including recursive loops (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>, <a href="https://cwe.mitre.org/data/definitions/20.html">CWE-20</a>).   </i>
+<pre>
+					nread = read(child_pipefd[i][PIPE_OUT], buf, to_read);
+</pre>
+<li>./judge/runguard.c:985:30: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+			rootdir = (char *) malloc(strlen(optarg)+2);
+</pre>
+<li>./judge/runguard.c:1012:32: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+			rootchdir = (char *) malloc(strlen(optarg)+2);
+</pre>
+<li>./judge/runguard.c:1163:23: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+	if ( cpuset!=NULL &amp;&amp; strlen(cpuset)&gt;0 ) {
+</pre>
+<li>./judge/runpipe.cc:268:11: <b>  [1] </b> (buffer) <i> read:Check buffer boundaries if used in a loop including recursive loops (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>, <a href="https://cwe.mitre.org/data/definitions/20.html">CWE-20</a>).   </i>
+<pre>
+		nread = read(*fd_out, buf, BUF_SIZE);
+</pre>
+<li>./lib/lib.error.c:61:29: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+	escaped = (char *)malloc(2*strlen(str)+1);
+</pre>
+<li>./lib/lib.error.c:64:25: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+	for(str_pos=0; str_pos&lt;strlen(str); str_pos++) {
+</pre>
+<li>./lib/lib.error.c:107:21: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+	sprintf(timestring+strlen(timestring), ".%03d", (int)(currtime.tv_usec/1000));
+</pre>
+<li>./lib/lib.error.c:112:14: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+	bufferlen = strlen(timestring)+strlen(progname_escaped)+strlen(mesg)+20;
+</pre>
+<li>./lib/lib.error.c:112:33: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+	bufferlen = strlen(timestring)+strlen(progname_escaped)+strlen(mesg)+20;
+</pre>
+<li>./lib/lib.error.c:112:58: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+	bufferlen = strlen(timestring)+strlen(progname_escaped)+strlen(mesg)+20;
+</pre>
+<li>./lib/lib.error.c:182:15: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+	buffersize = strlen(errtype)
+</pre>
+<li>./lib/lib.error.c:183:40: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+	            + (errdescr == NULL ? 0 : strlen(errdescr))
+</pre>
+<li>./lib/lib.error.c:184:40: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+	            + (mesg == NULL     ? 0 : strlen(mesg))
+</pre>
+<li>./lib/lib.misc.c:213:23: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+		if ( write(fd, str, strlen(str))&lt;(ssize_t)strlen(str) ) {
+</pre>
+<li>./lib/lib.misc.c:213:45: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+		if ( write(fd, str, strlen(str))&lt;(ssize_t)strlen(str) ) {
+</pre>
+<li>./sql/files/defaultdata/compare/compare.cc:53:6: <b>  [1] </b> (buffer) <i> sscanf:It's unclear if the %s limit in the format string is small enough (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Check that the limit is sufficiently small, or use a different input function.  </i>
+<pre>
+	if (sscanf(s, "%Lf%10s", &amp;v, trash) != 1) return false;
+</pre>
+<li>./sql/files/examples/boolfind_run/validate.cc:47:4: <b>  [1] </b> (obsolete) <i> usleep:This C routine is considered obsolete (as opposed to the shell command by the same name).   The interaction of this function with SIGALRM and other timer functions such as sleep(), alarm(), setitimer(), and nanosleep() is unspecified (<a href="https://cwe.mitre.org/data/definitions/676.html">CWE-676</a>).  Use nanosleep(2) or setitimer(2) instead.  </i>
+<pre>
+			usleep(100);
+</pre>
+<li>./tests/boolfind-test-correct.c:34:4: <b>  [1] </b> (buffer) <i> scanf:It's unclear if the %s limit in the format string is small enough (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Check that the limit is sufficiently small, or use a different input function.  </i>
+<pre>
+			scanf("%8s",answer);
+</pre>
+<li>./tests/boolfind-test-timelimit.c:32:4: <b>  [1] </b> (buffer) <i> scanf:It's unclear if the %s limit in the format string is small enough (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).  Check that the limit is sufficiently small, or use a different input function.  </i>
+<pre>
+			scanf("%8s\n",answer);
+</pre>
+<li>./tests/test-network.c:58:39: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+	buffersize = (errdescr == NULL ? 0 : strlen(errdescr))
+</pre>
+<li>./tests/test-network.c:59:39: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+	           + (mesg == NULL     ? 0 : strlen(mesg))
+</pre>
+<li>./tests/test-network.c:68:42: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+	if ( mesg != NULL )     vsprintf(buffer+strlen(buffer), mesg, ap);
+</pre>
+<li>./tests/test-network.c:87:27: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+	nwrite = write(fd,buffer,strlen(buffer));
+</pre>
+<li>./tests/test-network.c:89:19: <b>  [1] </b> (buffer) <i> strlen:Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (<a href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>).   </i>
+<pre>
+	if ( nwrite&lt;(int)strlen(buffer) ) error(0,"message sent incomplete");
+</pre>
+<li>./tests/test-network.c:96:16: <b>  [1] </b> (buffer) <i> read:Check buffer boundaries if used in a loop including recursive loops (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>, <a href="https://cwe.mitre.org/data/definitions/20.html">CWE-20</a>).   </i>
+<pre>
+	if ( (nread = read(fd, buffer, BUFFERSIZE-2)) == -1 ) {
+</pre>
+</ul>
+<h2>Analysis Summary</h2>
+<p>
+Hits = 143
+<br>
+Lines analyzed = 9959 in approximately 0.14 seconds (70466 lines/second)
+<br>
+Physical Source Lines of Code (SLOC) = 8164
+<br>
+Hits@level = [0] 109 [1]  39 [2]  58 [3]   7 [4]  38 [5]   1 <br>
+Hits@level+ = [0+] 252 [1+] 143 [2+] 104 [3+]  46 [4+]  39 [5+]   1 <br>
+Hits/KSLOC@level+ = [0+] 30.8672 [1+] 17.5159 [2+] 12.7389 [3+] 5.63449 [4+] 4.77707 [5+] 0.122489 <br>
+Symlinks skipped = 1 (--allowlink overrides but see doc for security issue)
+<br>
+Dot directories skipped = 2 (--followdotdir overrides)
+<br>
+Minimum risk level = 1
+<br>
+Not every hit is necessarily a security vulnerability.
+You can inhibit a report by adding a comment in this form:
+// flawfinder: ignore
+Make *sure* it's a false positive!
+You can use the option --neverignore to show these.
+<br>
+There may be other security vulnerabilities; review your code!
+<br>
+See '<a href="https://dwheeler.com/secure-programs">Secure Programming HOWTO</a>'
+(<a href="https://dwheeler.com/secure-programs">https://dwheeler.com/secure-programs</a>) for more information.
+</body>
+</html>
