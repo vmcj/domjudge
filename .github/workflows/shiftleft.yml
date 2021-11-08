@@ -24,7 +24,7 @@ jobs:
         SCAN_ANNOTATE_PR: 0
       with:
         output: reports
-        type: python,bash
+        type: python,bash,php
 
     - name: Upload report
       uses: github/codeql-action/upload-sarif@v1
