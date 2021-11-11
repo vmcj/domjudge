@@ -1,4 +1,4 @@
-name: 'Install DOMjudge with nginx'
+name: 'Install DOMjudge with nginx []'
 description: 'Setup domserver with mysql, http and nginx'
 runs:
   using: "composite"
