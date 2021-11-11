@@ -5,6 +5,7 @@ runs:
   steps:
     # Install default DOMjudge dommserver apt packages
     - name: Install domserver required apt packages
+      shell: bash
       run: |
         sudo apt update
         sudo apt install -y acl zip unzip nginx php php-fpm php-gd \
@@ -17,16 +18,19 @@ runs:
                             python3-yaml latexmk
 
     - name: Install composer files
+      shell: bash
       run: |
         composer install --no-scripts
         composer run-script package-versions-dump
 
     # Patch the operationId to be unique again to conform to OpenApi standard
     - name: Patch upstream
+      shell: bash
       run: sudo sed -i "s/\$operation->operationId =/#\$operation->operationId =/g" lib/vendor/nelmio/api-doc-bundle/OpenApiPhp/DefaultOperationId.php
 
     # We install in the current directory to keep mounts possible etc.
     - name: Configure Makefile
+      shell: bash
       run: |
         DIR=$(pwd)
         make configure
@@ -34,26 +38,31 @@ runs:
 
     # sudo because its default in the manual
     - name: Compile domserver
+      shell: bash
       run: |
         make domserver
         sudo make install-domserver
 
     # GitHub action does not start the SQL server.
     - name: Start DB
+      shell: bash
       run: |
         sudo /etc/init.d/mysql start
 
     - name: Setup DB
+      shell: bash
       run: |
         $HOME/domjudge/domserver/bin/dj_setup_database -uroot -proot install
 
     - name: Setup PHP-FPM
+      shell: bash
       run: |
         sudo cp $HOME/domjudge/domserver/etc/domjudge-fpm.conf /etc/php/7.4/fpm/pool.d/domjudge.conf
         sudo systemctl restart php7.4-fpm
         sudo systemctl status php7.4-fpm
 
     - name: Finish Nginx
+      shell: bash
       run: |
         # configure and restart nginx
         sudo rm -f /etc/nginx/sites-enabled/*
