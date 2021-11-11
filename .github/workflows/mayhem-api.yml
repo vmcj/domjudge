@@ -19,22 +19,22 @@ jobs:
     steps:
       - uses: actions/checkout@v2
  
-      - uses: ./github/action.yml
-
-      - name: Get the working API doc
-        run: curl http://localhost/domjudge/api/doc.json
-
-      - name: Mayhem for API
-        uses: ForAllSecure/mapi-action@193b709971cc377675e33284aecbf9229853e010
-        continue-on-error: true
-        with:
-          mapi-token: ${{ secrets.MAPI_TOKEN }}
-          api-url: http://localhost/domjudge/api # <- ✏️ update this
-          api-spec: http://localhost/domjudge/api/doc.json # <- ✏️ update this
-          duration: 60
-          sarif-report: mapi.sarif
-
-      - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v1
-        with:
-          sarif_file: mapi.sarif
+#      - uses: ./github/action.yml
+#
+#      - name: Get the working API doc
+#        run: curl http://localhost/domjudge/api/doc.json
+#
+#      - name: Mayhem for API
+#        uses: ForAllSecure/mapi-action@193b709971cc377675e33284aecbf9229853e010
+#        continue-on-error: true
+#        with:
+#          mapi-token: ${{ secrets.MAPI_TOKEN }}
+#          api-url: http://localhost/domjudge/api # <- ✏️ update this
+#          api-spec: http://localhost/domjudge/api/doc.json # <- ✏️ update this
+#          duration: 60
+#          sarif-report: mapi.sarif
+#
+#      - name: Upload SARIF file
+#        uses: github/codeql-action/upload-sarif@v1
+#        with:
+#          sarif_file: mapi.sarif
