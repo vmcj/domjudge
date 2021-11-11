@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
  
-      - uses: ./github/action.yml
+      - uses: ./github/
 #
 #      - name: Get the working API doc
 #        run: curl http://localhost/domjudge/api/doc.json
