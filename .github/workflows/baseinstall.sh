@@ -11,6 +11,8 @@ sudo apt install -y acl zip unzip nginx php php-fpm php-gd \
 composer install --no-scripts
 composer run-script package-versions-dump
 
+sudo sed -i "s/\$operation->operationId =/#\$operation->operationId =/g" lib/vendor/nelmio/api-doc-bundle/OpenApiPhp/DefaultOperationId.php
+
 DIR=$(pwd)
 make configure
 ./configure --with-baseurl='http://localhost/domjudge/' --enable-doc-build=no --prefix=$HOME/domjudge
