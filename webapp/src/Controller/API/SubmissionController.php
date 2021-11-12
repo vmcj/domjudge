@@ -113,7 +113,6 @@ class SubmissionController extends AbstractRestController
     /**
      * Add a submission to this contest
      * @Rest\Post("")
-     * @Rest\Post("/")
      * @Rest\Put("/{id}")
      * @OA\Post()
      * @OA\Put()

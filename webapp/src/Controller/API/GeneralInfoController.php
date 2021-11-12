@@ -107,7 +107,6 @@ class GeneralInfoController extends AbstractFOSRestController
     /**
      * Get information about the API and DOMjudge
      * @Rest\Get("/info")
-     * @Rest\Get("", name="api_root")
      * @OA\Response(
      *     response="200",
      *     description="Information about the API and DOMjudge",
