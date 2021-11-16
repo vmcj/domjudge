@@ -49,6 +49,8 @@ nelmio_api_doc:
                     required: true
                     schema:
                         type: string
+                        pattern: "^[A-Za-z0-9]{1,255}$"
+                        maxLength: 255
                     examples:
                         generic:
                             value: "1"
