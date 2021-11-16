@@ -1,6 +1,10 @@
 name: "Mayhem API analysis"
 
 on:
+  push:
+    branches: [ main ]
+  pull_request_target:
+    branches: [ main ]
   schedule:
     - cron: '5 21 * * *'
 
