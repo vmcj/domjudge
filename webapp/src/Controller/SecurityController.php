@@ -131,7 +131,30 @@ class SecurityController extends AbstractController
             if ($this->config->get('show_affiliations')) {
                 switch ($registration_form->get('affiliation')->getData()) {
                     case 'new':
+                        $shortNameLength = 32;
                         $affiliation = new TeamAffiliation();
+                        $shortName = $registration_form->get('affiliationName')->getData();
+                        /*if(strlen($shortName)>$shortNameLength){
+                            $blocks = preg_split("/[\s,-]+/", $shortName);
+                            # 32 is based on the length for the TeamAffiliation Entity
+                            $sliceLength = (int)(32/count($blocks));
+                            $uniqFound = False;
+                            while(!$uniqFound) {
+                                $newShortName = '';
+                                foreach($blocks as $block) {
+                                    $newShortName += ucfirst(substr(preg_replace('#[aeiou\s]+#i', '', $block),0,$sliceLength));
+                                }
+                                for($i=0; $i<pow(0,$shortNameLength-strlen($newShortName)); $i++){
+                                    $tmpShortName = $newShortName+$i;
+                                    if ($this->em->getRepository(TeamAffiliation::class)->findOneBy(['shortname' => $tmpShortName])) {
+                                        $shortName = $tmpShortName;
+                                        $uniqFound = True;
+                                        break;
+                                    }
+                                }
+                                $sliceLength++;
+                            }
+                        }*/
                         $affiliation
                             ->setExternalid(Uuid::uuid4()->toString())
                             ->setName($registration_form->get('affiliationName')->getData())

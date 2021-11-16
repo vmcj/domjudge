@@ -9,7 +9,7 @@ nelmio_api_doc:
         components:
             securitySchemes:
                 basicAuth:
-                    type: http
+                    type: https
                     scheme: basic
             parameters:
                 cid:
@@ -19,6 +19,8 @@ nelmio_api_doc:
                     required: true
                     schema:
                         type: string
+                        pattern: "^[A-Za-z0-9]{1,255}$"
+                        maxLength: 255
                     examples:
                         int0:
                             value: "2"
@@ -36,6 +38,8 @@ nelmio_api_doc:
                     required: true
                     schema:
                         type: integer
+                        minimum: 1
+                        maximum: 9999
                     examples:
                         balloon:
                             value: 1
@@ -46,7 +50,10 @@ nelmio_api_doc:
                     description: The ID of the entity
                     required: true
                     schema:
+                        $ref: "#/components/schemas/Id"
                         type: string
+                        pattern: "^[A-Za-z0-9]{1,255}$"
+                        maxLength: 255
                     examples:
                         generic:
                             value: "1"
@@ -68,8 +75,7 @@ nelmio_api_doc:
                     schema:
                         type: array
                         items:
-                            type: string
-                            description: A single ID
+                            $ref: "#/components/schemas/Id"
                 strict:
                     name: strict
                     in: query
@@ -122,6 +128,10 @@ nelmio_api_doc:
                                 type: string
                             mime:
                                 type: string
+                Id:
+                    type: string
+                    pattern: "^[A-Za-z0-9]{1,255}$"
+                    maxLength: 255
                 ImageList:
                     type: array
                     nullable: true
