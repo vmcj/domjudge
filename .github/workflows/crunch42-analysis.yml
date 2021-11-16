@@ -20,7 +20,7 @@ jobs:
         run: .github/workflowscripts/baseinstall.sh
 
       - name: Dump the OpenAPI
-        run: ./github/workflowscripts/getapi.sh
+        run: .github/workflowscripts/getapi.sh
 
       - name: Find all other JSON files and delete those
         run: |
