@@ -1424,6 +1424,19 @@ class JudgehostController extends AbstractFOSRestController
 
     /**
      * Fetch work tasks.
+     * @OA\RequestBody(
+     *   request="Hostname",
+     *   description="The hostname of the judgedaemon requesting.",
+     *   @OA\JsonContent(
+     *      @OA\Property(property="hostname", type="string"),
+     *      @OA\Examples(example="example-data", value={"hostname": "example-judgehost1"}, summary="Fetch work with example judgedaemon."),
+     *   )
+     * )
+     * @OA\Response(
+     *     response="200",
+     *     description="List of judgeTasks.",
+     *     @OA\Schema(ref="#/definitions/JudgeTaskList")
+     * )
      */
     #[IsGranted(new Expression("is_granted('ROLE_JUDGEHOST')"))]
     #[Rest\Post('/fetch-work')]
