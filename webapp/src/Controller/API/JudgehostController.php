@@ -1427,9 +1427,36 @@ class JudgehostController extends AbstractFOSRestController
      * @OA\RequestBody(
      *   request="Hostname",
      *   description="The hostname of the judgedaemon requesting.",
+     *   required=true,
      *   @OA\JsonContent(
-     *      @OA\Property(property="hostname", type="string"),
-     *      @OA\Examples(example="example-data", value={"hostname": "example-judgehost1"}, summary="Fetch work with example judgedaemon."),
+     *      required={"hostname"},
+     *      @OA\Property(
+     *          property="hostname",
+     *          type="string",
+     *          format="string",
+     *          description="Hostname of judgedaemon"
+     *      ),
+     *      @OA\Property(
+     *          property="max-batchsize",
+     *          type="integer",
+     *          format="integer",
+     *          description="Maximum size judge requests to handle"
+     *      ),
+     *      @OA\Schema(
+     *          @OA\Property(
+     *              property="hostname",
+     *              type="string",
+     *              format="string",
+     *              description="Hostname of judgedaemon"
+     *          ),
+     *          @OA\Property(
+     *              property="max-batchsize",
+     *              type="integer",
+     *              format="integer",
+     *              description="Maximum size judge requests to handle"
+     *          ),
+     *     ),
+     *     @OA\Examples(example="example-data", value={"hostname": "example-judgehost1"}, summary="Fetch work with example judgedaemon."),
      *   )
      * )
      * @OA\Response(
