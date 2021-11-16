@@ -74,8 +74,7 @@ nelmio_api_doc:
                     schema:
                         type: array
                         items:
-                            type: string
-                            description: A single ID
+                            $ref: "#/components/parameters/id"
                 strict:
                     name: strict
                     in: query
