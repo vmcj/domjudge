@@ -51,7 +51,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * @Rest\Route("/judgehosts")
  * @OA\Tag(name="Judgehosts")
- * @OA\Response(response="400", ref="#/components/responses/InvalidResponse")
  */
 class JudgehostController extends AbstractFOSRestController
 {
