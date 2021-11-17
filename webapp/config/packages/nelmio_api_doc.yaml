@@ -51,6 +51,7 @@ nelmio_api_doc:
                     description: The ID of the entity
                     required: true
                     schema:
+                        $ref: "#/components/schemas/Id"
                         type: string
                         pattern: "^[A-Za-z0-9]{1,255}$"
                         maxLength: 255
@@ -75,7 +76,7 @@ nelmio_api_doc:
                     schema:
                         type: array
                         items:
-                            $ref: "#/components/parameters/id"
+                            $ref: "#/components/schemas/Id"
                 strict:
                     name: strict
                     in: query
@@ -103,6 +104,10 @@ nelmio_api_doc:
                             schema:
                                 type: string
             schemas:
+                Id:
+                    type: string
+                    pattern: "^[A-Za-z0-9]{1,255}$"
+                    maxLength: 255
                 ImageList:
                     type: array
                     items:
