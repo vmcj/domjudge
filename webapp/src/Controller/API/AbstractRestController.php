@@ -24,6 +24,7 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
  * Class AbstractRestController
+ * @OA\Response(response="400", ref="#/components/responses/InvalidResponse")
  * @package App\Controller\API
  */
 abstract class AbstractRestController extends AbstractFOSRestController
