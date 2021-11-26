@@ -1,0 +1,238 @@
+# Build the DOMjudge image
+# Used for visual testing, unit -, and integration.
+
+build_containers:
+  stage: build
+  image: docker:dind
+  services:
+    - docker:dind
+  script:
+    # Start the MariaDB container to connect to
+    # We install first against this one, and later against the mysql server
+    - >
+      for SQL in mariadb mysql; do
+        docker run -d --name "$SQL" "$SQL":latest
+      done
+    # Do the actual building of the domserver
+    - cd ..
+    - docker build -t $CI_REGISTRY/domjudge/domjudge/domserver:$CI_COMMIT_SHA \
+      --build-arg DJ_ETC=/opt/domjudge/domserver/etc \
+      --build-arg DJ_SRC=/tmp/domjudge \
+      -f domjudge/gitlab/buildimage/Dockerfile .
+    # Store the images for the next jobs
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - >
+      for SQL in mariadb mysql domserver; do
+        docker commit "$SQL" "$CI_REGISTRY/domjudge/domjudge/$SQL:$CI_COMMIT_SHA"
+        URL=$CI_REGISTRY/domjudge/domjudge/$SQL:$CI_COMMIT_SHA
+        echo $URL
+        docker push $URL
+      done
+
+visual_pr:
+  stage: visual_pre
+  needs: [build_containers]
+  image: docker:dind
+  services:
+    - name: $CI_REGISTRY/domjudge/domjudge/mariadb:$CI_COMMIT_SHA
+      alias: sqlserver
+  image: $CI_REGISTRY/domjudge/domjudge/domserver:$CI_COMMIT_SHA
+  script:
+    - service nginx status
+#dom_install_image:
+#  stage: build
+#  image: docker:dind
+#  services:
+#    - docker:dind
+#  script:
+#    - cd ..
+#    - docker build -t $CI_REGISTRY/domjudge/domjudge/domserver:$CI_COMMIT_SHA --build-arg DJ_ETC=/opt/domjudge/domserver/etc --build-arg DJ_SRC=/tmp/domjudge -f domjudge/gitlab/demodocker/Dockerfile .
+#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#    - docker push $CI_REGISTRY/domjudge/domjudge/domserver:$CI_COMMIT_SHA
+#    - echo "$CI_REGISTRY/domjudge/domjudge/domserver:$CI_COMMIT_SHA"
+#
+#Domserver visual inspection of the PR:
+#  stage: visual_pre
+#  needs: [dom_install_image]
+#  image: $CI_REGISTRY/domjudge/domjudge/domserver:$CI_COMMIT_SHA
+#  services:
+#    - mariadb
+#  variables:
+#    MYSQL_ROOT_PASSWORD: password
+#    DOCKER_HOST: tcp://docker:2375/
+#    DOCKER_DRIVER: overlay2
+#  parallel:
+#    matrix:
+#      - URL: team
+#        ROLE: [jury,admin,team]
+#      - URL: public
+#        ROLE: [none,jury,admin,balloon,team]
+#  script:
+#    - ./gitlab/docker_visualpr.sh pr
+#  artifacts:
+#    when: always
+#    paths:
+#      - screenshotspr
+#      - html
+#      - gitlabartifacts
+#      - wget.log
+#dom_install_image:
+#  stage: build
+#  image: docker:dind
+#  services:
+#    - docker:dind
+#  script:
+#    - cd ..
+#    - docker build -t $CI_REGISTRY/domjudge/domjudge/domserver:$CI_COMMIT_SHA --build-arg DJ_ETC=/opt/domjudge/domserver/etc --build-arg DJ_SRC=/tmp/domjudge -f domjudge/gitlab/demodocker/Dockerfile .
+#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#    - docker push $CI_REGISTRY/domjudge/domjudge/domserver:$CI_COMMIT_SHA
+#    - echo "$CI_REGISTRY/domjudge/domjudge/domserver:$CI_COMMIT_SHA"
+#
+#dom_visual_docker:
+#  stage: visual_pre
+#  needs: [dom_install_image]
+#  image: $CI_REGISTRY/domjudge/domjudge/domserver:$CI_COMMIT_SHA
+#  services:
+#    - mariadb
+#  variables:
+#    MYSQL_ROOT_PASSWORD: password
+#    DOCKER_HOST: tcp://docker:2375/
+#    DOCKER_DRIVER: overlay2
+#  parallel:
+#    matrix:
+#      #- URL: team
+#      #  ROLE: [jury,admin,team]
+#      #- URL: public
+#      #  ROLE: [none,jury,admin,balloon,team]
+#      - URL: public
+#        ROLE: [none]
+#  script:
+#    - ./gitlab/docker_visualpr.sh pr
+#  artifacts:
+#    when: always
+#    paths:
+#      - screenshotspr
+#      - html
+#      - gitlabartifacts
+#      - wget.log
+#dom_install_image:
+#  stage: build
+#  image: docker:dind
+#  services:
+#    - docker:dind
+#  script:
+#    - cd ..
+#    - docker build -t $CI_REGISTRY/domjudge/domjudge/domserver:$CI_COMMIT_SHA --build-arg DJ_ETC=/opt/domjudge/domserver/etc --build-arg DJ_SRC=/tmp/domjudge -f domjudge/gitlab/demodocker/Dockerfile .
+#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#    - docker push $CI_REGISTRY/domjudge/domjudge/domserver:$CI_COMMIT_SHA
+#    - echo "$CI_REGISTRY/domjudge/domjudge/domserver:$CI_COMMIT_SHA"
+#
+#Domserver visual inspection of the PR:
+#  stage: visual_pre
+#  needs: [dom_install_image]
+#  image: $CI_REGISTRY/domjudge/domjudge/domserver:$CI_COMMIT_SHA
+#  services:
+#    - mariadb
+#  variables:
+#    MYSQL_ROOT_PASSWORD: password
+#    DOCKER_HOST: tcp://docker:2375/
+#    DOCKER_DRIVER: overlay2
+#  parallel:
+#    matrix:
+#      - URL: team
+#        ROLE: [jury,admin,team]
+#      - URL: public
+#        ROLE: [none,jury,admin,balloon,team]
+#  script:
+#    - ./gitlab/docker_visualpr.sh pr
+#  artifacts:
+#    when: always
+#    paths:
+#      - screenshotspr
+#      - html
+#      - gitlabartifacts
+#      - wget.log
+#    - docker build -t $CI_REGISTRY/domjudge/domjudge/domserver:$CI_COMMIT_SHA --build-arg DJ_ETC=/opt/domjudge/domserver/etc --build-arg DJ_SRC=/tmp/domjudge -f domjudge/gitlab/demodocker/Dockerfile .
+#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#    - docker push $CI_REGISTRY/domjudge/domjudge/domserver:$CI_COMMIT_SHA
+#    - echo "$CI_REGISTRY/domjudge/domjudge/domserver:$CI_COMMIT_SHA"
+#
+#Domserver visual inspection of the PR:
+#  <<: *retry_job
+#  <<: *long_job
+#  stage: visual_pre
+#  needs: [dom_install_image]
+#  image: $CI_REGISTRY/domjudge/domjudge/domserver:$CI_COMMIT_SHA
+#  services:
+#    - mariadb
+#  variables:
+#    MYSQL_ROOT_PASSWORD: password
+#    DOCKER_HOST: tcp://docker:2375/
+#    DOCKER_DRIVER: overlay2
+#  parallel:
+#    matrix:
+#      - URL: team
+#        ROLE: [jury,admin,team]
+#      - URL: public
+#        ROLE: [none,jury,admin,balloon,team]
+#  script:
+#    - ./gitlab/docker_visualpr.sh pr
+#  artifacts:
+#    when: always
+#    paths:
+#      - screenshotspr
+#      - html
+#      - gitlabartifacts
+#      - wget.log
+#Domserver visual inspection of the PR:
+#  stage: visual_pre
+#  needs: [dom_install_image]
+#  image: $CI_REGISTRY/domjudge/domjudge/domserver:$CI_COMMIT_SHA
+#  services:
+#    - mariadb
+#  variables:
+#    MYSQL_ROOT_PASSWORD: password
+#    DOCKER_HOST: tcp://docker:2375/
+#    DOCKER_DRIVER: overlay2
+#  parallel:
+#    matrix:
+#      - URL: team
+#        ROLE: [jury,admin,team]
+#      - URL: public
+#        ROLE: [none,jury,admin,balloon,team]
+#  script:
+#    - ./gitlab/docker_visualpr.sh pr
+#  artifacts:
+#    when: always
+#    paths:
+#      - screenshotspr
+#      - html
+#      - gitlabartifacts
+#      - wget.log
+#dom_visual_docker:
+#  stage: visual_pre
+#  needs: [dom_install_image]
+#  image: $CI_REGISTRY/domjudge/domjudge/domserver:$CI_COMMIT_SHA
+#  services:
+#    - mariadb
+#  variables:
+#    MYSQL_ROOT_PASSWORD: password
+#    DOCKER_HOST: tcp://docker:2375/
+#    DOCKER_DRIVER: overlay2
+#  parallel:
+#    matrix:
+#      #- URL: team
+#      #  ROLE: [jury,admin,team]
+#      #- URL: public
+#      #  ROLE: [none,jury,admin,balloon,team]
+#      - URL: public
+#        ROLE: [none]
+#  script:
+#    - ./gitlab/docker_visualpr.sh pr
+#  artifacts:
+#    when: always
+#    paths:
+#      - screenshotspr
+#      - html
+#      - gitlabartifacts
+#      - wget.log
