@@ -131,4 +131,8 @@ else
 fi
 done
 echo "Found: " $FOUNDERR
-[ "$FOUNDERR" -eq 0 ]
+#[ "$FOUNDERR" -eq 0 ]
+
+find ./ -name "*.env.*" -exec cat {} \; | grep "style"
+
+cat /builds/project-0/public/localhost/domjudge/public.html
