@@ -24,13 +24,6 @@
 {% endif %}
 {% set medalCategories = contest.medalCategories %}
 
-{% if maxWidth > 0 %}
-    <style>
-        .forceWidth {
-            max-width: {{ maxWidth }}px;
-        }
-    </style>
-{% endif %}
 
 <table class="scoreboard center {% if jury %}scoreboard_jury{% endif %}">
 
