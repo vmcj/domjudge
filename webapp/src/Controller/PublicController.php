@@ -257,4 +257,13 @@ class PublicController extends BaseController
 
         return $response($probId, $contest, $contestProblem);
     }
+
+    /**
+     * @Route("/generated.css", name="generated_style")
+     */
+    public function generateCSS(): Response
+    {
+        $data = ['maxWidth' => $this->config->get('team_column_width')];
+        return $this->render('public/generated.css.twig', $data);
+    }
 }

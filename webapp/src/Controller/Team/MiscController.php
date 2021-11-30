@@ -98,7 +98,6 @@ class MiscController extends BaseController
                 'url' => $this->generateUrl('team_index'),
                 'ajax' => true,
             ],
-            'maxWidth' => $this->config->get('team_column_width'),
         ];
         if ($contest) {
             $scoreboard = $this->scoreboardService

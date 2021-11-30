@@ -969,7 +969,6 @@ class ScoreboardService
             $data['showPending']          = $this->config->get('show_pending');
             $data['showTeamSubmissions']  = $this->config->get('show_teams_submissions');
             $data['scoreInSeconds']       = $this->config->get('score_in_seconds');
-            $data['maxWidth']             = $this->config->get('team_column_width');
         }
 
         if ($request && $request->isXmlHttpRequest()) {

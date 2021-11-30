@@ -291,7 +291,6 @@ class TeamController extends BaseController
             'showAffiliations' => (bool)$this->config->get('show_affiliations'),
             'showFlags' => (bool)$this->config->get('show_flags'),
             'showContest' => count($this->dj->getCurrentContests()) > 1,
-            'maxWidth' => $this->config->get("team_column_width"),
         ];
 
         $currentContest = $this->dj->getCurrentContest();
