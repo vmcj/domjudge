@@ -97,7 +97,7 @@ if [ "$TEST" = "w3cval" ]; then
     if [ "$ROLE" = jury ]; then
         FLTR="$FLTRALL|$FLTRJURY"
     elif [ "$ROLE" = admin ]; then
-        FLTR="$FLTRALL|$FLTRJURY|.*tab.*|.*non-void.*|.*CSS.*|.*child.*|.*doctype.*|.*option.*|.*maxlength.*|.*ID.*"
+        FLTR="$FLTRALL|$FLTRJURY|.*tab.*|.*non-void.*|.*CSS.*|.*child.*|.*doctype.*|.*option.*|.*maxlength.*"
     else
         FLTR="$FLTRALL"
     fi
