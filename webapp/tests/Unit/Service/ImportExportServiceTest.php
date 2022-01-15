@@ -205,7 +205,9 @@ class ImportExportServiceTest extends KernelTestCase
         ];
         /** @var ImportExportService $importExportService */
         $importExportService = static::$container->get(ImportExportService::class);
-        $importExportService->importContestData($contestData, $message, $cid);
+        if (!$importExportService->importContestData($contestData, $message, $cid)) {
+            $this->fail($message);
+        }
 
         $contest = $this->getContest($cid);
         self::assertTrue($importExportService->importProblemsData($contest, $data, $ids));
