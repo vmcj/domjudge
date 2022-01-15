@@ -732,7 +732,7 @@ class DOMJudgeService
 
 
         $zip = new ZipArchive();
-        if (!($tempFilename = tempnam($this->getDomjudgeTmpDir(), "export-"))) {
+        if (!($tempFilename = tempnam($this->getDOMjudgeTmpDir(), "export-"))) {
             throw new ServiceUnavailableHttpException(null, 'Could not create temporary file.');
         }
 
@@ -1246,7 +1246,7 @@ class DOMJudgeService
      */
     public function assetPath(string $name, string $type, bool $fullPath = false, ?string $forceExtension = null): ?string
     {
-        $prefix = $fullPath ? ($this->getDomjudgeWebappDir() . '/public/') : '';
+        $prefix = $fullPath ? ($this->getDOMjudgeWebappDir() . '/public/') : '';
         switch ($type) {
             case 'affiliation':
                 $dir = 'images/affiliations';
@@ -1278,7 +1278,7 @@ class DOMJudgeService
         // checkbox when a global banner has been set.
         $bannerFiles = ['images/banner.png', 'images/banner.jpg', 'images/banner.svg'];
         foreach ($bannerFiles as $bannerFile) {
-            if (file_exists($this->getDomjudgeWebappDir() . '/public/' . $bannerFile)) {
+            if (file_exists($this->getDOMjudgeWebappDir() . '/public/' . $bannerFile)) {
                 return $bannerFile;
             }
         }

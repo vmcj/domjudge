@@ -424,7 +424,11 @@ EOF;
         ];
         $unexpectedUsers = ['analyst1', 'analyst2'];
 
+<<<<<<< HEAD
         $fileName = tempnam(static::getContainer()->get(DOMJudgeService::class)->getDomjudgeTmpDir(), 'accounts-tsv');
+=======
+        $fileName = tempnam(static::$container->get(DOMJudgeService::class)->getDOMjudgeTmpDir(), 'accounts-tsv');
+>>>>>>> 692b2c950... Fix various DOMjudge misspellings
         file_put_contents($fileName, $accounts);
         $file = new UploadedFile($fileName, 'accounts.tsv');
         /** @var ImportExportService $importExportService */

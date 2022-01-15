@@ -127,7 +127,7 @@ class SubmissionController extends BaseController
         // Load preselected filters
         $filters          = $this->dj->jsonDecode((string)$this->dj->getCookie('domjudge_submissionsfilter') ?: '[]');
 
-        $verdictsConfig = $this->dj->getDomjudgeEtcDir() . '/verdicts.php';
+        $verdictsConfig = $this->dj->getDOMjudgeEtcDir() . '/verdicts.php';
         $results = array_keys(include $verdictsConfig);
         $results[] = 'judging';
         $results[] = 'queued';
@@ -834,7 +834,7 @@ class SubmissionController extends BaseController
 
             /** @var UploadedFile[] $filesToSubmit */
             $filesToSubmit = [];
-            $tmpdir        = $this->dj->getDomjudgeTmpDir();
+            $tmpdir        = $this->dj->getDOMjudgeTmpDir();
             foreach ($files as $file) {
                 if (!($tmpfname = tempnam($tmpdir, "edit_source-"))) {
                     throw new ServiceUnavailableHttpException(null, "Could not create temporary file.");

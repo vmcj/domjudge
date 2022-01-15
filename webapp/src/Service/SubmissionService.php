@@ -710,7 +710,7 @@ class SubmissionService
         /** @var SubmissionFile[] $files */
         $files = $submission->getFiles();
         $zip   = new \ZipArchive;
-        if (!($tmpfname = tempnam($this->dj->getDomjudgeTmpDir(), "submission_file-"))) {
+        if (!($tmpfname = tempnam($this->dj->getDOMjudgeTmpDir(), "submission_file-"))) {
             throw new ServiceUnavailableHttpException(null, 'Could not create temporary file.');
         }
 

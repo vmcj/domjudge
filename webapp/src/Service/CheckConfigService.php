@@ -307,7 +307,7 @@ class CheckConfigService
 
     public function checkTmpdirWritable(): array
     {
-        $tmpdir = $this->dj->getDomjudgeTmpDir();
+        $tmpdir = $this->dj->getDOMjudgeTmpDir();
         if (is_writable($tmpdir)) {
             return ['caption' => 'TMPDIR writable',
                     'result' => 'O',
@@ -719,7 +719,7 @@ class CheckConfigService
     public function checkAllExternalIdentifiers(): array
     {
         // Get all entity classes
-        $dir   = realpath(sprintf('%s/src/Entity', $this->dj->getDomjudgeWebappDir()));
+        $dir   = realpath(sprintf('%s/src/Entity', $this->dj->getDOMjudgeWebappDir()));
         $files = glob($dir . '/*.php');
 
         $result = [];

@@ -281,7 +281,7 @@ class ImportProblemService
                             $messages[] = 'Found multiple custom output validators.';
                         } else {
                             $tmpzipfiledir = exec("mktemp -d --tmpdir=" .
-                                                  $this->dj->getDomjudgeTmpDir(),
+                                                  $this->dj->getDOMjudgeTmpDir(),
                                                   $dontcare, $retval);
                             if ($retval != 0) {
                                 throw new ServiceUnavailableHttpException(
@@ -322,7 +322,7 @@ class ImportProblemService
 
                             $combinedRunCompare = $yamlData['validation'] == 'custom interactive';
 
-                            if (!($tempzipFile = tempnam($this->dj->getDomjudgeTmpDir(), "/executable-"))) {
+                            if (!($tempzipFile = tempnam($this->dj->getDOMjudgeTmpDir(), "/executable-"))) {
                                 throw new ServiceUnavailableHttpException(null, 'Failed to create temporary file');
                             }
                             file_put_contents($tempzipFile, $outputValidatorZip);
@@ -434,7 +434,7 @@ class ImportProblemService
                             $thumbnailSize = $this->config->get('thumbnail_size');
                             $imageThumb    = Utils::getImageThumb(
                                 $imageFile, $thumbnailSize,
-                                $this->dj->getDomjudgeTmpDir(),
+                                $this->dj->getDOMjudgeTmpDir(),
                                 $errormsg
                             );
                             if ($imageThumb === false) {
@@ -675,7 +675,7 @@ class ImportProblemService
                     $languageToUse = $submission_details[$path]['langid'];
                 }
 
-                $tmpDir = $this->dj->getDomjudgeTmpDir();
+                $tmpDir = $this->dj->getDOMjudgeTmpDir();
 
                 if (empty($languageToUse)) {
                     $subs_with_unknown_lang[] = "'" . $path . "'";
