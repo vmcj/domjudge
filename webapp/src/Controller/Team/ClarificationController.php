@@ -209,7 +209,7 @@ class ClarificationController extends BaseController
     ): void {
         $formData = $form->getData();
         // First part will always be the contest ID, as Symfony will validate this
-        [, $problemId] = explode('-', $formData['subject']);
+        [$dumped, $problemId] = explode('-', $formData['subject']);
         $problem = null;
         $category = null;
         $queue = null;
