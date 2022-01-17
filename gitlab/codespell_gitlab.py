@@ -7,12 +7,13 @@ import itertools
 
 def domjudgePermutations():
     perm = [''.join(x) for x in itertools.permutations("DOM",3)]
+    perm.remove('DOM')
     perm += ['DOm','Dom']
     fin = []
     for judge in ['Judge','judge']:
         for p in perm:
             fin.append(p+judge)
-    fin.remove('DOMjudge')
+    fin.remove('DomJudge')
     return fin
 
 github_to_codespell = {'ignore_words_file':'I'}
