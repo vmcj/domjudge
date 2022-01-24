@@ -50,6 +50,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * @Rest\Route("/judgehosts")
  * @OA\Tag(name="Judgehosts")
+ * @OA\Response(response="400", ref="#/components/responses/InvalidResponse")
  */
 class JudgehostController extends AbstractFOSRestController
 {
@@ -1323,6 +1324,44 @@ class JudgehostController extends AbstractFOSRestController
     /**
      * Fetch work tasks.
      * @Rest\Post("/fetch-work")
+     * @OA\RequestBody(
+     *   description="The hostname of the judgedaemon requesting.",
+     *   @OA\JsonContent(
+     *      required={"hostname"},
+     *      @OA\Property(
+     *          property="hostname",
+     *          type="string",
+     *          format="string",
+     *          description="Hostname of judgedaemon"
+     *      ),
+     *      @OA\Property(
+     *          property="max-batchsize",
+     *          type="integer",
+     *          format="integer",
+     *          description="Maximum size judge requests to handle"
+     *      ),
+     *      @OA\Schema(
+     *          @OA\Property(
+     *              property="hostname",
+     *              type="string",
+     *              format="string",
+     *              description="Hostname of judgedaemon"
+     *          ),
+     *          @OA\Property(
+     *              property="max-batchsize",
+     *              type="integer",
+     *              format="integer",
+     *              description="Maximum size judge requests to handle"
+     *          ),
+     *     ),
+     *     @OA\Examples(example="example-data", value={"hostname": "example-judgehost1"}, summary="Fetch work with example judgedaemon."),
+     *   )
+     * )
+     * @OA\Response(
+     *     response="200",
+     *     description="List of judgeTasks.",
+     *     @OA\Schema(ref="#/definitions/JudgeTaskList")
+     * )
      * @Security("is_granted('ROLE_JUDGEHOST')")
      */
     public function getJudgeTasksAction(Request $request): array
