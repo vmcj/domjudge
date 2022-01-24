@@ -109,12 +109,12 @@ void vlogmsg(int msglevel, const char *mesg, va_list ap)
 	progname_escaped = printf_escape(progname);
 	if ( progname_escaped==NULL ) abort();
 
-	bufferlen = strlen(timestring)+strlen(progname_escaped)+strlen(mesg)+20;
+	bufferlen = strlen(timestring)+strlen(mesg)+20;
 	buffer = (char *)malloc(bufferlen);
 	if ( buffer==NULL ) abort();
 
-	snprintf(buffer, bufferlen, "[%s] %s[%d]: %s\n",
-	         timestring, progname_escaped, getpid(), mesg);
+	snprintf(buffer, bufferlen, "[%s] [%d]: %s\n",
+	         timestring, getpid(), mesg);
 
 	free(progname_escaped);
 
