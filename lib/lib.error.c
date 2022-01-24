@@ -23,6 +23,8 @@
 #include <unistd.h>
 #include <time.h>
 #include <sys/time.h>
+#include <stdio.h>
+#include <ctype.h>
 
 /* Define va_copy macro if not available (ANSI C99 only).
  * memcpy() is fallback suggested by the autoconf manual, but doesn't
@@ -63,8 +65,9 @@ char *printf_escape(const char *str)
 
 	for(str_pos=0; str_pos<strlen(str); str_pos++) {
 		c = str[str_pos];
-		escaped[esc_pos++] = c;
-		if ( c=='%' ) escaped[esc_pos++] = c;
+        if(isalnum(c)){
+		    escaped[esc_pos++] = c;
+        }
 	}
 	escaped[esc_pos] = 0;
 
