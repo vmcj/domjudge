@@ -78,6 +78,7 @@ void vlogmsg(int msglevel, const char *mesg, va_list ap)
 	struct tm tm_buf;
 	char timestring[128];
 	char *progname_escaped;
+	char *progname_unformatted;
 	char *buffer;
 	int bufferlen;
 	va_list aq;
@@ -112,10 +113,22 @@ void vlogmsg(int msglevel, const char *mesg, va_list ap)
 	bufferlen = strlen(timestring)+strlen(progname_escaped)+strlen(mesg)+20;
 	buffer = (char *)malloc(bufferlen);
 	if ( buffer==NULL ) abort();
+	progname_unformatted = (char *)malloc(1+2*strlen(progname_escaped));
+	size_t str_tmp_pos, esc_tmp_pos;
+	char ctmp;
+	for(str_tmp_pos=0; str_tmp_pos<strlen(progname_escaped); str_tmp_pos++) {
+		ctmp = progname_escaped[str_tmp_pos];
+		if ( ctmp!='%' ) {
+			progname_unformatted[esc_tmp_pos++] = 'c';
+			progname_unformatted[esc_tmp_pos++] = ctmp;
+		}
+	}
+	progname_unformatted[esc_tmp_pos] = 0; 
 
 	snprintf(buffer, bufferlen, "[%s] %s[%d]: %s\n",
-	         timestring, progname_escaped, getpid(), mesg);
+	         timestring, progname_unformatted, getpid(), mesg);
 
+	free(progname_unformatted);
 	free(progname_escaped);
 
 	if ( msglevel<=verbose ) {
