@@ -50,6 +50,7 @@ class ContestProblem
             'default' => 1,
     ])]
     #[Assert\GreaterThanOrEqual(0)]
+    #[Assert\LessThan(10000)]
     #[Serializer\Exclude]
     private int $points = 1;
 
