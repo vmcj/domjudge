@@ -1,6 +1,6 @@
 {% extends 'jury/export/layout.html.twig' %}
 
-{% block body %}
+{% block extra_style %}
     <style>
         h2 {
             padding-top: 0;
@@ -39,6 +39,9 @@
             background-color: #6c757d;
         }
     </style>
+{% endblock %}
+
+{% block body %}
 
     {% for queue, clarifications in grouped %}
         {% if not loop.first %}
