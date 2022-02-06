@@ -6,11 +6,11 @@ webstandard_check_role:
   parallel:
     matrix:
       - ROLE: public
-        TEST: [w3cval,WCAG2A,WCAG2AA]
+        TEST: [w3cval]
       - ROLE: team
-        TEST: [w3cval,WCAG2A,WCAG2AA]
+        TEST: [w3cval]
       - ROLE: balloon
-        TEST: [w3cval,WCAG2A,WCAG2AA]
+        TEST: [w3cval]
       - ROLE: jury
         TEST: [w3cval]
       - ROLE: admin

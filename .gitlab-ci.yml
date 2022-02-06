@@ -3,7 +3,6 @@ include:
   - '/gitlab/ci/integration.yml'
   - '/gitlab/ci/webstandard.yml'
   - '/gitlab/ci/template.yml'
-  - '/gitlab/ci/misc.yml'
 
 stages:
   - test
