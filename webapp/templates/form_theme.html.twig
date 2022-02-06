@@ -5,6 +5,31 @@
     {{- parent() -}}
 {%- endblock choice_widget_collapsed %}
 
+{% block radio_widget -%}
+    {% set parent_label_class = 'radio-custom' %}
+    {{- parent() -}}
+{%- endblock radio_widget %}
+
+{% block checkbox_widget -%}
+    {% set parent_label_class = 'checkbox-custom' %}
+    {{- parent() -}}
+{%- endblock checkbox_widget %}
+
+{% block form_label -%}
+    {% dump form %}
+    {% if form.vars.name is defined and form.vars.name contains '[' %}
+        <b>COMPOUND</b>
+    {% endif %}
+    {{- parent() -}}
+{%- endblock form_label %}
+
+{% block checkbox_radio_label -%}
+    {%- if widget is defined -%}
+        {% set parent_label_class = 'checkbox-custom radio-custom' %}
+    {% endif %}
+    {{- parent() -}}
+{%- endblock checkbox_radio_label %}
+
 {% block button_widget -%}
     {% set attr = attr|merge({class: (attr.class|default('') ~ ' btn')|trim}) %}
     {% if label is empty -%}
