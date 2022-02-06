@@ -20,14 +20,6 @@
 {% set problems = scoreboard.problems %}
 {% set medalsEnabled = contest.medalsEnabled %}
 
-{% if maxWidth > 0 %}
-    <style>
-        .forceWidth {
-            max-width: {{ maxWidth }}px;
-        }
-    </style>
-{% endif %}
-
 <table class="scoreboard center {% if jury %}scoreboard_jury{% endif %}">
 
     {# output table column groups (for the styles) #}
