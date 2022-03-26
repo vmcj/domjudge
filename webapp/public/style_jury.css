@@ -253,11 +253,17 @@ table.submissions-table {
 
     #submissionTable td {
         /* Setup basic structure to make diffs easy (FF) */
+        border: 1px solid red;
+        height: 100%;
+        padding: 0;
     }
 
     #submissionTable td a {
         /* Setup basic structure to make diffs easy (FF) */
-        background-color: white;
+        background-color: yellow;
+        display: table;
+        width: 100%;
+        height: 100%;
     }
 
     #submissionTable td * {
