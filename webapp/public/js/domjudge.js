@@ -109,7 +109,7 @@ function reloadPage()
 function initReload(refreshtime)
 {
     // interval is in seconds
-    setTimeout(function() { reloadPage(); }, refreshtime * 1000);
+    //setTimeout(function() { reloadPage(); }, refreshtime * 1000);
 }
 
 function collapse(x)
@@ -443,7 +443,7 @@ function processAjaxResponse(jqXHR, data) {
             return;
         }
 
-        var $refreshTarget = $('[data-ajax-refresh-target]');
+        /*var $refreshTarget = $('[data-ajax-refresh-target]');
         var $data = $(data);
         // When using the static scoreboard, we need to find the children of the [data-ajax-refresh-target]
         var $dataRefreshTarget = $data.find('[data-ajax-refresh-target]');
@@ -456,10 +456,11 @@ function processAjaxResponse(jqXHR, data) {
         $refreshTarget.html($data);
         if ($refreshTarget.data('ajax-refresh-after')) {
             window[$refreshTarget.data('ajax-refresh-after')]();
-        }
+        }*/
     }
 }
 
+/*
 var refreshHandler = null;
 var refreshEnabled = false;
 function enableRefresh($url, $after, usingAjax) {
@@ -498,7 +499,7 @@ function enableRefresh($url, $after, usingAjax) {
             localStorage.setItem('scrollTop', $(window).scrollTop());
         }, 100)
     });
-}
+}*/
 
 function disableRefresh(usingAjax) {
     if (!refreshEnabled) {
