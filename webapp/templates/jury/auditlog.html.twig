@@ -33,6 +33,7 @@
     </ul>
     {% endif %}
 
-    {{ macros.table(auditlog, table_fields, 0, table_options) }}
+    {%- set multidelete_value = false %}
+    {{ macros.table(auditlog, table_fields, 0, table_options, multidelete_value) }}
 
 {% endblock %}
