@@ -1,0 +1,27 @@
+name: Qodana
+on:
+  pull_request_target:
+
+jobs:
+  qodana-create-baseline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: refs/heads/main
+      - name: 'Qodana Scan (PHP)'
+        uses: JetBrains/qodana-action@v2022.2.2
+        with:
+          args: --linter,jetbrains/qodana-php:2022.2-eap
+      - name: Store baseline
+        run: cp ${{ runner.temp }}/qodana/results/qodana.sarif.json /tmp/qodana.sarif.json
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Install baseline
+        run: cp /tmp/qodana.sarif.json ./qodana.sarif.json
+      - name: 'Qodana Scan (PHP)'
+        uses: JetBrains/qodana-action@v2022.2.2
+        with:
+          args: --baseline,qodana.sarif.json,--linter,jetbrains/qodana-php:2022.2-eap
