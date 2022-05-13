@@ -383,6 +383,31 @@ class ContestController extends BaseController
     }
 
     /**
+     * @Route("/deleteList", name="jury_contests_delete")
+     * @IsGranted("ROLE_ADMIN")
+     */
+    public function deleteListAction(Request $request): Response
+    {
+        $checkboxPrefix = 'ident';
+        $entitiesToDelete = [];
+        foreach (array_keys($request->request->all()) as $key) {
+            if (strpos($key, $checkboxPrefix) !== 0) {
+                continue;
+            }
+            /** @var Contest $contest */
+            $contestId = substr($key, strlen($checkboxPrefix));
+            $contest = $this->em->getRepository(Contest::class)->find($contestId);
+            if (!$contest) {
+                throw new NotFoundHttpException(sprintf('Contest with ID %s not found', $contestId));
+            }
+            $entitiesToDelete[] = $contest;
+        }
+
+        return $this->deleteEntities($request, $this->em, $this->dj, $this->eventLogService, $this->kernel,
+                                     $entitiesToDelete, $this->generateUrl('jury_contests'));
+    }
+
+    /**
      * @Route("/{contestId<\d+>}", name="jury_contest")
      */
     public function viewAction(Request $request, int $contestId): Response
