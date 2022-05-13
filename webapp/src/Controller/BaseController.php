@@ -367,7 +367,7 @@ abstract class BaseController extends AbstractController
 
         [$isError, $primaryKeyData, $deleteTreeMessages] = $this->buildDeleteTree($entities, $relations, $entityManager);
         if (!empty($deleteTreeMessages)) {
-            $messages = $deleteTreeMessages;
+            $messages = array_unique($deleteTreeMessages);
         }
 
         // Check if we handle a list of deletable entities.
