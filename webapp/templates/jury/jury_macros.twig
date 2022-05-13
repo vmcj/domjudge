@@ -71,10 +71,13 @@
     </style>
 {% endmacro %}
 
-{% macro table(data, fields, num_actions, options, multidelete=true) %}
+{% macro table(data, fields, num_actions, options, delete_list_endpoint, multidelete=true) %}
 
     <div class="table-wrapper">
-        <form method="post" action="#" name="multidelete" id="multidelete">
+        <form method="post" action="{{ path(delete_list_endpoint) }}" name="multidelete" id="multidelete">
+            {% if multidelete and is_granted('ROLE_ADMIN') %}
+                <input type='hidden' name='confirmation' value='0'>
+            {% endif %}
             <table class="data-table table table-sm table-striped" style="width:auto">
                 <thead class="">
                 <tr>
