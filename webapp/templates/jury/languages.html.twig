@@ -17,6 +17,9 @@
     {% if is_granted('ROLE_ADMIN') %}
         <p>
             {{ button(path('jury_language_add'), 'Add new language', 'primary', 'plus') }}
+            <button type="submit" form="multidelete" class="btn btn-danger" name="multidelete_submit">
+                <i class="fa fa-trash"></i> Remove selected languages
+            </button>
         </p>
     {% endif %}
 
