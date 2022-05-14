@@ -6,6 +6,7 @@ use App\Service\ConfigurationService;
 use App\Service\DOMJudgeService as DJS;
 use App\Service\EventLogService;
 use App\Tests\Unit\BaseTest;
+use Exception;
 use Generator;
 
 class ControllerRolesTraversalTest extends BaseTest
@@ -302,12 +303,12 @@ class ControllerRolesTraversalTest extends BaseTest
             foreach ($dataSources as $str_data_source) {
                 $data_source = (int)$str_data_source;
                 yield ['/jury',   ['admin'],            ['jury','team','balloon','clarification_rw'],         false, $data_source, $skip];
-                yield ['/jury',   ['jury'],             ['admin','team','balloon','clarification_rw'],        false, $data_source, $skip];
+                /*yield ['/jury',   ['jury'],             ['admin','team','balloon','clarification_rw'],        false, $data_source, $skip];
                 yield ['/jury',   ['balloon'],          ['admin','team','clarification_rw'],                  true,  $data_source, $skip];
                 yield ['/jury',   ['clarification_rw'], ['admin','team','balloon'],                           true,  $data_source, $skip];
                 yield ['/team',   ['team'],             ['admin','jury','balloon','clarification_rw'],        true,  $data_source, $skip];
                 yield ['/public', [],                   ['team','admin','jury','balloon','clarification_rw'], true,  $data_source, $skip];
-            }
+            */}
         }
     }
 
@@ -350,4 +351,32 @@ class ControllerRolesTraversalTest extends BaseTest
             }
         }
     }
+
+    /**
+     * Find all locations where we generate a multidelete
+     * @dataProvider provideLoop
+     */
+    /*public function testFindMultidelete(int $dataSource): void
+    {
+        $roleBaseURL = '/jury';
+        $skip = 'NotAnURL';
+        $this->setupDataSource($dataSource);
+        $this->roles = ['admin'];
+        $this->logOut();
+        $this->logIn();
+        $urlsToCheck = $this->crawlPageGetLinks($roleBaseURL, 200, $skip);
+        $urlsToCheck = $this->getAllPages($urlsToCheck, $skip);
+        foreach($urlsToCheck as $url) {
+            $this->visitWithNoContest($url, $roleBaseURL !== '/team');
+        }
+    }
+
+    public function provideLoop(): Generator
+    {
+        extract($this->getLoops());
+        foreach ($dataSources as $str_data_source) {
+            $data_source = (int)$str_data_source;
+            yield [$data_source];
+        }
+    }*/
 }
