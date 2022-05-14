@@ -17,6 +17,9 @@
     {% if is_granted('ROLE_ADMIN') %}
         <p>
             {{ button(path('jury_user_add'), 'Add new user', 'primary', 'plus') }}
+            <button type="submit" form="multidelete" class="btn btn-danger" name="multidelete_submit">
+                <i class="fa fa-trash"></i> Remove selected users
+            </button>
         </p>
     {% endif %}
 {% endblock %}

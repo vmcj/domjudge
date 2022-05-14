@@ -18,6 +18,9 @@
 
         <p>
             {{ button(path('jury_team_affiliation_add'), 'Add new affiliation', 'primary', 'plus') }}
+            <button type="submit" form="multidelete" class="btn btn-danger" name="multidelete_submit">
+                <i class="fa fa-trash"></i> Remove selected affiliations
+            </button>
         </p>
     {%- endif %}
 

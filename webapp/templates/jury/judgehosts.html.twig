@@ -42,6 +42,9 @@
             <div class="d-inline">
                 {{ button(path('jury_judgehost_edit', {'include_hidden': false}), 'Edit visible judgehosts', 'secondary', 'edit') }}
                 {{ button(path('jury_judgehost_edit'), 'Edit all judgehosts', 'secondary', 'edit') }}
+                <button type="submit" form="multidelete" class="btn btn-danger" name="multidelete_submit">
+                    <i class="fa fa-trash"></i> Remove selected judgehosts
+                </button>
             </div>
         </div>
 
