@@ -1,6 +1,7 @@
 name: "Mayhem API analysis"
 
 on:
+  push:
   schedule:
     - cron: '5 21 * * *'
 
