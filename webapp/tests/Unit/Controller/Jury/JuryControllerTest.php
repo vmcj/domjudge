@@ -435,4 +435,36 @@ abstract class JuryControllerTest extends BaseTest
             [new UploadedFile(__FILE__, "foo.c", null, null, true)]
         );
     }
+
+    public function testMultiDelete(): void
+    {
+        $this->roles = ['admin'];
+        $this->logOut();
+        $this->logIn();
+        $this->loadFixtures(static::$deleteFixtures);
+        $this->verifyPageResponse('GET', static::$baseUrl, 200);
+        // Find a CID we can delete.
+        $em = self::getContainer()->get('doctrine')->getManager();
+        $ent = $em->getRepository(static::$className)->findOneBy([$identifier => $entityShortName]);
+        self::assertSelectorExists('i[class*=fa-trash-alt]');
+        self::assertSelectorExists('body:contains("' . $entityShortName . '")');
+        $this->verifyPageResponse(
+            'GET',
+            static::$baseUrl . '/' . $ent->{static::$getIDFunc}() . static::$delete,
+            200
+        );
+        $this->client->submitForm('Delete', []);
+        self::assertSelectorNotExists('body:contains("' . $entityShortName . '")');
+        var_dump("Running multidelete.");
+        self::assertSelectorExists('body:contains("input[type=\'checkbox\']")');
+        /*if (isset(static::$deleteExtra['fixture'])) {
+            $this->loadFixture(static::$deleteExtra['fixture']);
+        }
+        $this->verifyPageResponse('GET', static::$deleteExtra['pageurl'], 200);
+        self::assertSelectorExists('body:contains("' . static::$deleteExtra['selector'] . '")');
+        $this->verifyPageResponse('GET', static::$deleteExtra['deleteurl'], 200);
+        $this->client->submitForm('Delete', []);
+        self::assertSelectorNotExists('body:contains("' . static::$deleteExtra['selector'] . '")');
+        $this->verifyPageResponse('GET', static::$deleteExtra['deleteurl'], 404);*/
+    }
 }
