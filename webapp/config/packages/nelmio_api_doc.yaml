@@ -4,7 +4,7 @@ nelmio_api_doc:
             title: DOMjudge
             description: DOMjudge API v4
             version: "%domjudge.version%"
-            openapi: 3.1.0
+        openapi: 3.1.0
         security:
             - basicAuth: []
         components:
