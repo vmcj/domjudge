@@ -20,16 +20,6 @@ nelmio_api_doc:
                     required: true
                     schema:
                         type: string
-                    examples:
-                        int0:
-                            value: "2"
-                            summary: The Demo contest (datasource=0)
-                        int02:
-                            value: "1"
-                            summary: The Demo practice contest (datasource=0)
-                        string:
-                            value: "demo"
-                            summary: The Demo contest (datasource=1)
                 balloonId:
                     name: balloonId
                     in: path
@@ -37,10 +27,6 @@ nelmio_api_doc:
                     required: true
                     schema:
                         type: integer
-                    examples:
-                        balloon:
-                            value: 1
-                            summary: First balloon of the contest
                 id:
                     name: id
                     in: path
@@ -48,19 +34,6 @@ nelmio_api_doc:
                     required: true
                     schema:
                         type: string
-                    examples:
-                        generic:
-                            value: "1"
-                            summary: Most Entities are integer indexed
-                        participants:
-                            value: "3"
-                            summary: Participants group
-                        award:
-                            value: "winner"
-                            summary: "Default Award entity"
-                        executable:
-                            value: "py3"
-                            summary: "Compile executable for python3"
                 idlist:
                     name: ids[]
                     in: query
