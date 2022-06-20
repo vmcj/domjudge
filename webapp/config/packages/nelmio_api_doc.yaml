@@ -8,10 +8,6 @@ nelmio_api_doc:
         security:
             - basicAuth: []
         components:
-            securitySchemes:
-                basicAuth:
-                    type: http
-                    scheme: basic
             parameters:
                 cid:
                     name: cid
@@ -38,7 +34,6 @@ nelmio_api_doc:
                     name: ids[]
                     in: query
                     description: Filter the objects to get on this list of ID's
-                    explode: true
                     schema:
                         type: array
                         items:
