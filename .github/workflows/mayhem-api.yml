@@ -26,8 +26,8 @@ jobs:
       - name: Install DOMjudge
         run: .github/workflowscripts/baseinstall.sh ${{ matrix.version }}
 
-      - name: Dump the OpenAPI
-        run: .github/workflowscripts/getapi.sh
+      #- name: Dump the OpenAPI
+      #  run: .github/workflowscripts/getapi.sh
 
       - uses: actions/upload-artifact@v3
         if: ${{ matrix.version == 'guest' }}
