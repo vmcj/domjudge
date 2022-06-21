@@ -25,7 +25,7 @@ jobs:
       - name: Find all other JSON files and delete those
         run: |
           rm -rf ./installdir/domserver/lib/vendor ./lib/vendor
-          rm -f ./doc/manual/sphinx-team.json ./doc/manual/sphinx-team.json
+          rm -f ./doc/manual/sphinx-team.json ./doc/manual/sphinx-team.json ./composer.json
           find ./ -name "*.json"
 
       - name: 42Crunch REST API Static Security Testing
