@@ -2,9 +2,6 @@ name: "Mayhem API analysis"
 
 on:
   push:
-    branches: [ main ]
-  pull_request_target:
-    branches: [ main ]
   schedule:
     - cron: '5 21 * * *'
 
@@ -26,20 +23,20 @@ jobs:
       - name: Install DOMjudge
         run: .github/workflowscripts/baseinstall.sh
 
-      - name: Dump the OpenAPI
-        run: .github/workflowscripts/getapi.sh
+      #- name: Dump the OpenAPI
+      #  run: .github/workflowscripts/getapi.sh
 
-      - name: Mayhem for API
-        uses: ForAllSecure/mapi-action@193b709971cc377675e33284aecbf9229853e010
-        continue-on-error: true
-        with:
-          mapi-token: ${{ secrets.MAPI_TOKEN }}
-          api-url: http://localhost/domjudge
-          api-spec: http://localhost/domjudge/api/doc.json # swagger/openAPI doc hosted here
-          duration: 60
-          sarif-report: mapi.sarif
+      #- name: Mayhem for API
+      #  uses: ForAllSecure/mapi-action@193b709971cc377675e33284aecbf9229853e010
+      #  continue-on-error: true
+      #  with:
+      #    mapi-token: ${{ secrets.MAPI_TOKEN }}
+      #    api-url: http://localhost/domjudge
+      #    api-spec: http://localhost/domjudge/api/doc.json # swagger/openAPI doc hosted here
+      #    duration: 60
+      #    sarif-report: mapi.sarif
 
-      - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v1
-        with:
-          sarif_file: mapi.sarif
+      #- name: Upload SARIF file
+      #  uses: github/codeql-action/upload-sarif@v2
+      #  with:
+      #    sarif_file: mapi.sarif
