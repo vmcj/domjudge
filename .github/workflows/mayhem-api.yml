@@ -26,8 +26,8 @@ jobs:
       - name: Install DOMjudge
         run: .github/workflowscripts/baseinstall.sh ${{ matrix.version }}
 
-      - name: Dump the OpenAPI
-        run: .github/workflowscripts/getapi.sh
+      #- name: Dump the OpenAPI
+      #  run: .github/workflowscripts/getapi.sh
 
       - name: Mayhem for API
         uses: ForAllSecure/mapi-action@v1
@@ -60,7 +60,7 @@ jobs:
               --basic-auth
               admin:password
 
-      - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: mapi.sarif
+      #- name: Upload SARIF file
+      #  uses: github/codeql-action/upload-sarif@v2
+      #  with:
+      #    sarif_file: mapi.sarif
