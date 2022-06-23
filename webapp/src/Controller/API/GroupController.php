@@ -126,4 +126,21 @@ class GroupController extends AbstractRestController
     {
         return sprintf('c.%s', $this->eventLogService->externalIdFieldForEntity(TeamCategory::class) ?? 'categoryid');
     }
+
+    /**
+     * Transform the given object before returning it from the API.
+     * @param array $object
+     * @return Object
+     */
+    public function transformObject($object)
+    {
+        die();
+        foreach ($object as $ind=>$value) {
+            if (!$value['icpc_id']) {
+                $object[$ind]['icpc_id'] = "RESET";
+            }
+        }
+        return $object;
+    }
+
 }
