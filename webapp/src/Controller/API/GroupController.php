@@ -22,7 +22,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  * @OA\Response(response="401", ref="#/components/responses/Unauthorized")
  * @OA\Response(response="400", ref="#/components/responses/InvalidResponse")
  */
-class GroupController extends AbstractRestController
+class GroupController extends AbstractRestController implements QueryObjectTransformer
 {
     /**
      * Get all the groups for this contest.
@@ -126,4 +126,19 @@ class GroupController extends AbstractRestController
     {
         return sprintf('c.%s', $this->eventLogService->externalIdFieldForEntity(TeamCategory::class) ?? 'categoryid');
     }
+
+    /**
+     * Transform the given object before returning it from the API.
+     * @param array $object
+     * @return Object
+     */
+    public function transformObject($object)
+    {
+        /** @var TeamCategory $object */
+        if ($object->getIcpcId() === null) {
+            $object->setIcpcId("");
+        }
+        return $object;
+    }
+
 }
