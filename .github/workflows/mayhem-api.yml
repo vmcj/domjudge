@@ -1,6 +1,7 @@
 name: "Mayhem API analysis"
 
 on:
+  push:
   schedule:
     - cron: '5 21 * * *'
 
@@ -32,7 +33,7 @@ jobs:
           mapi-token: ${{ secrets.MAPI_TOKEN }}
           api-url: http://localhost/domjudge
           api-spec: http://localhost/domjudge/api/doc.json # swagger/openAPI doc hosted here
-          duration: 60
+          duration: 10
           sarif-report: mapi.sarif
 
       - name: Upload SARIF file
