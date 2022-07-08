@@ -158,6 +158,49 @@ abstract class JuryControllerTest extends BaseTest
         }
     }
 
+    /**
+     * Test that jury role can NOT edit or delete an entity for this controller.
+     *
+     * @dataProvider provideEditEntities
+     */
+    public function testCheckEditDeleteEntityJury(string $identifier, array $formDataKeys, array $formDataValues): void
+    {
+        $this->roles = ['jury'];
+        $this->logOut();
+        $this->logIn();
+        $this->verifyPageResponse('GET', static::$baseUrl, 200);
+        $this->client->followRedirects(true);
+        $crawler = $this->getCurrentCrawler();
+        // Check if the edit/delete action keys are visible.
+        foreach([static::$edit, static::$delete] as $identifier) {
+            $singlePageLink = null;
+            foreach ($crawler->filter('a') as $node) {
+                if (strpos($node->nodeValue, $identifier) !== false) {
+                    $singlePageLink = $node->getAttribute('href');
+                    break;
+                }
+            }
+            self::assertEquals($singlePageLink, null, 'Found link ending with '.$identifier);
+        }
+        // Find an ID we can edit/delete.
+        foreach ([static::$deleteEntities[0]] as $identifier => $entityShortName) {
+            $em = self::getContainer()->get('doctrine')->getManager();
+            $ent = $em->getRepository(static::$className)->findOneBy([$identifier => $entityShortName]);
+            $entityUrl = static::$baseUrl . '/' . $ent->{static::$getIDFunc}();
+            foreach ([static::$delete, static::$edit] as $postfix) {
+                if ($postfix === '') continue;
+                $this->verifyPageResponse(
+                    'GET',
+                    $entityUrl . $postfix,
+                    403
+                );
+            }
+            // Check that the buttons are not visible, on the page itself.
+            $this->verifyPageResponse('GET', $singlePageLink, 200);
+
+        }
+    }
+
     public function helperCheckExistence(string $id, $value, array $element): void {
         if (in_array($id, static::$addEntitiesShown)) {
             $tmpValue = $element[$id];
@@ -266,11 +309,13 @@ abstract class JuryControllerTest extends BaseTest
         $this->loadFixtures(static::$deleteFixtures);
         $this->verifyPageResponse('GET', static::$baseUrl, 200);
         if (static::$edit !== '') {
+            $singlePageLink = null;
             $this->client->followRedirects(true);
             $crawler = $this->getCurrentCrawler();
             foreach ($crawler->filter('a') as $node) {
                 if (strpos($node->nodeValue, $identifier) !== false) {
                     $singlePageLink = $node->getAttribute('href');
+                    break;
                 }
             }
             $this->verifyPageResponse('GET', $singlePageLink, 200);
