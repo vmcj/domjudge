@@ -370,7 +370,10 @@ abstract class BaseController extends AbstractController
             $messages = $deleteTreeMessages;
         }
 
-        if ($request->isMethod('POST')) {
+        // Check if we handle a list of deletable entities.
+        $removeList = $request->request->has('confirmation') ? $request->request->get('confirmation') === '1' : true;
+
+        if ($request->isMethod('POST') && $removeList ){
             if ($isError) {
                 throw new BadRequestHttpException(reset($messages));
             }
