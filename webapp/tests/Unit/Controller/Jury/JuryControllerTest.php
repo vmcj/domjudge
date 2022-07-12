@@ -534,6 +534,18 @@ abstract class JuryControllerTest extends BaseTest
         foreach ($cascadeList as $cascade) {
             self::assertEquals(1,count($crawler->filter('li:contains("Cascade to '.$cascade.'")')));
         }
+        // Send the same request again but with confirmation
+        $postData['confirmation'] = '1';
+        $this->client->request(
+            'POST',
+            static::$baseUrl.'/deleteList',
+            $postData
+        );
+        foreach ([$ids, $descriptions, $entityShortNameList] as $list) {
+            foreach ($list as $item) {
+                self::assertSelectorNotExists('body:contains("'.$item.'")');
+            }
+        }
         //$button = $this->client->getCrawler()->selectButton($this->removeMultipleButton);
         //$formFields = ['[confirmation]'=>'0'];
         /*
