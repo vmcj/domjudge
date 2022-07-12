@@ -365,6 +365,36 @@ class ProblemController extends BaseController
     }
 
     /**
+     * @Route("/deleteList", name="jury_problems_delete")
+     * @IsGranted("ROLE_ADMIN")
+     */
+    public function deleteListAction(Request $request): Response
+    {
+        $checkboxPrefix = 'ident';
+        $entitiesToDelete = [];
+        foreach (array_keys($request->request->all()) as $key) {
+            if (strpos($key, $checkboxPrefix) !== 0) {
+                continue;
+            }
+            /** @var Contest $contest */
+            $entityId = substr($key, strlen($checkboxPrefix));
+            $entity = $this->em->getRepository(Contest::class)->find($entityId);
+            if (!$entity) {
+                throw new NotFoundHttpException(sprintf('Problem with ID %s not found', $entityId));
+            }
+            $entitiesToDelete[] = $entity;
+        }
+
+        if (count($entitiesToDelete)===0) {
+            $this->addFlash('warning', 'No problems selected.'); 
+            return $this->redirectToRoute('jury_problems');
+        }
+
+        return $this->deleteEntities($request, $this->em, $this->dj, $this->eventLogService, $this->kernel,
+                                     $entitiesToDelete, $this->generateUrl('jury_problems'));
+    }
+
+    /**
      * @Route("/{probId<\d+>}", name="jury_problem")
      * @throws NoResultException
      * @throws NonUniqueResultException
