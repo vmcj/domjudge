@@ -197,28 +197,8 @@ class ExecutableController extends BaseController
      */
     public function deleteListAction(Request $request): Response
     {
-        $checkboxPrefix = 'ident';
-        $entitiesToDelete = [];
-        foreach (array_keys($request->request->all()) as $key) {
-            if (strpos($key, $checkboxPrefix) !== 0) {
-                continue;
-            }
-            /** @var Contest $contest */
-            $entityId = substr($key, strlen($checkboxPrefix));
-            $entity = $this->em->getRepository(Executable::class)->find($entityId);
-            if (!$entity) {
-                throw new NotFoundHttpException(sprintf('Executable with ID %s not found', $entityId));
-            }
-            $entitiesToDelete[] = $entity;
-        }
-
-        if (count($entitiesToDelete)===0) {
-            $this->addFlash('warning', 'No executables selected.'); 
-            return $this->redirectToRoute('jury_executables');
-        }
-
-        return $this->deleteEntities($request, $this->em, $this->dj, $this->eventLogService, $this->kernel,
-                                     $entitiesToDelete, $this->generateUrl('jury_executables'));
+        dump($request);
+        return parent::deleteListActionHelper($request, Executable::class, 'jury_executables', 'executable');
     }
 
     /**

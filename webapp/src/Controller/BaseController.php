@@ -425,7 +425,7 @@ abstract class BaseController extends AbstractController
         return $this->render('jury/delete.html.twig', $data);
     }
 
-    public function deleteListActionHelper(Request $request, string $class, string $redirectRoute): Response
+    public function deleteListActionHelper(Request $request, string $class, string $redirectRoute, string $classHumanReadable): Response
     {
         $checkboxPrefix = 'ident';
         $entitiesToDelete = [];
@@ -434,18 +434,15 @@ abstract class BaseController extends AbstractController
                 continue;
             }
             $entityId = substr($key, strlen($checkboxPrefix));
-            $entity = $this->em->getRepository(User::class)->find($entityId);
-            dump($entityId);
-            dump($class);
-            dump($entity);
+            $entity = $this->em->getRepository($class)->find($entityId);
             if (!$entity) {
-                throw new NotFoundHttpException(sprintf('%s with ID %s not found', ucfirst(get_class($entity)), $entityId));
+                throw new NotFoundHttpException(sprintf('%s with ID %s not found', ucfirst($classHumanReadable), $entityId));
             }
             $entitiesToDelete[] = $entity;
         }
 
         if (count($entitiesToDelete)===0) {
-            $this->addFlash('warning', sprintf('No %ss selected.', get_class($entity))); 
+            $this->addFlash('warning', sprintf('No %ss selected.', $classHumanReadable)); 
             return $this->redirectToRoute($redirectRoute);
         }
 
