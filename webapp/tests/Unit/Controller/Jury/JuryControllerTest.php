@@ -25,6 +25,7 @@ abstract class JuryControllerTest extends BaseTest
     protected string $addButton                       = '';
     protected string $editButton                      = ' Edit';
     protected string $deleteButton                    = ' Delete';
+    protected string $pluralShortTag                  = '';
     protected static array $rolesView                 = ['admin', 'jury'];
     protected static array $rolesDisallowed           = ['team'];
     protected static array $exampleEntries            = ['overwrite_in_class'];
@@ -53,7 +54,8 @@ abstract class JuryControllerTest extends BaseTest
     {
         parent::setUp();
         $this->addButton = ' Add new ' . static::$shortTag;
-        $this->removeMultipleButton = 'Remove selected ' . static::$shortTag . 's';
+        $this->pluralShortTag = (substr(static::$shortTag, -1) !== 'y') ? static::$shortTag.'s' : substr(static::$shortTag, 0, -1).'ies';
+        $this->removeMultipleButton = 'Remove selected ' . $this->pluralShortTag;
     }
 
     /**
@@ -473,6 +475,9 @@ abstract class JuryControllerTest extends BaseTest
 
     public function testMultiDeleteEmptySelection(): void
     {
+        if (static::$delete === '') {
+            self::markTestSkipped("Delete not implemented.");
+        }
         $this->roles = ['admin'];
         $this->logOut();
         $this->logIn();
@@ -486,14 +491,14 @@ abstract class JuryControllerTest extends BaseTest
             static::$baseUrl.'/deleteList',
             ['body' => ['confirmation' => '0', 'multidelete_submit' => '']]
         );
-        self::assertSelectorExists('body:contains("No contests selected.")');
+        self::assertSelectorExists('body:contains("No ' . $this->pluralShortTag . ' selected.")');
 
     }
 
     /**
      * @dataProvider provideDeletableEntities
      */
-    public function testMultiDelete(array $entityShortNameList, array $cascadeList): void
+    public function testMultiDelete(array $entityShortNameList, array $warningList): void
     {
         $this->roles = ['admin'];
         $this->logOut();
@@ -523,16 +528,14 @@ abstract class JuryControllerTest extends BaseTest
         );
         $crawler = $this->getCurrentCrawler();
         $crawlerElements = ['Warning, this will:','Are you sure?'];
-        foreach ($cascadeList as $cascade) {
-            $crawlerElements[] = 'Cascade to '.$cascade;
-        }
+        $crawlerElements = array_merge($crawlerElements, $warningList);
         foreach ([$ids, $descriptions, $crawlerElements] as $list) {
             foreach ($list as $item) {
                 self::assertSelectorExists('body:contains("'.$item.'")');
             }
         }
-        foreach ($cascadeList as $cascade) {
-            self::assertEquals(1,count($crawler->filter('li:contains("Cascade to '.$cascade.'")')));
+        foreach ($warningList as $warning) {
+            self::assertEquals(1,count($crawler->filter('li:contains("' . $warning . '")')));
         }
         //$button = $this->client->getCrawler()->selectButton($this->removeMultipleButton);
         //$formFields = ['[confirmation]'=>'0'];
@@ -563,16 +566,6 @@ abstract class JuryControllerTest extends BaseTest
 
     public function provideDeletableEntities(): Generator
     {
-        if (static::$delete !== '') {
-            yield [static::$deleteEntities, ['contest problems','clarifications']];
-            yield [array_slice(static::$deleteEntities, 0, 1), ['contest problems']];
-            yield [array_reverse(static::$deleteEntities), ['contest problems','clarifications']];
-            //'clarifications',
-            /*if (count(static::$deleteEntities[$key]) < 2) {
-                $this->markTestIncomplete('Not enough entities to test multidelete');
-            }*/
-        } else {
-            self::markTestSkipped("No deletable entities.");
-        }
+        self::markTestIncomplete("Not implemented.");
     }
 }

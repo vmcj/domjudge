@@ -3,6 +3,7 @@
 namespace App\Tests\Unit\Controller\Jury;
 
 use App\Entity\Executable;
+use Generator;
 
 class ExecutableControllerTest extends JuryControllerTest
 {

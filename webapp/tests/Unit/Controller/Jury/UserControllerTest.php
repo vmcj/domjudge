@@ -3,6 +3,7 @@
 namespace App\Tests\Unit\Controller\Jury;
 
 use App\Entity\User;
+use Generator;
 
 class UserControllerTest extends JuryControllerTest
 {
@@ -70,4 +71,20 @@ class UserControllerTest extends JuryControllerTest
                                                           'user_roles' => ['7' => '8']],
                                                          ['username' => 'singlerole-8', 'name' => 'Single Role-8',
                                                           'user_roles' => ['8' => '9']]];
+
+    public function provideDeletableEntities(): Generator
+    {
+        if (static::$delete !== '') {
+            yield [static::$deleteEntities, ['Create dangling references in languages',
+                                            'Create dangling references in problems']];
+            yield [array_slice(static::$deleteEntities, 0, 1), ['Create dangling references in languages']];
+            yield [array_reverse(static::$deleteEntities), ['Create dangling references in languages',
+                                                            'Create dangling references in problems']];
+            if (count(static::$deleteEntities) < 2) {
+                $this->markTestIncomplete('Not enough entities to test multidelete');
+            }
+        } else {
+            self::markTestSkipped("No deletable entities.");
+        }
+    }
 }
