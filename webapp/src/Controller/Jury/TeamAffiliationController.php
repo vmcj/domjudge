@@ -163,13 +163,13 @@ class TeamAffiliationController extends BaseController
             $entityId = substr($key, strlen($checkboxPrefix));
             $entity = $this->em->getRepository(Contest::class)->find($entityId);
             if (!$entity) {
-                throw new NotFoundHttpException(sprintf('Team affiliation with ID %s not found', $entityId));
+                throw new NotFoundHttpException(sprintf('Affiliation with ID %s not found', $entityId));
             }
             $entitiesToDelete[] = $entity;
         }
 
         if (count($entitiesToDelete)===0) {
-            $this->addFlash('warning', 'No team affiliation selected.'); 
+            $this->addFlash('warning', 'No affiliations selected.'); 
             return $this->redirectToRoute('jury_team_affiliations');
         }
 

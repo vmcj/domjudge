@@ -210,7 +210,7 @@ class JudgehostController extends BaseController
             }
             /** @var Contest $contest */
             $entityId = substr($key, strlen($checkboxPrefix));
-            $entity = $this->em->getRepository(Contest::class)->find($entityId);
+            $entity = $this->em->getRepository(Judgehost::class)->find($entityId);
             if (!$entity) {
                 throw new NotFoundHttpException(sprintf('Judgehost with ID %s not found', $entityId));
             }

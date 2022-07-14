@@ -11,6 +11,7 @@ use App\Entity\RankCache;
 use App\Entity\ScoreCache;
 use App\Entity\Team;
 use App\Entity\TeamCategory;
+use App\Entity\User;
 use App\Entity\QueueTask;
 use App\Service\DOMJudgeService;
 use App\Service\EventLogService;
@@ -28,6 +29,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -421,6 +423,34 @@ abstract class BaseController extends AbstractController
         }
 
         return $this->render('jury/delete.html.twig', $data);
+    }
+
+    public function deleteListActionHelper(Request $request, string $class, string $redirectRoute): Response
+    {
+        $checkboxPrefix = 'ident';
+        $entitiesToDelete = [];
+        foreach (array_keys($request->request->all()) as $key) {
+            if (strpos($key, $checkboxPrefix) !== 0) {
+                continue;
+            }
+            $entityId = substr($key, strlen($checkboxPrefix));
+            $entity = $this->em->getRepository(User::class)->find($entityId);
+            dump($entityId);
+            dump($class);
+            dump($entity);
+            if (!$entity) {
+                throw new NotFoundHttpException(sprintf('%s with ID %s not found', ucfirst(get_class($entity)), $entityId));
+            }
+            $entitiesToDelete[] = $entity;
+        }
+
+        if (count($entitiesToDelete)===0) {
+            $this->addFlash('warning', sprintf('No %ss selected.', get_class($entity))); 
+            return $this->redirectToRoute($redirectRoute);
+        }
+
+        return $this->deleteEntities($request, $this->em, $this->dj, $this->eventLogService, $this->kernel,
+                                     $entitiesToDelete, $this->generateUrl($redirectRoute));
     }
 
     protected function getDependentEntities(string $entityClass, array $relations): array

@@ -205,7 +205,7 @@ class ExecutableController extends BaseController
             }
             /** @var Contest $contest */
             $entityId = substr($key, strlen($checkboxPrefix));
-            $entity = $this->em->getRepository(Contest::class)->find($entityId);
+            $entity = $this->em->getRepository(Executable::class)->find($entityId);
             if (!$entity) {
                 throw new NotFoundHttpException(sprintf('Executable with ID %s not found', $entityId));
             }

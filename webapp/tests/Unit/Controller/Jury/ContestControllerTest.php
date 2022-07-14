@@ -6,6 +6,7 @@ use App\Entity\Contest;
 use App\Entity\JudgeTask;
 use App\Entity\QueueTask;
 use Doctrine\ORM\EntityManagerInterface;
+use Generator;
 
 class ContestControllerTest extends JuryControllerTest
 {
@@ -299,4 +300,18 @@ class ContestControllerTest extends JuryControllerTest
             self::assertSelectorExists('body:contains("Contest should not have multiple timezones.")');
         }
     }
+
+    /*public function provideDeletableEntities(): Generator
+    {
+        if (static::$delete !== '') {
+            yield [static::$deleteEntities, ['Cascade to contest problems','Cascade to clarifications']];
+            yield [array_slice(static::$deleteEntities, 0, 1), ['Cascade to contest problems']];
+            yield [array_reverse(static::$deleteEntities), ['Cascade to contest problems','Cascade to clarifications']];
+            if (count(static::$deleteEntities) < 2) {
+                $this->markTestIncomplete('Not enough entities to test multidelete');
+            }
+        } else {
+            self::markTestSkipped("No deletable entities.");
+        }
+    }*/
 }

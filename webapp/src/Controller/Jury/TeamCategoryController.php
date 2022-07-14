@@ -146,13 +146,13 @@ class TeamCategoryController extends BaseController
             $entityId = substr($key, strlen($checkboxPrefix));
             $entity = $this->em->getRepository(Contest::class)->find($entityId);
             if (!$entity) {
-                throw new NotFoundHttpException(sprintf('Team category with ID %s not found', $entityId));
+                throw new NotFoundHttpException(sprintf('Category with ID %s not found', $entityId));
             }
             $entitiesToDelete[] = $entity;
         }
 
         if (count($entitiesToDelete)===0) {
-            $this->addFlash('warning', 'No team categories selected.'); 
+            $this->addFlash('warning', 'No categories selected.'); 
             return $this->redirectToRoute('jury_team_categories');
         }
 
