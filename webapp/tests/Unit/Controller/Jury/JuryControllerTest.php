@@ -548,8 +548,14 @@ abstract class JuryControllerTest extends BaseTest
             static::$baseUrl.'/deleteList',
             $postData
         );
-        foreach ([$ids, $descriptions, $entityShortNameList] as $list) {
+        // Revisit to clean the flash messages.
+        $this->verifyPageResponse('GET', static::$baseUrl, 200);
+        foreach ([$descriptions, $entityShortNameList] as $list) {
             foreach ($list as $item) {
+                if (in_array($item, ['demo','DOMjudge'])) {
+                    // These terms are also used in other links/entities.
+                    continue;
+                }
                 self::assertSelectorNotExists('body:contains("'.$item.'")');
             }
         }
