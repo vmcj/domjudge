@@ -538,31 +538,6 @@ abstract class JuryControllerTest extends BaseTest
         foreach ($warningList as $warning) {
             self::assertEquals(1,count($crawler->filter('li:contains("' . $warning . '")')));
         }
-        //$button = $this->client->getCrawler()->selectButton($this->removeMultipleButton);
-        //$formFields = ['[confirmation]'=>'0'];
-        /*
-        $form = $button->form($formFields, 'POST');*/
-        /*
-        self::assertSelectorExists('i[class*=fa-trash-alt]');
-        self::assertSelectorExists('body:contains("' . $entityShortName . '")');
-        $this->verifyPageResponse(
-            'GET',
-            static::$baseUrl . '/' . $ent->{static::$getIDFunc}() . static::$delete,
-            200
-        );
-        $this->client->submitForm('Delete', []);
-        self::assertSelectorNotExists('body:contains("' . $entityShortName . '")');
-        var_dump("Running multidelete.");
-        self::assertSelectorExists('body:contains("input[type=\'checkbox\']")');
-        /*if (isset(static::$deleteExtra['fixture'])) {
-            $this->loadFixture(static::$deleteExtra['fixture']);
-        }
-        $this->verifyPageResponse('GET', static::$deleteExtra['pageurl'], 200);
-        self::assertSelectorExists('body:contains("' . static::$deleteExtra['selector'] . '")');
-        $this->verifyPageResponse('GET', static::$deleteExtra['deleteurl'], 200);
-        $this->client->submitForm('Delete', []);
-        self::assertSelectorNotExists('body:contains("' . static::$deleteExtra['selector'] . '")');
-        $this->verifyPageResponse('GET', static::$deleteExtra['deleteurl'], 404);*/
     }
 
     public function provideDeletableEntities(): Generator
