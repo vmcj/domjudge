@@ -15,7 +15,6 @@ class TeamControllerTest extends JuryControllerTest
     protected static string  $shortTag                 = 'team';
     protected static array   $deleteEntities           = ['DOMjudge','Example teamname'];
     protected static string  $deleteEntityIdentifier   = 'name';
-    protected static bool    $multiDeleteImplemented   = true;
     protected static string  $getIDFunc                = 'getTeamid';
     protected static string  $className                = Team::class;
     protected static array   $DOM_elements             = ['h1' => ['Teams']];
@@ -68,18 +67,4 @@ class TeamControllerTest extends JuryControllerTest
                                                           'displayName' => 'Team without contests'],
                                                          ];
 
-
-    public function provideDeletableEntities(): Generator
-    {
-        if (static::$delete === '') {
-            $this->markTestIncomplete('Delete should be implemented for teams.');
-        }
-        if (count(static::$deleteEntities) < 2) {
-            $this->markTestIncomplete('Not enough entities to test multidelete.');
-        }
-        yield [static::$deleteEntities, ['Create dangling references in users']];
-        yield [array_slice(static::$deleteEntities, 0, 1), []];
-        yield [array_slice(static::$deleteEntities, 1, 1), []];
-        yield [array_reverse(static::$deleteEntities), ['Create dangling references in users']];
-    }
 }
