@@ -387,7 +387,7 @@ abstract class BaseController extends AbstractController
                                      $readableType, implode(', ', $primaryKeyData), $description);
             }
 
-            $msg = implode('\n', $msgList);
+            $msg = implode("\n", $msgList);
             $this->addFlash('success', $msg);
             if ($request->isXmlHttpRequest()) {
                 return new JsonResponse(['url' => $redirectUrl]);
