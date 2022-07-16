@@ -380,11 +380,12 @@ abstract class BaseController extends AbstractController
             }
 
             $msgList = [];
-            foreach ($entities as $entity) {
+            foreach ($entities as $id => $entity) {
                 $this->commitDeleteEntity($entity, $DOMJudgeService, $entityManager, $primaryKeyData, $eventLogService);
                 $description = $entity->getShortDescription();
+                $id = $primaryKeyData[$id];
                 $msgList[] = sprintf('Successfully deleted %s %s "%s"',
-                                     $readableType, implode(', ', $primaryKeyData), $description);
+                                     $readableType, $id, $description);
             }
 
             $msg = implode("\n", $msgList);
@@ -401,6 +402,10 @@ abstract class BaseController extends AbstractController
             $descriptions[] = $entity->getShortDescription();
         }
 
+        if (count($entities) > 1) {
+            $readableType = (substr($readableType, -1) !== 'y') ? $readableType.'s' : substr($readableType, 0, -1).'ies';
+        }
+
         $data = [
             'type' => $readableType,
             'primaryKey' => implode(', ', $primaryKeyData),
@@ -411,6 +416,7 @@ abstract class BaseController extends AbstractController
             'modalUrl' => $request->getRequestUri(),
             'redirectUrl' => $redirectUrl,
             'primaryKeyItems' => $primaryKeyData,
+            'descriptionItems' => $descriptions,
         ];
         if ($request->isXmlHttpRequest()) {
             return $this->render('jury/delete_modal.html.twig', $data);
