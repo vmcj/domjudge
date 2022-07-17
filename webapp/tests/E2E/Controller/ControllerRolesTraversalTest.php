@@ -113,6 +113,7 @@ class ControllerRolesTraversalTest extends BaseTest
             self::fail('The URL should already have been filtered away.');
         }
         $crawler = $this->client->request('GET', $url);
+        var_dump($url);
         $response = $this->client->getResponse();
         $message = var_export($response, true);
         if(($statusCode === 403 || $statusCode === 401) && $response->isRedirection()) {
