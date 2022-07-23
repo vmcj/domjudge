@@ -34,24 +34,6 @@ RELEASE=""
 DEBIAN_ARCHLIST="amd64,arm64,armel,armhf,i386,mips,mips64el,mipsel,ppc64el,s390x"
 UBUNTU_ARCHLIST="amd64,arm64,armhf,i386,powerpc,ppc64el,s390x"
 
-# If host system is Debian or Ubuntu, use its release and architecture by default
-if [ "$(lsb_release -i -s || true)" = 'Debian' ] || \
-   [ "$(lsb_release -i -s || true)" = 'Ubuntu' ]; then
-    DISTRO="$(lsb_release -i -s)"
-    RELEASE="$(lsb_release -c -s)"
-    if [ "$(lsb_release -i -s)" = 'Debian' ]; then
-        if [ "$(lsb_release -c -s)" = "sid" ]; then
-            RELEASE='unstable'
-        fi
-        if [ "$(lsb_release -r -s)" = 'testing' ]; then
-            RELEASE='testing'
-        fi
-    fi
-    if [ -z "$ARCH" ]; then
-        ARCH="$(dpkg --print-architecture)"
-    fi
-fi
-
 usage()
 {
     cat <<EOF
@@ -147,7 +129,38 @@ if [ "$(id -u)" != 0 ]; then
 fi
 
 [ -z "$CHROOTDIR" ] && error "No chroot directory given or default known."
+
+# If host system is Debian or Ubuntu, use its release and architecture by default
+if [ "$(lsb_release -i -s || true)" = 'Debian' ] || \
+   [ "$(lsb_release -i -s || true)" = 'Ubuntu' ]; then
+    if [ -z "$ARCH" ]; then
+        ARCH="$(dpkg --print-architecture)"
+    fi
+    # If Distro is not specified pick the host value
+    # We assume that when someone passes only the RELEASE that its valid for the host distro
+    if [ -z "$DISTRO" ]; then
+        DISTRO="$(lsb_release -i -s)"
+        RELEASE="$(lsb_release -c -s)"
+        if [ "$(lsb_release -i -s)" = 'Debian' ]; then
+            if [ "$(lsb_release -c -s)" = "sid" ]; then
+                RELEASE='unstable'
+            fi
+            if [ "$(lsb_release -r -s)" = 'testing' ]; then
+                RELEASE='testing'
+            fi
+        fi
+    fi
+fi
+
 [ -z "$ARCH" ]      && error "No architecture given or detected."
+
+ARCHLIST=$DEBIAN_ARCHLIST
+if [ "$DISTRO" = "Ubuntu" ]; then
+    ARCHLIST=$UBUNTU_ARCHLIST
+fi
+if [ -n "${ARCHLIST##*"$ARCH"*}" ]; then
+    error "Architecture $ARCH not supported for $DISTRO"    
+fi
 
 # Various settings that can be tweaked, specific per distribution:
 if [ "$DISTRO" = 'Debian' ]; then
@@ -185,7 +198,14 @@ if [ "$DISTRO" = 'Ubuntu' ]; then
     INCLUDEDEBS=""
 
     # Packages to install after upgrade (space separated):
-    INSTALLDEBS="gcc g++ make default-jdk-headless default-jre-headless pypy3 locales"
+    INSTALLDEBS="gcc g++ make default-jdk-headless default-jre-headless locales"
+    PYPY_ARCH="amd64,arm64,armhf,ppc64el,s390x"
+    PYPY_UBUNTU="focal jammy"
+    if [ -z "${PYPY_ARCH##*"$ARCH"*}" ] && [ -z "${PYPY_UBUNTU##*"$RELEASE"*}" ]; then
+        INSTALLDEBS="${INSTALLDEBS} pypy3"
+    else
+        INSTALLDEBS="${INSTALLDEBS} python3"
+    fi
     # For C# support add: mono-mcs mono-devel
     # However running mono within chroot still gives errors...
 
