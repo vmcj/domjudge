@@ -67,6 +67,7 @@ Options:
   -i <debs>    List of extra package names to install (comma separated).
   -r <debs>    List of extra package names to remove (comma separated).
   -l <debs>    List of local package files to install (comma separated).
+  -s <lists>   List of extra repository lists to add (comma separated).
   -p <url>     HTTP(S) Proxy URL to use during package install
   -m <url>     Debian or Ubuntu mirror URL to be used for package installation
   -y           Force overwriting the chroot dir and installing debootstrap.
@@ -101,7 +102,7 @@ FORCEYES=0
 FORCEDOWNLOAD=0
 
 # Read command-line parameters:
-while getopts 'a:d:D:R:i:r:l:p:m:yfh' OPT ; do
+while getopts 'a:d:D:R:i:r:l:s:p:m:yfh' OPT ; do
     case $OPT in
         a) ARCH=$OPTARG ;;
         d) CHROOTDIR=$OPTARG ;;
@@ -110,6 +111,7 @@ while getopts 'a:d:D:R:i:r:l:p:m:yfh' OPT ; do
         i) INSTALLDEBS_EXTRA=$OPTARG ;;
         r) REMOVEDEBS_EXTRA=$OPTARG ;;
         l) LOCALDEBS=$OPTARG ;;
+        s) REPOLISTS=$OPTARG ;;
         p) DEBPROXY=$OPTARG ;;
         m) DEBMIRROR=$OPTARG ;;
         y) FORCEYES=1 ;;
@@ -394,6 +396,20 @@ if [ "$DISTRO" = 'Ubuntu' ]; then
     # Refer to: http://ubuntuforums.org/showthread.php?t=1326721
     in_chroot "dpkg-divert --local --rename --add /sbin/initctl"
     in_chroot "ln -s /bin/true /sbin/initctl"
+fi
+
+# Add additional repository lists to the chroot for upstream repos
+if [ -n "$REPOLISTS" ]; then
+    for provided_repo in ${REPOLISTS//,/ }
+    do
+        if [ -f ${provided_repo}.gpg ]; then
+	    GPGFILENAME=$(mktemp -p "CHROOTDIR/etc/apt/trusted.gpg.d" 'upstream_gpg_XXXXXX')
+	    cp ${provided_repo}.gpg $GPGFILENAME
+	fi
+	cat $provided_repo_outside_chroot >> $CHROOTDIR/etc/apt/sources.list.d/upstream_chroot.list
+        # Show if we can read from this new upstream repo
+        in_chroot "apt-get update"
+    done
 fi
 
 # Upgrade the system, and install/remove packages as desired
