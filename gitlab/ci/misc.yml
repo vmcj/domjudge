@@ -15,3 +15,24 @@ run chroot script checks:
   script:
     - ./gitlab/chroot_checks.sh
 
+run chroot script checks:
+  extends: [.short_job]
+  stage: chroot_checks
+  parallel:
+    matrix:
+      - ARCH:
+        - amd64
+        - arm64
+      #- DISTRO:
+      #    - Debian
+      #    - Ubuntu
+      #- RELEASE:
+      #    - focal
+      #    - bionic
+      #- DISTRO: Debian
+      #  RELEASE:
+      #    - wheezy
+      #    - buster
+  script:
+    - ./gitlab/chroot_checks.sh
+

@@ -10,6 +10,12 @@ function finish() {
     cp /proc/cmdline "$GITLABARTIFACTS/cmdline"
     cp /chroot/domjudge/etc/apt/sources.list "$GITLABARTIFACTS/sources.list"
     cp /chroot/domjudge/debootstrap/debootstrap.log "$GITLABARTIFACTS/debootstrap.log"
+    mysqldump domjudge > "$GITLABARTIFACTS/db.sql"
+    cp /var/log/nginx/domjudge.log "$GITLABARTIFACTS/nginx.log"
+    cp /opt/domjudge/domserver/webapp/var/log/prod.log "$GITLABARTIFACTS/symfony.log"
+    cp /opt/domjudge/domserver/webapp/var/log/prod.log.errors "$GITLABARTIFACTS/symfony_errors.log"
+    cp /tmp/judgedaemon.log "$GITLABARTIFACTS/judgedaemon.log"
+    cp "${DIR}/misc-tools/icpctools/*json" "$GITLABARTIFACTS/"
 }
 trap finish EXIT
 
@@ -43,3 +49,32 @@ cp ${DIR}/submit/assert.bash ./
 cp ${DIR}/gitlab/chroot.bats ./
 bats ./chroot.bats
 section_end chroottest
+#for arch in amd64,arm64,""
+#for dir in "/chroot","/builds/chroot","/notadir/chroot"
+#for dist in "Debian","Ubuntu","notLinux"
+#for rel in "buster","wheeze","focal","bionic","notarelease"
+#for incdeb in "zip","nano"
+#for remdeb in "gcc","pypy3"
+#for locdeb in "vim.deb","helloworld.deb"
+#for mirror in "http://mirror.yandex.ru/debian","http://mirror.yandex.ru/debian"
+#for overwrite in "1","0"
+#for force in "1","0"
+#for help in "1","0"
+
+#ARGS=""
+#if [ -n "${ARCH+x}" ]; then
+#    ARGS="$ARGS -a ${ARCH}"
+#fi
+#if [ -n "${DISTRO+x}" ]; then
+#    ARGS="$ARGS -D ${DISTRO}"
+#fi
+#if [ -n "${RELEASE+x}" ]; then
+#    ARGS="$ARGS -R ${RELEASE}"
+#fi
+#sudo ./dj_make_chroot ${ARGS} |& tee "$GITLABARTIFACTS/dj_make_chroot.log"
+section_end chroot
+
+section_start chroottest "Test chroot contents"
+cp submit/assert.bash ./
+bats ./chroot_tests.bats
+sudo ./dj_run_chroot "pypy3"
