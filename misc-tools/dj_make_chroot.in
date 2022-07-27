@@ -205,6 +205,7 @@ if [ "$DISTRO" = 'Ubuntu' ]; then
         INSTALLDEBS="$INSTALLDEBS python3"
     fi
 
+    #if [ "amd64 arm64"==*"$ARCH"* ] && [ "focal jammy"==*"$RELEASE"* ]; then
     # For C# support add: mono-mcs mono-devel
     # However running mono within chroot still gives errors...
 

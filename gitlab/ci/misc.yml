@@ -97,6 +97,16 @@ run chroot script checks:
       - FORCEDOWNLOAD:
         - 1
         - 0
+      #- DISTRO:
+      #    - Debian
+      #    - Ubuntu
+      #- RELEASE:
+      #    - focal
+      #    - bionic
+      #- DISTRO: Debian
+      #  RELEASE:
+      #    - wheezy
+      #    - buster
   script:
     - ./gitlab/chroot_checks.sh
 
