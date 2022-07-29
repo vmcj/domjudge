@@ -61,6 +61,12 @@ expect_help () {
     run ./dj_make_chroot $COMMANDARGS -a dom04
     assert_failure
     assert_partial "Error: Architecture dom04 not supported for"
+#    run ./dj_make_chroot -a $ARCH
+#    assert_success
+#    assert_partial "Done building chroot in /chroot/domjudge"
+#    run ./dj_run_chroot "dpkg --print-architecture"
+#    assert_success
+#    assert_partial "$ARCH"
 }
 
 @test "Test confirmation on deletion of old chroot" {
@@ -112,6 +118,7 @@ expect_help () {
         assert_success
     fi
 }
+<<<<<<< HEAD
 #@test "help output" {
 #    run ./dj_make_chroot -h
 #    assert_success
@@ -147,6 +154,44 @@ expect_help () {
 #    assert_equal "$CHROOTARCH" "$HOST$ARCH" 
 #}
 #
+=======
+
+@test "Test chroot fails if unsupported architecture given" {
+    if [ -n ${ARCH+x} ]; then
+        skip "Arch set"
+    fi
+    run ./dj_make_chroot -a dom04
+    assert_failure
+    assert_line "Error: Architecture dom04 not supported for Ubuntu"
+}
+
+#@test "Passing the Distro gives a chroot of that Distro" {
+#    if [ -n ${DISTRO+x} ]; then
+#        skip "Distro not set"
+#    fi
+#    run ./dj_make_chroot -D $DISTRO
+#    assert_success
+#    assert_line "Done building chroot in /chroot/domjudge"
+#    run ./dj_run_chroot
+#    run cat /etc/issue
+#    assert_success
+#    if [ "Debian" = "$DISTRO" ]; then
+#        assert_regex "^Debian.*"
+#    else
+#        assert_regex "^Ubuntu.*"
+#    fi
+#}
+#
+#@test "Unknown Distro breaks" {
+#    if [ -z ${DISTRO+x} ]; then
+#        skip "Distro set"
+#    fi
+#    run ./dj_make_chroot -D "BSD"
+#    assert_failure
+#    assert_line "Error: Invalid distribution specified, only 'Debian' and 'Ubuntu' are supported."
+#}
+#
+#@test "Passing Debian Release 
 #@test "contest via parameter overrides environment" {
 #    run ./submit -c bestaatniet
 #    assert_failure 1
@@ -314,29 +359,11 @@ expect_help () {
 #    # The help printer does print this differently on versions of argparse for nargs=*.
 #    assert_regex "              (filename )?[filename ...]"
 #    assert_line "Submit a solution for a problem."
-#}
-#
-#@test "usage information displays API url" {
-#    run ./submit --help
 #    assert_success
 #    assert_line "The (pre)configured URL is '$SUBMITBASEURL/'"
-#}
-#
-#@test "netrc is mentioned in usage documentation" {
-#    run ./submit --help
 #    assert_success
 #    assert_regex "~/\\.netrc"
-#}
-#
-#@test "nonexistent option shows error" {
-#    run ./submit --doesnotexist
 #    assert_failure 2
-#    # Do not count from the start, but take the last line.
 #    assert_line "submit: error: unrecognized arguments: --doesnotexist"
-#}
-#
-#@test "verbosity option defaults to INFO" {
-#    run ./submit -v
 #    assert_failure 1
 #    assert_partial "set verbosity to INFO"
-#}
