@@ -25,9 +25,13 @@ run chroot script checks:
         - arm64
         - armhf
         - i386
-      #- DISTRO:
-      #    - Debian
-      #    - Ubuntu
+      - DISTRO:
+          - Debian
+          - Ubuntu
+      - ARCH: arm64
+        DISTRO: Debian
+      - ARCH: i386
+        DISTRO: Debian
       #- RELEASE:
       #    - focal
       #    - bionic

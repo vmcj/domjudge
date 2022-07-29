@@ -88,6 +88,34 @@ fi
     assert_equal "$CHROOTARCH" "$HOST$ARCH" 
 }
 
+@test "Test chroot fails if unsupported architecture given" {
+    if [ -n ${ARCH+x} ]; then
+        skip "Arch set"
+    fi
+    run ./dj_make_chroot -a dom04
+    assert_failure
+    assert_line "Error: Architecture dom04 not supported for Ubuntu"
+}
+
+@test "Test chroot fails if unsupported architecture given" {
+    if [ -n ${DISTRO+x} ]; then
+        skip "Distro not set"
+    fi
+    run ./dj_make_chroot -D $DISTRO
+    assert_success
+    assert_line "Done building chroot in /chroot/domjudge"
+    run ./dj_run_chroot
+    run cat /etc/issue
+    assert_success
+    if [ "Debian" = "$DISTRO" ]; then
+        assert_regex "^Debian.*"
+    else
+        assert_regex "^Ubuntu.*"
+    fi
+}
+
+
+
 #@test "contest via parameter overrides environment" {
 #    run ./submit -c bestaatniet
 #    assert_failure 1

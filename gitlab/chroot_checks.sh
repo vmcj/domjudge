@@ -50,8 +50,8 @@ cp ${DIR}/gitlab/chroot.bats ./
 bats ./chroot.bats
 section_end chroottest
 #for arch in amd64,arm64,""
-#for dir in "/chroot","/builds/chroot","/notadir/chroot"
 #for dist in "Debian","Ubuntu","notLinux"
+#for dir in "/chroot","/builds/chroot","/notadir/chroot"
 #for rel in "buster","wheeze","focal","bionic","notarelease"
 #for incdeb in "zip","nano"
 #for remdeb in "gcc","pypy3"
