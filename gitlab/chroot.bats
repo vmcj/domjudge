@@ -262,7 +262,11 @@ expect_help () {
     # Start testing
     run ./dj_make_chroot -a dom04
     assert_failure
-    assert_line "Error: Architecture dom04 not supported for Ubuntu"
+    if [ -n "${DISTRO+x}" ]; then
+        assert_line "Error: Architecture dom04 not supported for $DISTRO"
+    else
+        assert_line "Error: Architecture dom04 not supported for Ubuntu"
+    fi
 }
 
 @test "Passing the Distro gives a chroot of that Distro" {
