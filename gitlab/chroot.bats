@@ -97,6 +97,23 @@ expect_help () {
     fi
     run ./dj_make_chroot $COMMANDARGS
     assert_partial "Done building chroot in $CHROOT"
+#    run ./dj_make_chroot -a $ARCH
+#    assert_success
+#    assert_partial "Done building chroot in /builds/DOMjudge/domjudge/chroot/domjudge"
+#    run ./dj_run_chroot "dpkg --print-architecture"
+#    assert_success
+#    assert_partial "$ARCH"
+#}
+#
+#@test "Test chroot works without architecture given" {
+#    if [ -n ${ARCH+x} ]; then
+#        skip "Arch set"
+#    fi
+#    HOSTARCH=$(dpkg --print-architecture)
+#    run ./dj_make_chroot
+#    assert_success
+#    assert_line "Done building chroot in /builds/DOMjudge/domjudge/chroot/domjudge"
+#    run ./dj_run_chroot
     assert_success
     if [ -n "${FORCEDOWNLOAD+x}" || ! -f /etc/debian_release ]; then
         assert_partial "Downloading debootstrap to temporary directory at"
@@ -118,7 +135,6 @@ expect_help () {
         assert_success
     fi
 }
-<<<<<<< HEAD
 #@test "help output" {
 #    run ./dj_make_chroot -h
 #    assert_success
@@ -154,7 +170,6 @@ expect_help () {
 #    assert_equal "$CHROOTARCH" "$HOST$ARCH" 
 #}
 #
-=======
 
 @test "Test chroot fails if unsupported architecture given" {
     if [ -n ${ARCH+x} ]; then
@@ -171,7 +186,7 @@ expect_help () {
 #    fi
 #    run ./dj_make_chroot -D $DISTRO
 #    assert_success
-#    assert_line "Done building chroot in /chroot/domjudge"
+#    assert_line "Done building chroot in /builds/DOMjudge/domjudge/chroot/domjudge"
 #    run ./dj_run_chroot
 #    run cat /etc/issue
 #    assert_success
