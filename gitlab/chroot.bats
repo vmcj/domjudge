@@ -279,8 +279,7 @@ expect_help () {
     run ./dj_make_chroot -D $DISTRO
     assert_success
     assert_line "Done building chroot in $CHROOT"
-    run ./dj_run_chroot
-    run cat /etc/issue
+    run ./dj_run_chroot "cat /etc/issue"
     assert_success
     if [ "Debian" = "$DISTRO" ]; then
         assert_partial "Debian"
