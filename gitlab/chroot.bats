@@ -5,6 +5,7 @@ load 'assert'
 CHROOT="/chroot/domjudge"
 if [ -n "${CI_JOB_ID+x}" ]; then
     CHROOT="/builds/DOMjudge/domjudge${CHROOT}"
+<<<<<<< HEAD
 fi
 # Cleanup old dir
 rm -rf $CHROOT
@@ -12,6 +13,8 @@ rm -rf $CHROOT
 COMMANDARGS=""
 if [ -n "${ARCH+x}" ]; then
     COMMANDARGS="-a $ARCH $COMMANDARGS"
+=======
+>>>>>>> f69225b86... Use correct test statement
 fi
 if [ -n "${MIRROR+x}" ]; then
     COMMANDARGS="-m $MIRROR $COMMANDARGS"
