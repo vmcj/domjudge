@@ -135,6 +135,27 @@ expect_help () {
         assert_success
     fi
 }
+#@test "Test chroot works without architecture given" {
+#    if [ -n "${ARCH+x}" ]; then
+#        skip "Arch set"
+#    fi
+#    HOSTARCH=$(dpkg --print-architecture)
+#    run ./dj_make_chroot
+#    assert_success
+#    assert_line "Done building chroot in /builds/DOMjudge/domjudge/chroot/domjudge"
+#    run ./dj_run_chroot
+#    assert_success
+#    if [ -n "${ARCH+x}" ]; then
+#        run ./dj_run_chroot "dpkg --print-architecture"
+#        assert_partial "$ARCH"
+#        assert_success
+#    else
+#        HOSTARCH=$(dpkg --print-architecture)
+#        run ./dj_run_chroot "dpkg --print-architecture"
+#        assert_partial "$HOSTARCH"
+#        assert_success
+#    fi
+#}
 #@test "help output" {
 #    run ./dj_make_chroot -h
 #    assert_success
@@ -172,7 +193,7 @@ expect_help () {
 #
 
 @test "Test chroot fails if unsupported architecture given" {
-    if [ -n ${ARCH+x} ]; then
+    if [ -n "${ARCH+x}" ]; then
         skip "Arch set"
     fi
     run ./dj_make_chroot -a dom04
@@ -181,7 +202,7 @@ expect_help () {
 }
 
 @test "Passing the Distro gives a chroot of that Distro" {
-    if [ -n ${DISTRO+x} ]; then
+    if [ -z "${DISTRO+x}" ]; then
         skip "Distro not set"
     fi
     run ./dj_make_chroot -D $DISTRO
@@ -198,7 +219,7 @@ expect_help () {
 }
 
 @test "Unknown Distro breaks" {
-    if [ -z ${DISTRO+x} ]; then
+    if [ -n "${DISTRO+x}" ]; then
         skip "Distro set"
     fi
     run ./dj_make_chroot -D "BSD"
@@ -207,12 +228,12 @@ expect_help () {
 }
 
 @test "Unknown Release breaks" {
-    if [ -z ${RELEASE+x} ]; then
-        skip "Release set"
+    if [ -n "${DISTRO+x}" ] || [ -n "${RELEASE+x}" ]; then
+        skip "Distro/Release set"
     fi
     run ./dj_make_chroot -R "Olympos"
     assert_failure
-    assert_line "E: No such script: /usr/share/debootstrap/scripts/Olympus"
+    assert_line "E: No such script: /usr/share/debootstrap/scripts/Olympos"
 }
 
 #@test "Passing Debian Release 
