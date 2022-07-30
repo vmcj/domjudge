@@ -97,9 +97,9 @@ run chroot script checks:
       - FORCEDOWNLOAD:
         - 1
         - 0
-      #- DISTRO:
-      #    - Debian
-      #    - Ubuntu
+      - DISTRO:
+        - Debian
+        - Ubuntu
       #- RELEASE:
       #    - focal
       #    - bionic
