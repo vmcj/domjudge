@@ -26,6 +26,12 @@ fi
 if [ -n "${FORCEYES+x}" ]; then
     COMMANDARGS="-y $COMMANDARGS"
 fi
+if [ -n "${DISTRO+x}" ]; then
+    COMMANDARGS="-D $DISTRO $COMMANDARGS"
+fi
+if [ -n "${RELEASE+x}" ]; then
+    COMMANDARGS="-R $RELEASE $COMMANDARGS"
+fi
 
 expect_help () {
     assert_partial "Usage:"
@@ -253,15 +259,39 @@ expect_help () {
 @test "Test chroot fails if unsupported architecture given" {
     if [ -n "${ARCH+x}" ]; then
         skip "Already an Arch set in the commands."
-    fi
-    run ./dj_make_chroot $COMMANDARGS -a dom04
-    assert_failure
+=======
+@test "Unknown Distro breaks" {
     if [ -n "${DISTRO+x}" ]; then
-        assert_line "Error: Architecture dom04 not supported for $DISTRO"
-    else
-        assert_line "Error: Architecture dom04 not supported for Ubuntu"
+        skip "Distro set"
+>>>>>>> f5c37bede... Arch/Distro/Release rewrite
     fi
+    run ./dj_make_chroot $COMMANDARGS -D "BSD"
+    assert_failure
+    assert_line "Error: Invalid distribution specified, only 'Debian' and 'Ubuntu' are supported."
 }
+
+@test "Unknown Release breaks" {
+    if [ -n "${RELEASE+x}" ]; then
+        skip "Distro/Release set"
+    fi
+    run ./dj_make_chroot $COMMANDARGS -R "Olympos"
+    assert_failure
+    assert_line "E: No such script: /usr/share/debootstrap/scripts/Olympos"
+}
+
+# Its hard to keep this list for Debian as it supports different archs per Release
+#@test "Test chroot fails if unsupported architecture given" {
+#    if [ -n "${ARCH+x}" ]; then
+#        skip "Already an Arch set in the commands."
+#    fi
+#    run ./dj_make_chroot $COMMANDARGS -a dom04
+#    assert_failure
+#    if [ -n "${DISTRO+x}" ]; then
+#        assert_line "Error: Architecture dom04 not supported for $DISTRO"
+#    else
+#        assert_line "Error: Architecture dom04 not supported for Ubuntu"
+#    fi
+#}
 
 @test "Test chroot works with args: $COMMANDARGS" {
     run ./dj_make_chroot $COMMANDARGS
@@ -269,6 +299,12 @@ expect_help () {
     assert_partial "Done building chroot in $CHROOT"
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> ecc5e0bf6... Arch/Distro/Release rewrite
 #@test "Unknown Release breaks" {
 #    if [ -n "${DISTRO+x}" ] || [ -n "${RELEASE+x}" ]; then
 #        skip "Distro/Release set"
@@ -346,6 +382,8 @@ expect_help () {
     assert_line "E: No such script: /usr/share/debootstrap/scripts/Olympos"
 }
 
+=======
+>>>>>>> f5c37bede... Arch/Distro/Release rewrite
 @test "Test chroot works with architecture: $ARCH" {
     if [ -z "${ARCH+x}" ]; then
         skip "Arch not set"
@@ -355,6 +393,12 @@ expect_help () {
     assert_partial "$ARCH"
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> ed457a42b... Add test about chroot dir
+>>>>>>> ecc5e0bf6... Arch/Distro/Release rewrite
 ##    run ./submit -c bestaatniet
 ##    assert_failure 1
 ##    assert_partial "error: No (valid) contest specified"
@@ -464,6 +508,35 @@ expect_help () {
 ##    assert_line "submit: error: unrecognized arguments: --doesnotexist"
 ##    assert_failure 1
 ##    assert_partial "set verbosity to INFO"
+<<<<<<< HEAD
+=======
+=======
+=======
+@test "Test chroot has host arch if not given" {
+    if [ -n "${ARCH+x}" ]; then
+        skip "Arch set"
+    fi
+    HOSTARCH=$(dpkg --print-architecture)
+    run ./dj_run_chroot "dpkg --print-architecture"
+    assert_success
+    assert_partial "$HOSTARCH"
+}
+
+@test "Passing the Distro gives a chroot of that Distro" {
+    if [ -z "${DISTRO+x}" ]; then
+        skip "Distro not set"
+    fi
+    run ./dj_run_chroot "cat /etc/issue"
+    assert_success
+    if [ "Debian" = "$DISTRO" ]; then
+        assert_partial "Debian"
+    else
+        assert_partial "Ubuntu"
+    fi
+}
+
+>>>>>>> f5c37bede... Arch/Distro/Release rewrite
+>>>>>>> ecc5e0bf6... Arch/Distro/Release rewrite
 #
 #@test "Test chroot works with no arguments" {
 #    if [ -n "${ARCH+x}" ] || [ -n "${DISTRO+x}" ] || [ -n "${RELEASE+x}" ]; then
@@ -482,51 +555,8 @@ expect_help () {
 #    #CHROOTARCH=$(dpkg --print-architecture)
 #    #assert_equal "$CHROOTARCH" "$HOST$ARCH"
 #}
-
-
-
-#@test "Passing the Distro gives a chroot of that Distro" {
-#    if [ -z "${DISTRO+x}" ]; then
-#        skip "Distro not set"
-#    fi
-#    # Cleanup old dir if it exists
-#    rm -rf $CHROOT
-#    # Start testing
-#    run ./dj_make_chroot -D $DISTRO
-#    assert_success
-#    assert_line "Done building chroot in $CHROOT"
-#    run ./dj_run_chroot "cat /etc/issue"
-#    assert_success
-#    if [ "Debian" = "$DISTRO" ]; then
-#        assert_partial "Debian"
-#    else
-#        assert_partial "Ubuntu"
-#    fi
-#}
 #
-#@test "Unknown Distro breaks" {
-#    if [ -n "${DISTRO+x}" ]; then
-#        skip "Distro set"
-#    fi
-#    # Cleanup old dir if it exists
-#    rm -rf $CHROOT
-#    # Start testing
-#    run ./dj_make_chroot -D "BSD"
-#    assert_failure
-#    assert_line "Error: Invalid distribution specified, only 'Debian' and 'Ubuntu' are supported."
-#}
 #
-#@test "Unknown Release breaks" {
-#    if [ -n "${DISTRO+x}" ] || [ -n "${RELEASE+x}" ]; then
-#        skip "Distro/Release set"
-#    fi
-#    # Cleanup old dir if it exists
-#    rm -rf $CHROOT
-#    # Start testing
-#    run ./dj_make_chroot -R "Olympos"
-#    assert_failure
-#    assert_line "E: No such script: /usr/share/debootstrap/scripts/Olympos"
-#}
 #
 #@test "Installing in another chroot dir works" {
 #    if [ -z "${DIR+x}" ]; then
