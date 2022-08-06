@@ -160,22 +160,107 @@ expect_help () {
         skip "Non Debian based system detected, so we result in 'No arguments on non Debian/Ubuntu'"
     fi
     run ./dj_make_chroot $COMMANDARGS
+    assert_success
     assert_partial "Done building chroot in $CHROOT"
-#    run ./dj_make_chroot -a $ARCH
-#    assert_success
-#    assert_partial "Done building chroot in /builds/DOMjudge/domjudge/chroot/domjudge"
-#    run ./dj_run_chroot "dpkg --print-architecture"
-#    assert_success
-#    assert_partial "$ARCH"
-#}
+}
+
 #
-#@test "Test chroot works without architecture given" {
-#    if [ -n ${ARCH+x} ]; then
-#        skip "Arch set"
-#    fi
-#    HOSTARCH=$(dpkg --print-architecture)
-#    run ./dj_make_chroot
+#@test "Test chroot fails if unsupported architecture given" {
+##@test "Test chroot works with architecture: $ARCH" {
+##    if [ -z "${ARCH+x}" ]; then
+##        skip "Arch not set"
+##    fi
+##    # Cleanup old dir if it exists
+##    run rm -rf /builds/DOMjudge/domjudge/chroot
+##    # Start testing
+##    run ./dj_make_chroot -a $ARCH
+##    assert_success
+##    assert_partial "Done building chroot in /builds/DOMjudge/domjudge/chroot/domjudge"
+##    run ./dj_run_chroot "dpkg --print-architecture"
+##    assert_success
+##    assert_partial "$ARCH"
+##}
+##
+##@test "Test chroot works without architecture given" {
+##    if [ -n "${ARCH+x}" ]; then
+##        skip "Already an Arch set in the commands."
+##    fi
+##    run ./dj_make_chroot $COMMANDARGS -a dom04
+##    assert_failure
+##    assert_partial "Error: Architecture dom04 not supported for"
+##    run ./dj_make_chroot -a $ARCH
+##    assert_success
+##    assert_partial "Done building chroot in /chroot/domjudge"
+##    run ./dj_run_chroot "dpkg --print-architecture"
+##    assert_success
+##    assert_partial "$ARCH"
+##    # Cleanup old dir if it exists
+##    run rm -rf /builds/DOMjudge/domjudge/chroot
+##    # Start testing
+##    HOSTARCH=$(dpkg --print-architecture)
+##    run ./dj_make_chroot
+##    assert_success
+##    assert_line "Done building chroot in /builds/DOMjudge/domjudge/chroot/domjudge"
+##    run ./dj_run_chroot
+##    assert_success
+##    CHROOTARCH=$(dpkg --print-architecture)
+##    assert_equal "$CHROOTARCH" "$HOST$ARCH" 
+##@test "Test chroot works with architecture: $ARCH" {
+##    if [ -z "${ARCH+x}" ]; then
+##        skip "Arch not set"
+##    fi
+##    # Cleanup old dir if it exists
+##    rm -rf $CHROOT
+##    # Start testing
+##    run ./dj_make_chroot -a $ARCH
+##    assert_success
+##    assert_partial "Done building chroot in $CHROOT"
+##    run ./dj_run_chroot "dpkg --print-architecture"
+##    assert_success
+##    assert_partial "$ARCH"
+##}
+##
+##@test "Test chroot works with no arguments" {
+##    if [ -n "${ARCH+x}" ] || [ -n "${DISTRO+x}" ] || [ -n "${RELEASE+x}" ]; then
+##        skip "An argument is set"
+##    fi
+##    # Cleanup old dir if it exists
+##    rm -rf $CHROOT
+##    # Start testing
+##    HOSTARCH=$(dpkg --print-architecture)
+##    run ./dj_make_chroot
+##    assert_success
+##    assert_partial "Done building chroot in"
+##    # $CHROOT"
+##    #run ./dj_run_chroot
+##    #assert_success
+##    #CHROOTARCH=$(dpkg --print-architecture)
+##    #assert_equal "$CHROOTARCH" "$HOST$ARCH"
+##}
+#
+## Creation of the chroot is slow so we run all tests inside 1 large test to speedup.
+#@test "Test chroot works with args: $COMMANDARGS" {
+#    run ./dj_make_chroot $COMMANDARGS
+#    assert_partial "Done building chroot in $CHROOT"
+##    run ./dj_make_chroot -a $ARCH
+##    assert_success
+##    assert_partial "Done building chroot in /builds/DOMjudge/domjudge/chroot/domjudge"
+##    run ./dj_run_chroot "dpkg --print-architecture"
+##    assert_success
+##    assert_partial "$ARCH"
+##}
+##
+##@test "Test chroot works without architecture given" {
+##    if [ -n ${ARCH+x} ]; then
+##        skip "Arch set"
+##    fi
+##    HOSTARCH=$(dpkg --print-architecture)
+##    run ./dj_make_chroot
+##    assert_success
+##    assert_line "Done building chroot in /builds/DOMjudge/domjudge/chroot/domjudge"
+##    run ./dj_run_chroot
 #    assert_success
+<<<<<<< HEAD
 #    assert_line "Done building chroot in /builds/DOMjudge/domjudge/chroot/domjudge"
 #    run ./dj_run_chroot
     assert_success
@@ -202,13 +287,15 @@ expect_help () {
 #@test "Test chroot works without architecture given" {
 #    if [ -n "${ARCH+x}" ]; then
 #        skip "Arch set"
+#    if [ -n "${FORCEDOWNLOAD+x}" ]; then
+#        assert_partial "Downloading debootstrap to temporary directory at"
+#        run find /tmp/*/usr/sbin/ -name debootstrap
+#        assert_partial "usr/sbin/debootstrap"
+#        assert_success
+#        run find /tmp/*/usr/share/debootstrap/scripts/ -name bookworm
+#        assert_partial "usr/share/debootstrap/scripts/bookworm"
+#        assert_success
 #    fi
-#    HOSTARCH=$(dpkg --print-architecture)
-#    run ./dj_make_chroot
-#    assert_success
-#    assert_line "Done building chroot in /builds/DOMjudge/domjudge/chroot/domjudge"
-#    run ./dj_run_chroot
-#    assert_success
 #    if [ -n "${ARCH+x}" ]; then
 #        run ./dj_run_chroot "dpkg --print-architecture"
 #        assert_partial "$ARCH"
@@ -220,185 +307,121 @@ expect_help () {
 #        assert_success
 #    fi
 #}
-#@test "help output" {
-#    run ./dj_make_chroot -h
-#    assert_success
-#    assert_regex "^Usage: .* [options]..."
-#    assert_line "Available architectures:"
-#    assert_line "Environment Overrides:"
-#    assert_line "This script must be run as root"
-#}
+##@test "Test chroot works without architecture given" {
+##    if [ -n "${ARCH+x}" ]; then
+##        skip "Arch set"
+##    fi
+##    HOSTARCH=$(dpkg --print-architecture)
+##    run ./dj_make_chroot
+##    assert_success
+##    assert_line "Done building chroot in /builds/DOMjudge/domjudge/chroot/domjudge"
+##    run ./dj_run_chroot
+##    assert_success
+##    if [ -n "${ARCH+x}" ]; then
+##        run ./dj_run_chroot "dpkg --print-architecture"
+##        assert_partial "$ARCH"
+##        assert_success
+##    else
+##        HOSTARCH=$(dpkg --print-architecture)
+##        run ./dj_run_chroot "dpkg --print-architecture"
+##        assert_partial "$HOSTARCH"
+##        assert_success
+##    fi
+##}
+##@test "help output" {
+##    run ./dj_make_chroot -h
+##    assert_success
+##    assert_regex "^Usage: .* [options]..."
+##    assert_line "Available architectures:"
+##    assert_line "Environment Overrides:"
+##    assert_line "This script must be run as root"
+##}
+##
+##@test "Test chroot works with architecture: $ARCH" {
+##    if [ -z ${ARCH+x} ]; then
+##        skip "Arch not set"
+##    fi
+##    run ./dj_make_chroot -a $ARCH
+##    assert_success
+##    assert_line "Done building chroot in /chroot/domjudge"
+##    run ./dj_run_chroot "dpkg --print-architecture"
+##    assert_success
+##    assert_line "$ARCH"
+##}
+##
+##@test "Test chroot works without architecture given" {
+##    if [ -n ${ARCH+x} ]; then
+##        skip "Arch set"
+##    fi
+##    HOSTARCH=$(dpkg --print-architecture)
+##    run ./dj_make_chroot
+##    assert_success
+##    assert_line "Done building chroot in /chroot/domjudge"
+##    run ./dj_run_chroot
+##    assert_success
+##    CHROOTARCH=$(dpkg --print-architecture)
+##    assert_equal "$CHROOTARCH" "$HOST$ARCH" 
+##}
+##
 #
-#@test "Test chroot works with architecture: $ARCH" {
-#    if [ -z ${ARCH+x} ]; then
-#        skip "Arch not set"
-#    fi
-#    run ./dj_make_chroot -a $ARCH
-#    assert_success
-#    assert_line "Done building chroot in /chroot/domjudge"
-#    run ./dj_run_chroot "dpkg --print-architecture"
-#    assert_success
-#    assert_line "$ARCH"
-#}
-#
-#@test "Test chroot works without architecture given" {
-#    if [ -n ${ARCH+x} ]; then
-#        skip "Arch set"
-#    fi
-#    HOSTARCH=$(dpkg --print-architecture)
-#    run ./dj_make_chroot
-#    assert_success
-#    assert_line "Done building chroot in /chroot/domjudge"
-#    run ./dj_run_chroot
-#    assert_success
-#    CHROOTARCH=$(dpkg --print-architecture)
-#    assert_equal "$CHROOTARCH" "$HOST$ARCH" 
-#}
-#
-
-@test "Test chroot fails if unsupported architecture given" {
-    if [ -n "${ARCH+x}" ]; then
-        skip "Already an Arch set in the commands."
-=======
-@test "Unknown Distro breaks" {
-    if [ -n "${DISTRO+x}" ]; then
-        skip "Distro set"
->>>>>>> f5c37bede... Arch/Distro/Release rewrite
-    fi
-    run ./dj_make_chroot $COMMANDARGS -D "BSD"
-    assert_failure
-    assert_line "Error: Invalid distribution specified, only 'Debian' and 'Ubuntu' are supported."
-}
-
-@test "Unknown Release breaks" {
-    if [ -n "${RELEASE+x}" ]; then
-        skip "Distro/Release set"
-    fi
-    run ./dj_make_chroot $COMMANDARGS -R "Olympos"
-    assert_failure
-    assert_line "E: No such script: /usr/share/debootstrap/scripts/Olympos"
-}
-
-# Its hard to keep this list for Debian as it supports different archs per Release
 #@test "Test chroot fails if unsupported architecture given" {
 #    if [ -n "${ARCH+x}" ]; then
 #        skip "Already an Arch set in the commands."
-#    fi
-#    run ./dj_make_chroot $COMMANDARGS -a dom04
-#    assert_failure
-#    if [ -n "${DISTRO+x}" ]; then
-#        assert_line "Error: Architecture dom04 not supported for $DISTRO"
-#    else
-#        assert_line "Error: Architecture dom04 not supported for Ubuntu"
-#    fi
-#}
-
-@test "Test chroot works with args: $COMMANDARGS" {
-    run ./dj_make_chroot $COMMANDARGS
-    assert_success
-    assert_partial "Done building chroot in $CHROOT"
-}
-
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> ecc5e0bf6... Arch/Distro/Release rewrite
-#@test "Unknown Release breaks" {
-#    if [ -n "${DISTRO+x}" ] || [ -n "${RELEASE+x}" ]; then
-#        skip "Distro/Release set"
-#    fi
-#    # Cleanup old dir if it exists
-#    run rm -rf /builds/DOMjudge/domjudge/chroot
-#    # Start testing
-#    run ./dj_make_chroot -R "Olympos"
-#    assert_failure
-#    assert_line "E: No such script: /usr/share/debootstrap/scripts/Olympos"
-#}
-#
-#@test "Passing Debian Release 
-#@test "contest via parameter overrides environment" {
-#    run ./submit -c bestaatniet
-#    assert_failure 1
-#    assert_partial "error: No (valid) contest specified"
-#    run ./submit --contest=bestaatookniet
-#    assert_failure 1
-#    assert_partial "error: No (valid) contest specified"
-#    run ./submit --help
-#@test "Passing the Distro gives a chroot of that Distro" {
-#    if [ -z "${DISTRO+x}" ]; then
-#        skip "Distro not set"
-#    fi
-#    # Cleanup old dir if it exists
-#    run rm -rf /builds/DOMjudge/domjudge/chroot
-#    # Start testing
-#    run ./dj_make_chroot -D $DISTRO
-#    assert_success
-#    assert_line "Done building chroot in /builds/DOMjudge/domjudge/chroot/domjudge"
-#    run ./dj_run_chroot
-#    run cat /etc/issue
-#    assert_success
-#    if [ "Debian" = "$DISTRO" ]; then
-#        assert_partial "Debian"
-#    else
-#        assert_partial "Ubuntu"
-#    fi
-#}
-#
+#=======
 #@test "Unknown Distro breaks" {
 #    if [ -n "${DISTRO+x}" ]; then
 #        skip "Distro set"
+#>>>>>>> f5c37bede... Arch/Distro/Release rewrite
 #    fi
-#    # Cleanup old dir if it exists
-#    run rm -rf /builds/DOMjudge/domjudge/chroot
-#    # Start testing
-#    run ./dj_make_chroot -D "BSD"
+#    run ./dj_make_chroot $COMMANDARGS -D "BSD"
 #    assert_failure
 #    assert_line "Error: Invalid distribution specified, only 'Debian' and 'Ubuntu' are supported."
 #}
 #
 #@test "Unknown Release breaks" {
-#    if [ -n "${DISTRO+x}" ] || [ -n "${RELEASE+x}" ]; then
+#    if [ -n "${RELEASE+x}" ]; then
 #        skip "Distro/Release set"
 #    fi
-#    # Cleanup old dir if it exists
-#    run rm -rf /builds/DOMjudge/domjudge/chroot
-#    # Start testing
-#    run ./dj_make_chroot -R "Olympos"
+#    run ./dj_make_chroot $COMMANDARGS -R "Olympos"
 #    assert_failure
 #    assert_line "E: No such script: /usr/share/debootstrap/scripts/Olympos"
 #}
 #
-@test "Unknown Release breaks" {
-    if [ -n "${DISTRO+x}" ] || [ -n "${RELEASE+x}" ]; then
-        skip "Distro/Release set"
-    fi
-    # Cleanup old dir if it exists
-    rm -rf $CHROOT
-    # Start testing
-    run ./dj_make_chroot -R "Olympos"
-    assert_failure
-    assert_line "E: No such script: /usr/share/debootstrap/scripts/Olympos"
-}
-
-=======
->>>>>>> f5c37bede... Arch/Distro/Release rewrite
-@test "Test chroot works with architecture: $ARCH" {
-    if [ -z "${ARCH+x}" ]; then
-        skip "Arch not set"
-    fi
-    run ./dj_run_chroot "dpkg --print-architecture"
-    assert_success
-    assert_partial "$ARCH"
-}
-
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> ed457a42b... Add test about chroot dir
->>>>>>> ecc5e0bf6... Arch/Distro/Release rewrite
+## Its hard to keep this list for Debian as it supports different archs per Release
+##@test "Test chroot fails if unsupported architecture given" {
+##    if [ -n "${ARCH+x}" ]; then
+##        skip "Already an Arch set in the commands."
+##    fi
+##    run ./dj_make_chroot $COMMANDARGS -a dom04
+##    assert_failure
+##    if [ -n "${DISTRO+x}" ]; then
+##        assert_line "Error: Architecture dom04 not supported for $DISTRO"
+##    else
+##        assert_line "Error: Architecture dom04 not supported for Ubuntu"
+##    fi
+##}
+#
+#
+#<<<<<<< HEAD
+#=======
+#<<<<<<< HEAD
+#<<<<<<< HEAD
+#<<<<<<< HEAD
+#>>>>>>> ecc5e0bf6... Arch/Distro/Release rewrite
+##@test "Unknown Release breaks" {
+##    if [ -n "${DISTRO+x}" ] || [ -n "${RELEASE+x}" ]; then
+##        skip "Distro/Release set"
+##    fi
+##    # Cleanup old dir if it exists
+##    run rm -rf /builds/DOMjudge/domjudge/chroot
+##    # Start testing
+##    run ./dj_make_chroot -R "Olympos"
+##    assert_failure
+##    assert_line "E: No such script: /usr/share/debootstrap/scripts/Olympos"
+##}
+##
+##@test "Passing Debian Release 
+##@test "contest via parameter overrides environment" {
 ##    run ./submit -c bestaatniet
 ##    assert_failure 1
 ##    assert_partial "error: No (valid) contest specified"
@@ -406,173 +429,79 @@ expect_help () {
 ##    assert_failure 1
 ##    assert_partial "error: No (valid) contest specified"
 ##    run ./submit --help
-##    assert_success
-##    assert_regex "hello *- *Hello World"
-##    run ./submit --help
-##    assert_success
-##    assert_regex "C *- *c"
-##    assert_regex "C\+\+ *- *c\+\+, cc, cpp, cxx"
-##    assert_regex "Java *- *java"
-##    touch -d '2000-01-01' $BATS_TMPDIR/test-hello.c
-##    run ./submit -p hello $BATS_TMPDIR/test-hello.c <<< "n"
-##    assert_regex "test-hello.c' has not been modified for [0-9]* minutes!"
-##    touch $BATS_TMPDIR/test-hello.c
-##    run ./submit -p hello $BATS_TMPDIR/test-hello.c <<< "n"
-##    refute_line -e "test-hello.c' has not been modified for [0-9]* minutes!"
-##    cp $(which bash) $BATS_TMPDIR/binary.c
-##    run ./submit -p hello $BATS_TMPDIR/binary.c <<< "n"
-##    assert_partial "binary.c' is detected as binary/data!"
-##    touch $BATS_TMPDIR/empty.c
-##    run ./submit -p hello $BATS_TMPDIR/empty.c <<< "n"
-##    assert_partial "empty.c' is empty"
-##    cp ../tests/test-hello.java $BATS_TMPDIR/hello.java
-##    run ./submit $BATS_TMPDIR/hello.java <<< "n"
-##    assert_line "Submission information:"
-##    assert_line "  problem:     hello"
-##    assert_line "  language:    Java"
-##    cp ../tests/test-hello.java $BATS_TMPDIR/hello.java
-##    run ./submit -p boolfind -l cpp $BATS_TMPDIR/hello.java <<< "n"
-##    assert_line "Submission information:"
-##    assert_line "  problem:     boolfind"
-##    assert_line "  language:    C++"
-##    cp ../tests/test-hello.java $BATS_TMPDIR/hello.java
-##    run ./submit -p nonexistent -l cpp $BATS_TMPDIR/hello.java <<< "n"
-##    assert_failure 1
-##    assert_partial "error: No known problem specified or detected"
-##    cp ../tests/test-hello.java $BATS_TMPDIR/hello.java
-##    run ./submit -p boolfind -l nonexistent $BATS_TMPDIR/hello.java <<< "n"
-##    assert_failure 1
-##    assert_partial "error: No known language specified or detected"
-##    skip "Java does not require an entry point in the default installation"
-##    run ./submit -p hello ../tests/test-hello.java <<< "n"
-##    assert_line '  entry point: test-hello'
-##    skip "Python does not require an entry point in the default installation"
-##    touch $BATS_TMPDIR/test-extra.py
-##    run ./submit -p hello ../tests/test-hello.py $BATS_TMPDIR/test-extra.py <<< "n"
-##    assert_line '  entry point: test-hello.py'
-##    run ./submit --help
-##    if ! echo "$output" | grep 'Kotlin:' ; then
-##        skip "Kotlin not enabled"
+##@test "Passing the Distro gives a chroot of that Distro" {
+##    if [ -z "${DISTRO+x}" ]; then
+##        skip "Distro not set"
 ##    fi
-##    run ./submit -p hello ../tests/test-hello.kt <<< "n"
-##    assert_line '  entry point: Test_helloKt'
-##    run ./submit -p hello -e Main ../tests/test-hello.java <<< "n"
-##    assert_line '  entry point: Main'
-##    run ./submit -p hello --entry_point=mypackage.Main ../tests/test-hello.java <<< "n"
-##    assert_line '  entry point: mypackage.Main'
-##    cp ../tests/test-hello.java ../tests/test-classname.java ../tests/test-package.java $BATS_TMPDIR/
-##    run ./submit -p hello $BATS_TMPDIR/test-*.java <<< "n"
-##    assert_line "  filenames:   $BATS_TMPDIR/test-classname.java $BATS_TMPDIR/test-hello.java $BATS_TMPDIR/test-package.java"
-##    cp ../tests/test-hello.java ../tests/test-package.java $BATS_TMPDIR/
-##    run ./submit -p hello $BATS_TMPDIR/test-hello.java $BATS_TMPDIR/test-hello.java $BATS_TMPDIR/test-package.java <<< "n"
-##    assert_line "  filenames:   $BATS_TMPDIR/test-hello.java $BATS_TMPDIR/test-package.java"
-##    run ./submit -y -p hello ../tests/test-hello.c
+##    # Cleanup old dir if it exists
+##    run rm -rf /builds/DOMjudge/domjudge/chroot
+##    # Start testing
+##    run ./dj_make_chroot -D $DISTRO
 ##    assert_success
-##    assert_regex "Submission received: id = s[0-9]*, time = [0-9]{2}:[0-9]{2}:[0-9]{2}"
-##    assert_regex "Check http[^ ]*/[0-9]* for the result."
-##
-###!/usr/bin/env bats
-### These tests can be run without a working DOMjudge API endpoint.
-##
-##load 'assert'
-##
-##setup() {
-##    export SUBMITBASEHOST="domjudge.example.org"
-##    export SUBMITBASEURL="https://${SUBMITBASEHOST}/somejudge"
+##    assert_line "Done building chroot in /builds/DOMjudge/domjudge/chroot/domjudge"
+##    run ./dj_run_chroot
+##    run cat /etc/issue
+##    assert_success
+##    if [ "Debian" = "$DISTRO" ]; then
+##        assert_partial "Debian"
+##    else
+##        assert_partial "Ubuntu"
+##    fi
 ##}
 ##
-##    run ./submit
-##    assert_failure 1
-##    assert_regex "$SUBMITBASEHOST.*/api(/.*)?/contests.*: \[Errno -2\] Name or service not known"
-##    run ./submit --url https://domjudge.example.edu
-##    assert_failure 1
-##    assert_regex "domjudge.example.edu.*/api(/.*)?/contests.*: \[Errno -2\] Name or service not known"
-##    run ./submit -u https://domjudge3.example.edu
-##    assert_failure 1
-##    assert_regex "domjudge3.example.edu.*/api(/.*)?/contests.*: \[Errno -2\] Name or service not known"
-##    run ./submit --url https://domjudge.example.edu/domjudge/
-##    assert_failure 1
-##    assert_regex "domjudge.example.edu.*/api(/.*)?/contests.*: \[Errno -2\] Name or service not known"
-##    run ./submit --help
-##    assert_success
-##    assert_line "usage: submit [--version] [-h] [-c CONTEST] [-p PROBLEM] [-l LANGUAGE] [-e ENTRY_POINT]"
-##    assert_line "              [-v [{DEBUG,INFO,WARNING,ERROR,CRITICAL}]] [-q] [-y] [-u URL]"
-##    # The help printer does print this differently on versions of argparse for nargs=*.
-##    assert_regex "              (filename )?[filename ...]"
-##    assert_line "Submit a solution for a problem."
-##    assert_success
-##    assert_line "The (pre)configured URL is '$SUBMITBASEURL/'"
-##    assert_success
-##    assert_regex "~/\\.netrc"
-##    assert_failure 2
-##    assert_line "submit: error: unrecognized arguments: --doesnotexist"
-##    assert_failure 1
-##    assert_partial "set verbosity to INFO"
-<<<<<<< HEAD
-=======
-=======
-=======
-@test "Test chroot has host arch if not given" {
-    if [ -n "${ARCH+x}" ]; then
-        skip "Arch set"
-    fi
-    HOSTARCH=$(dpkg --print-architecture)
-    run ./dj_run_chroot "dpkg --print-architecture"
-    assert_success
-    assert_partial "$HOSTARCH"
-}
-
-@test "Passing the Distro gives a chroot of that Distro" {
-    if [ -z "${DISTRO+x}" ]; then
-        skip "Distro not set"
-    fi
-    run ./dj_run_chroot "cat /etc/issue"
-    assert_success
-    if [ "Debian" = "$DISTRO" ]; then
-        assert_partial "Debian"
-    else
-        assert_partial "Ubuntu"
-    fi
-}
-
->>>>>>> f5c37bede... Arch/Distro/Release rewrite
->>>>>>> ecc5e0bf6... Arch/Distro/Release rewrite
-#
-#@test "Test chroot works with no arguments" {
-#    if [ -n "${ARCH+x}" ] || [ -n "${DISTRO+x}" ] || [ -n "${RELEASE+x}" ]; then
-#        skip "An argument is set"
+##@test "Unknown Distro breaks" {
+##    if [ -n "${DISTRO+x}" ]; then
+##        skip "Distro set"
+##    fi
+##    # Cleanup old dir if it exists
+##    run rm -rf /builds/DOMjudge/domjudge/chroot
+##    # Start testing
+##    run ./dj_make_chroot -D "BSD"
+##    assert_failure
+##    assert_line "Error: Invalid distribution specified, only 'Debian' and 'Ubuntu' are supported."
+##}
+##
+##@test "Unknown Release breaks" {
+##    if [ -n "${DISTRO+x}" ] || [ -n "${RELEASE+x}" ]; then
+##        skip "Distro/Release set"
+##    fi
+##    # Cleanup old dir if it exists
+##    run rm -rf /builds/DOMjudge/domjudge/chroot
+##    # Start testing
+##    run ./dj_make_chroot -R "Olympos"
+##    assert_failure
+##    assert_line "E: No such script: /usr/share/debootstrap/scripts/Olympos"
+##}
+##
+#@test "Unknown Release breaks" {
+#    if [ -n "${DISTRO+x}" ] || [ -n "${RELEASE+x}" ]; then
+#        skip "Distro/Release set"
 #    fi
 #    # Cleanup old dir if it exists
 #    rm -rf $CHROOT
 #    # Start testing
-#    HOSTARCH=$(dpkg --print-architecture)
-#    run ./dj_make_chroot
-#    assert_success
-#    assert_partial "Done building chroot in"
-#    # $CHROOT"
-#    #run ./dj_run_chroot
-#    #assert_success
-#    #CHROOTARCH=$(dpkg --print-architecture)
-#    #assert_equal "$CHROOTARCH" "$HOST$ARCH"
+#    run ./dj_make_chroot -R "Olympos"
+#    assert_failure
+#    assert_line "E: No such script: /usr/share/debootstrap/scripts/Olympos"
 #}
 #
-#
-#
-#@test "Installing in another chroot dir works" {
-#    if [ -z "${DIR+x}" ]; then
-#        skip "Dir not set"
+#=======
+#>>>>>>> f5c37bede... Arch/Distro/Release rewrite
+#@test "Test chroot works with architecture: $ARCH" {
+#    if [ -z "${ARCH+x}" ]; then
+#        skip "Arch not set"
 #    fi
-#    # Cleanup old dir if it exists
-#    rm -rf $CHROOT
-#    # Start testing
-#    run ./dj_make_chroot -d $DIR
+#    run ./dj_run_chroot "dpkg --print-architecture"
 #    assert_success
-#    assert_partial "Done building chroot in $DIR"
-#    run cat "$DIR/etc/root-permission-test.txt
-#    assert_success
-#    assert_line "This file should not be readable inside the judging environment!"
+#    assert_partial "$ARCH"
 #}
 #
+#<<<<<<< HEAD
+#=======
+#<<<<<<< HEAD
+#<<<<<<< HEAD
+#>>>>>>> ed457a42b... Add test about chroot dir
+#>>>>>>> ecc5e0bf6... Arch/Distro/Release rewrite
 ###    run ./submit -c bestaatniet
 ###    assert_failure 1
 ###    assert_partial "error: No (valid) contest specified"
@@ -682,3 +611,177 @@ expect_help () {
 ###    assert_line "submit: error: unrecognized arguments: --doesnotexist"
 ###    assert_failure 1
 ###    assert_partial "set verbosity to INFO"
+#<<<<<<< HEAD
+#=======
+#=======
+#=======
+#@test "Test chroot has host arch if not given" {
+#    if [ -n "${ARCH+x}" ]; then
+#        skip "Arch set"
+#    fi
+#    HOSTARCH=$(dpkg --print-architecture)
+#    run ./dj_run_chroot "dpkg --print-architecture"
+#    assert_success
+#    assert_partial "$HOSTARCH"
+#}
+#
+#@test "Passing the Distro gives a chroot of that Distro" {
+#    if [ -z "${DISTRO+x}" ]; then
+#        skip "Distro not set"
+#    fi
+#    run ./dj_run_chroot "cat /etc/issue"
+#    assert_success
+#    if [ "Debian" = "$DISTRO" ]; then
+#        assert_partial "Debian"
+#    else
+#        assert_partial "Ubuntu"
+#    fi
+#}
+#
+#>>>>>>> f5c37bede... Arch/Distro/Release rewrite
+#>>>>>>> ecc5e0bf6... Arch/Distro/Release rewrite
+##
+##@test "Test chroot works with no arguments" {
+##    if [ -n "${ARCH+x}" ] || [ -n "${DISTRO+x}" ] || [ -n "${RELEASE+x}" ]; then
+##        skip "An argument is set"
+##    fi
+##    # Cleanup old dir if it exists
+##    rm -rf $CHROOT
+##    # Start testing
+##    HOSTARCH=$(dpkg --print-architecture)
+##    run ./dj_make_chroot
+##    assert_success
+##    assert_partial "Done building chroot in"
+##    # $CHROOT"
+##    #run ./dj_run_chroot
+##    #assert_success
+##    #CHROOTARCH=$(dpkg --print-architecture)
+##    #assert_equal "$CHROOTARCH" "$HOST$ARCH"
+##}
+##
+##
+##
+##@test "Installing in another chroot dir works" {
+##    if [ -z "${DIR+x}" ]; then
+##        skip "Dir not set"
+##    fi
+##    # Cleanup old dir if it exists
+##    rm -rf $CHROOT
+##    # Start testing
+##    run ./dj_make_chroot -d $DIR
+##    assert_success
+##    assert_partial "Done building chroot in $DIR"
+##    run cat "$DIR/etc/root-permission-test.txt
+##    assert_success
+##    assert_line "This file should not be readable inside the judging environment!"
+##}
+##
+####    run ./submit -c bestaatniet
+####    assert_failure 1
+####    assert_partial "error: No (valid) contest specified"
+####    run ./submit --contest=bestaatookniet
+####    assert_failure 1
+####    assert_partial "error: No (valid) contest specified"
+####    run ./submit --help
+####    assert_success
+####    assert_regex "hello *- *Hello World"
+####    run ./submit --help
+####    assert_success
+####    assert_regex "C *- *c"
+####    assert_regex "C\+\+ *- *c\+\+, cc, cpp, cxx"
+####    assert_regex "Java *- *java"
+####    touch -d '2000-01-01' $BATS_TMPDIR/test-hello.c
+####    run ./submit -p hello $BATS_TMPDIR/test-hello.c <<< "n"
+####    assert_regex "test-hello.c' has not been modified for [0-9]* minutes!"
+####    touch $BATS_TMPDIR/test-hello.c
+####    run ./submit -p hello $BATS_TMPDIR/test-hello.c <<< "n"
+####    refute_line -e "test-hello.c' has not been modified for [0-9]* minutes!"
+####    cp $(which bash) $BATS_TMPDIR/binary.c
+####    run ./submit -p hello $BATS_TMPDIR/binary.c <<< "n"
+####    assert_partial "binary.c' is detected as binary/data!"
+####    touch $BATS_TMPDIR/empty.c
+####    run ./submit -p hello $BATS_TMPDIR/empty.c <<< "n"
+####    assert_partial "empty.c' is empty"
+####    cp ../tests/test-hello.java $BATS_TMPDIR/hello.java
+####    run ./submit $BATS_TMPDIR/hello.java <<< "n"
+####    assert_line "Submission information:"
+####    assert_line "  problem:     hello"
+####    assert_line "  language:    Java"
+####    cp ../tests/test-hello.java $BATS_TMPDIR/hello.java
+####    run ./submit -p boolfind -l cpp $BATS_TMPDIR/hello.java <<< "n"
+####    assert_line "Submission information:"
+####    assert_line "  problem:     boolfind"
+####    assert_line "  language:    C++"
+####    cp ../tests/test-hello.java $BATS_TMPDIR/hello.java
+####    run ./submit -p nonexistent -l cpp $BATS_TMPDIR/hello.java <<< "n"
+####    assert_failure 1
+####    assert_partial "error: No known problem specified or detected"
+####    cp ../tests/test-hello.java $BATS_TMPDIR/hello.java
+####    run ./submit -p boolfind -l nonexistent $BATS_TMPDIR/hello.java <<< "n"
+####    assert_failure 1
+####    assert_partial "error: No known language specified or detected"
+####    skip "Java does not require an entry point in the default installation"
+####    run ./submit -p hello ../tests/test-hello.java <<< "n"
+####    assert_line '  entry point: test-hello'
+####    skip "Python does not require an entry point in the default installation"
+####    touch $BATS_TMPDIR/test-extra.py
+####    run ./submit -p hello ../tests/test-hello.py $BATS_TMPDIR/test-extra.py <<< "n"
+####    assert_line '  entry point: test-hello.py'
+####    run ./submit --help
+####    if ! echo "$output" | grep 'Kotlin:' ; then
+####        skip "Kotlin not enabled"
+####    fi
+####    run ./submit -p hello ../tests/test-hello.kt <<< "n"
+####    assert_line '  entry point: Test_helloKt'
+####    run ./submit -p hello -e Main ../tests/test-hello.java <<< "n"
+####    assert_line '  entry point: Main'
+####    run ./submit -p hello --entry_point=mypackage.Main ../tests/test-hello.java <<< "n"
+####    assert_line '  entry point: mypackage.Main'
+####    cp ../tests/test-hello.java ../tests/test-classname.java ../tests/test-package.java $BATS_TMPDIR/
+####    run ./submit -p hello $BATS_TMPDIR/test-*.java <<< "n"
+####    assert_line "  filenames:   $BATS_TMPDIR/test-classname.java $BATS_TMPDIR/test-hello.java $BATS_TMPDIR/test-package.java"
+####    cp ../tests/test-hello.java ../tests/test-package.java $BATS_TMPDIR/
+####    run ./submit -p hello $BATS_TMPDIR/test-hello.java $BATS_TMPDIR/test-hello.java $BATS_TMPDIR/test-package.java <<< "n"
+####    assert_line "  filenames:   $BATS_TMPDIR/test-hello.java $BATS_TMPDIR/test-package.java"
+####    run ./submit -y -p hello ../tests/test-hello.c
+####    assert_success
+####    assert_regex "Submission received: id = s[0-9]*, time = [0-9]{2}:[0-9]{2}:[0-9]{2}"
+####    assert_regex "Check http[^ ]*/[0-9]* for the result."
+####
+#####!/usr/bin/env bats
+##### These tests can be run without a working DOMjudge API endpoint.
+####
+####load 'assert'
+####
+####setup() {
+####    export SUBMITBASEHOST="domjudge.example.org"
+####    export SUBMITBASEURL="https://${SUBMITBASEHOST}/somejudge"
+####}
+####
+####    run ./submit
+####    assert_failure 1
+####    assert_regex "$SUBMITBASEHOST.*/api(/.*)?/contests.*: \[Errno -2\] Name or service not known"
+####    run ./submit --url https://domjudge.example.edu
+####    assert_failure 1
+####    assert_regex "domjudge.example.edu.*/api(/.*)?/contests.*: \[Errno -2\] Name or service not known"
+####    run ./submit -u https://domjudge3.example.edu
+####    assert_failure 1
+####    assert_regex "domjudge3.example.edu.*/api(/.*)?/contests.*: \[Errno -2\] Name or service not known"
+####    run ./submit --url https://domjudge.example.edu/domjudge/
+####    assert_failure 1
+####    assert_regex "domjudge.example.edu.*/api(/.*)?/contests.*: \[Errno -2\] Name or service not known"
+####    run ./submit --help
+####    assert_success
+####    assert_line "usage: submit [--version] [-h] [-c CONTEST] [-p PROBLEM] [-l LANGUAGE] [-e ENTRY_POINT]"
+####    assert_line "              [-v [{DEBUG,INFO,WARNING,ERROR,CRITICAL}]] [-q] [-y] [-u URL]"
+####    # The help printer does print this differently on versions of argparse for nargs=*.
+####    assert_regex "              (filename )?[filename ...]"
+####    assert_line "Submit a solution for a problem."
+####    assert_success
+####    assert_line "The (pre)configured URL is '$SUBMITBASEURL/'"
+####    assert_success
+####    assert_regex "~/\\.netrc"
+####    assert_failure 2
+####    assert_line "submit: error: unrecognized arguments: --doesnotexist"
+####    assert_failure 1
+####    assert_partial "set verbosity to INFO"
