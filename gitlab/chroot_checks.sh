@@ -14,11 +14,20 @@ function finish() {
 trap finish EXIT
 
 section_start setup "Setup and install"
+if [ -f /etc/fedora-release ]; then
+    dnf install -y redhat-lsb-core make pkgconfig sudo libcgroup-devel lsof php-cli \
+        php-mbstring php-xml php-process procps-ng gcc g++ bats
+fi
+
 lsb_release -a
 
 # configure, make and install (but skip documentation)
 make configure
-./configure --with-baseurl='http://localhost/domjudge/' --with-domjudge-user=domjudge --with-judgehost_chrootdir=${DIR}/chroot/domjudge |& tee "$GITLABARTIFACTS/configure.log"
+FLAGS="--with-webserver-group=root --with-domjudge-user=domjudge"
+if [ -n "${CI+x}" ]; then
+    FLAGS="$FLAGS --with-judgehost_chrootdir=${DIR}/chroot/domjudge"
+fi
+./configure $FLAGS |& tee "$GITLABARTIFACTS/configure.log"
 make judgehost |& tee "$GITLABARTIFACTS/make.log"
 sudo make install-judgehost |& tee -a "$GITLABARTIFACTS/make.log"
 section_end setup
@@ -26,7 +35,9 @@ section_end setup
 section_start mount "Show runner mounts"
 # Currently gitlab has some runners with noexec/nodev,
 # This can be removed if we have more stable runners.
-mount -o remount,exec,dev /builds
+if [ -n "${CI+x}" ]; then
+    mount -o remount,exec,dev /builds
+fi
 section_end mount
 
 section_start chroot "Configure chroot"
