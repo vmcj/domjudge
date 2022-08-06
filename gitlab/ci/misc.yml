@@ -12,6 +12,44 @@ run chroot script checks:
         - arm64
         - armhf
         - i386
+      - FORCEDOWNLOAD:
+        - 1
+        - 0
+  script:
+    - ./gitlab/chroot_checks.sh
+
+run chroot script checks (debian):
+  extends: [.normal_job]
+  stage: chroot_checks
+  image: debian
+  parallel:
+    matrix:
+      - PLACEHOLDER:
+        - trigger_with_default_values
+      - ARCH:
+        - amd64
+        - arm64
+        - armhf
+        - i386
+      - FORCEDOWNLOAD:
+        - 1
+        - 0
+  script:
+    - ./gitlab/chroot_checks.sh
+
+run chroot script checks (fedora):
+  extends: [.normal_job]
+  stage: chroot_checks
+  image: debian
+  parallel:
+    matrix:
+      - PLACEHOLDER:
+        - trigger_with_default_values
+      - ARCH:
+        - amd64
+      - FORCEDOWNLOAD:
+        - 1
+        - 0
   script:
     - ./gitlab/chroot_checks.sh
 
