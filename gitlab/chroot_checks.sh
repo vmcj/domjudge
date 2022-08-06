@@ -47,7 +47,6 @@ if [ -e ${DIR}/chroot/domjudge ]; then
 fi
 
 cd ${DIR}/misc-tools || exit 1
-<<<<<<< HEAD
 section_end chroot
 
 section_start chroottest "Test chroot contents"
@@ -57,8 +56,6 @@ bats ./chroot.bats
 section_end chroottest
 #for arch in amd64,arm64,""
 #for dist in "Debian","Ubuntu","notLinux"
-=======
->>>>>>> 1dc869512... Try with other variable
 #for dir in "/chroot","/builds/chroot","/notadir/chroot"
 #for rel in "buster","wheeze","focal","bionic","notarelease"
 #for incdeb in "zip","nano"
@@ -80,7 +77,6 @@ section_end chroottest
 #    ARGS="$ARGS -R ${RELEASE}"
 #fi
 #sudo ./dj_make_chroot ${ARGS} |& tee "$GITLABARTIFACTS/dj_make_chroot.log"
-<<<<<<< HEAD
 #section_end chroot
 #
 #section_start chroottest "Test chroot contents"
@@ -93,10 +89,7 @@ section_end chroottest
 #cp ${DIR}/gitlab/chroot.bats ./
 #bats ./chroot.bats
 #sudo ./dj_run_chroot "pypy3"
-=======
 section_end chroot
-
-
 
 section_start chroottest "Test chroot contents"
 cp ${DIR}/submit/assert.bash ./
@@ -104,4 +97,3 @@ cp ${DIR}/gitlab/chroot.bats ./
 echo $CI_JOB_ID
 bats ./chroot.bats
 section_end chroottest
->>>>>>> 1dc869512... Try with other variable
