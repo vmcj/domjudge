@@ -14,7 +14,11 @@ if [ -n "${ARCH+x}" ]; then
     COMMANDARGS="-a $ARCH $COMMANDARGS"
 fi
 if [ -n "${FORCEDOWNLOAD+x}" ]; then
-    COMMANDARGS="-f $COMMANDARGS"
+    if [ $FORCEDOWNLOAD = 1 ]; then
+        COMMANDARGS="-f $COMMANDARGS"
+    else
+        apt-get remove -y debootstrap
+    fi
 fi
 if [ -n "${FORCEYES+x}" ]; then
     COMMANDARGS="-y $COMMANDARGS"
@@ -65,15 +69,27 @@ expect_help () {
     rm -rf $CHROOT
 }
 
+@test "Test confirmation on installing debootstrap" {
+    if [ -f /etc/debian_release ]; then
+        skip "Non Debian based system"
+    fi
+    if [ -z "${FORCEDOWNLOAD+x}" ]; then
+        skip "Debootstrap already installed"
+    fi
+    run ./dj_make_chroot $COMMANDARGS
+    assert_partial "Do you want to install debootstrap using apt-get? (y/N)"
+    assert_failure
+}
+
 # Creation of the chroot is slow so we run all tests inside 1 large test to speedup.
 @test "Test chroot works with args: $COMMANDARGS" {
-    if [ -f /etc/debian_release ]; then
+    if [ ! -f /etc/debian_release && -z "${ARCH+x}" ]; then
         skip "Non Debian based system detected, so we result in 'No arguments on non Debian/Ubuntu'"
     fi
     run ./dj_make_chroot $COMMANDARGS
     assert_partial "Done building chroot in $CHROOT"
     assert_success
-    if [ -n "${FORCEDOWNLOAD+x}" ]; then
+    if [ -n "${FORCEDOWNLOAD+x}" || ! -f /etc/debian_release ]; then
         assert_partial "Downloading debootstrap to temporary directory at"
         run find /tmp/*/usr/sbin/ -name debootstrap
         assert_partial "usr/sbin/debootstrap"

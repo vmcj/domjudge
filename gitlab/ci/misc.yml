@@ -96,6 +96,7 @@ run chroot script checks:
         - i386
       - FORCEDOWNLOAD:
         - 1
+        - 0
   script:
     - ./gitlab/chroot_checks.sh
 
