@@ -130,55 +130,55 @@ run chroot script checks:
   script:
     - ./gitlab/chroot_checks.sh
 
-run chroot script checks (debian):
-  extends: [.normal_job]
-  stage: chroot_checks
-  image: debian
-  parallel:
-    matrix:
-      - PLACEHOLDER:
-        - trigger_with_default_values
-      - ARCH:
-        - amd64
-        - arm64
-        - i386
-      - FORCEDOWNLOAD:
-        - 1
-      - MIRROR:
-        - ftp.ca.debian.org/debian/
-        - ftp.br.debian.org/debian/
-        - debian.cc.lehigh.edu
-  script:
-    - apt update
-    - apt install -y acl zip unzip mariadb-server apache2 \
-            php php-fpm php-gd php-cli php-intl php-mbstring php-mysql \
-            php-curl php-json php-xml php-zip composer ntp make \
-            pkg-config sudo debootstrap libcgroup-dev \
-            php-cli php-curl php-json php-xml php-zip lsof procps
-    - ./gitlab/chroot_checks.sh
-
-run chroot script checks (fedora):
-  extends: [.normal_job]
-  stage: chroot_checks
-  image: fedora
-  parallel:
-    matrix:
-      - PLACEHOLDER:
-        - trigger_with_default_values
-      - ARCH:
-        - amd64
-      - FORCEDOWNLOAD:
-        - 1
-      - MIRROR:
-        - ftp.ca.debian.org/debian/
-        ARCH:
-        - amd64
-  script:
-    - yum update -y
-    - yum install -y make pkgconfig sudo libcgroup-devel lsof \
-            php-cli php-mbstring php-xml php-process procps-ng \
-            acl zip unzip mariadb-server httpd php-gd php-cli \
-            php-intl php-mbstring php-mysqlnd php-xml php-zip \
-            composer git
-    - ./gitlab/chroot_checks.sh
-
+#run chroot script checks (debian):
+#  extends: [.normal_job]
+#  stage: chroot_checks
+#  image: debian
+#  parallel:
+#    matrix:
+#      - PLACEHOLDER:
+#        - trigger_with_default_values
+#      - ARCH:
+#        - amd64
+#        - arm64
+#        - i386
+#      - FORCEDOWNLOAD:
+#        - 1
+#      - MIRROR:
+#        - ftp.ca.debian.org/debian/
+#        - ftp.br.debian.org/debian/
+#        - debian.cc.lehigh.edu
+#  script:
+#    - apt update
+#    - apt install -y acl zip unzip mariadb-server apache2 \
+#            php php-fpm php-gd php-cli php-intl php-mbstring php-mysql \
+#            php-curl php-json php-xml php-zip composer ntp make \
+#            pkg-config sudo debootstrap libcgroup-dev \
+#            php-cli php-curl php-json php-xml php-zip lsof procps
+#    - ./gitlab/chroot_checks.sh
+#
+#run chroot script checks (fedora):
+#  extends: [.normal_job]
+#  stage: chroot_checks
+#  image: fedora
+#  parallel:
+#    matrix:
+#      - PLACEHOLDER:
+#        - trigger_with_default_values
+#      - ARCH:
+#        - amd64
+#      - FORCEDOWNLOAD:
+#        - 1
+#      - MIRROR:
+#        - ftp.ca.debian.org/debian/
+#        ARCH:
+#        - amd64
+#  script:
+#    - yum update -y
+#    - yum install -y make pkgconfig sudo libcgroup-devel lsof \
+#            php-cli php-mbstring php-xml php-process procps-ng \
+#            acl zip unzip mariadb-server httpd php-gd php-cli \
+#            php-intl php-mbstring php-mysqlnd php-xml php-zip \
+#            composer git
+#    - ./gitlab/chroot_checks.sh
+#
