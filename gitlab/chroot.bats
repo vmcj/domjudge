@@ -13,6 +13,9 @@ COMMANDARGS=""
 if [ -n "${ARCH+x}" ]; then
     COMMANDARGS="-a $ARCH $COMMANDARGS"
 fi
+if [ -n "${MIRROR+x}" ]; then
+    COMMANDARGS="-m $MIRROR $COMMANDARGS"
+fi
 if [ -n "${FORCEDOWNLOAD+x}" ]; then
     if [ $FORCEDOWNLOAD = 1 ]; then
         COMMANDARGS="-f $COMMANDARGS"

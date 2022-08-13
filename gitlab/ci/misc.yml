@@ -114,6 +114,10 @@ run chroot script checks (debian):
         - i386
       - FORCEDOWNLOAD:
         - 1
+      - MIRROR:
+        - ftp.ca.debian.org/debian/
+        - ftp.br.debian.org/debian/
+        - debian.cc.lehigh.edu
   script:
     - ./gitlab/chroot_checks.sh
 
@@ -129,6 +133,10 @@ run chroot script checks (fedora):
         - amd64
       - FORCEDOWNLOAD:
         - 1
+      - MIRROR:
+        - ftp.ca.debian.org/debian/
+        ARCH:
+        - amd64
   script:
     - ./gitlab/chroot_checks.sh
 
