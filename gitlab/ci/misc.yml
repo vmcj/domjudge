@@ -149,6 +149,12 @@ run chroot script checks (debian):
         - ftp.br.debian.org/debian/
         - debian.cc.lehigh.edu
   script:
+    - sudo apt update
+    - sudo apt install -y acl zip unzip mariadb-server apache2 \
+            php php-fpm php-gd php-cli php-intl php-mbstring php-mysql \
+                  php-curl php-json php-xml php-zip composer ntp
+    - sudo apt install -y make pkg-config sudo debootstrap libcgroup-dev \
+            php-cli php-curl php-json php-xml php-zip lsof procps
     - ./gitlab/chroot_checks.sh
 
 run chroot script checks (fedora):
@@ -168,6 +174,7 @@ run chroot script checks (fedora):
         ARCH:
         - amd64
   script:
+    - yum update -y
     - yum install -y make pkgconfig sudo libcgroup-devel lsof \
             php-cli php-mbstring php-xml php-process procps-ng \
             acl zip unzip mariadb-server httpd php-gd php-cli \
