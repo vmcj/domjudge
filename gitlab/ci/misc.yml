@@ -160,7 +160,7 @@ run chroot script checks (debian):
 run chroot script checks (fedora):
   extends: [.normal_job]
   stage: chroot_checks
-  image: debian
+  image: fedora
   parallel:
     matrix:
       - PLACEHOLDER:
