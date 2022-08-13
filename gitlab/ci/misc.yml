@@ -149,11 +149,11 @@ run chroot script checks (debian):
         - ftp.br.debian.org/debian/
         - debian.cc.lehigh.edu
   script:
-    - sudo apt update
-    - sudo apt install -y acl zip unzip mariadb-server apache2 \
+    - apt update
+    - apt install -y acl zip unzip mariadb-server apache2 \
             php php-fpm php-gd php-cli php-intl php-mbstring php-mysql \
-                  php-curl php-json php-xml php-zip composer ntp
-    - sudo apt install -y make pkg-config sudo debootstrap libcgroup-dev \
+            php-curl php-json php-xml php-zip composer ntp make \
+            pkg-config sudo debootstrap libcgroup-dev \
             php-cli php-curl php-json php-xml php-zip lsof procps
     - ./gitlab/chroot_checks.sh
 
