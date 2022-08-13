@@ -168,5 +168,10 @@ run chroot script checks (fedora):
         ARCH:
         - amd64
   script:
+    - yum install -y make pkgconfig sudo libcgroup-devel lsof \
+            php-cli php-mbstring php-xml php-process procps-ng \
+            acl zip unzip mariadb-server httpd php-gd php-cli \
+            php-intl php-mbstring php-mysqlnd php-xml php-zip \
+            composer git
     - ./gitlab/chroot_checks.sh
 
