@@ -135,7 +135,7 @@ expect_help () {
 
 @test "Test confirmation on deletion of old chroot" {
     # Create old chroot folder
-    mkdir $CHROOT
+    mkdir -p $CHROOT
     run ./dj_make_chroot $COMMANDARGS
     assert_partial "$CHROOT already exists, remove? (y/N)"
     assert_failure
