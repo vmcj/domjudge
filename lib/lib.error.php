@@ -14,15 +14,20 @@ $verbose  = LOG_NOTICE;
 $loglevel = LOG_DEBUG;
 
 // Open standard error:
-if (!defined('STDERR')) {
-    define('STDERR', fopen('php://stderr', 'w'));
+if (!defined('STDERR'))
+{
+    define(
+        'STDERR', fopen('php://stderr', 'w'));
 }
 
 // Open log file:
-if (defined('LOGFILE')) {
-    if ($fp = @fopen(LOGFILE, 'a')) {
+if (defined('LOGFILE')) 
+{
+    if ($fp = @fopen(LOGFILE, 'a')) 
+    {
         define('STDLOG', $fp);
-    } else {
+    } else
+    {
         fwrite(STDERR, "Cannot open log file " . LOGFILE .
             " for appending; continuing without logging.\n");
     }
