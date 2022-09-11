@@ -32,6 +32,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Yaml\Yaml;
 
@@ -47,6 +48,9 @@ class ContestController extends AbstractRestController
 {
     protected ImportExportService $importExportService;
     protected AssetUpdateService $assetUpdater;
+
+    public const EVENT_FEED_FORMAT_2020_03 = 0;
+    public const EVENT_FEED_FORMAT_2022_07 = 1;
 
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -143,7 +147,6 @@ class ContestController extends AbstractRestController
      */
     public function listAction(Request $request): Response
     {
-        
         return parent::performListAction($request);
     }
 
@@ -222,6 +225,11 @@ class ContestController extends AbstractRestController
             throw new NotFoundHttpException(sprintf('Object with ID \'%s\' not found', $id));
         }
 
+        if ($contest->isLocked()) {
+            $contestUrl = $this->generateUrl('jury_contest', ['contestId' => $id], UrlGeneratorInterface::ABSOLUTE_URL);
+            throw new AccessDeniedHttpException('Contest is locked, go to ' . $contestUrl . ' to unlock it.');
+        }
+
         $contest->setClearBanner(true);
 
         $this->assetUpdater->updateAssets($contest);
@@ -265,6 +273,11 @@ class ContestController extends AbstractRestController
 
         if ($contest === null) {
             throw new NotFoundHttpException(sprintf('Object with ID \'%s\' not found', $id));
+        }
+
+        if ($contest->isLocked()) {
+            $contestUrl = $this->generateUrl('jury_contest', ['contestId' => $id], UrlGeneratorInterface::ABSOLUTE_URL);
+            throw new AccessDeniedHttpException('Contest is locked, go to ' . $contestUrl . ' to unlock it.');
         }
 
         /** @var UploadedFile $banner */
@@ -492,23 +505,32 @@ class ContestController extends AbstractRestController
         $contest = $this->getContestWithId($request, $cid);
         // Make sure this script doesn't hit the PHP maximum execution timeout.
         set_time_limit(0);
-        if ($request->query->has('since_id')) {
-            $since_id = $request->query->getInt('since_id');
+
+        if ($request->query->has('since_token') || $request->query->has('since_id')) {
+            $since_id = (int)$request->query->get('since_token', $request->query->get('since_id'));
             $event    = $this->em->getRepository(Event::class)->findOneBy([
                 'eventid' => $since_id,
                 'contest' => $contest,
             ]);
             if ($event === null) {
-                return new Response('Invalid parameter "since_id" requested.', Response::HTTP_BAD_REQUEST);
+                return new Response(
+                    sprintf(
+                        'Invalid parameter "%s" requested.',
+                        $request->query->has('since_token') ? 'since_token' : 'since_id'
+                    ),
+                    Response::HTTP_BAD_REQUEST
+                );
             }
         } else {
             $since_id = -1;
         }
 
+        $format = $this->config->get('event_feed_format');
+
         $response = new StreamedResponse();
         $response->headers->set('X-Accel-Buffering', 'no');
         $response->headers->set('Content-Type', 'application/x-ndjson');
-        $response->setCallback(function () use ($cid, $contest, $request, $since_id, $metadataFactory, $kernel) {
+        $response->setCallback(function () use ($format, $cid, $contest, $request, $since_id, $metadataFactory, $kernel) {
             $lastUpdate = 0;
             $lastIdSent = $since_id;
             $typeFilter = false;
@@ -622,15 +644,39 @@ class ContestController extends AbstractRestController
                             unset($data[$property]);
                         }
                     }
-                    $result = [
-                        'id' => (string)$event->getEventid(),
-                        'type' => (string)$event->getEndpointtype(),
-                        'op' => (string)$event->getAction(),
-                        'data' => $data,
-                    ];
+                    switch ($format) {
+                        case static::EVENT_FEED_FORMAT_2020_03:
+                            $result = [
+                                'id' => (string)$event->getEventid(),
+                                'type' => (string)$event->getEndpointtype(),
+                                'op' => (string)$event->getAction(),
+                                'data' => $data,
+                            ];
+                            break;
+                        case static::EVENT_FEED_FORMAT_2022_07:
+                            if ($event->getAction() === EventLogService::ACTION_DELETE) {
+                                $data = null;
+                            }
+                            $id   = (string)$event->getEndpointid() ?: null;
+                            $type = (string)$event->getEndpointtype();
+                            if ($type === 'contests') {
+                                // Special case: the type for a contest is singular and the ID must not be set
+                                $id   = null;
+                                $type = 'contest';
+                            }
+                            $result = [
+                                'token' => (string)$event->getEventid(),
+                                'id'    => $id,
+                                'type'  => $type,
+                                'data'  => $data,
+                            ];
+                            break;
+                    }
+
                     if (!$strict) {
                         $result['time'] = Utils::absTime($event->getEventtime());
                     }
+
                     echo $this->dj->jsonEncode($result) . "\n";
                     ob_flush();
                     flush();
