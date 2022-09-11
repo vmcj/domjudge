@@ -403,10 +403,10 @@ if [ -n "$REPOLISTS" ]; then
     for provided_repo in ${REPOLISTS//,/ }
     do
         if [ -f ${provided_repo}.gpg ]; then
-	    GPGFILENAME=$(mktemp -p "CHROOTDIR/etc/apt/trusted.gpg.d" 'upstream_gpg_XXXXXX')
-	    cp ${provided_repo}.gpg $GPGFILENAME
-	fi
-	cat $provided_repo_outside_chroot >> $CHROOTDIR/etc/apt/sources.list.d/upstream_chroot.list
+            GPGFILENAME=$(mktemp -p "CHROOTDIR/etc/apt/trusted.gpg.d" 'upstream_gpg_XXXXXX')
+            cp ${provided_repo}.gpg $GPGFILENAME
+        fi
+        cat $provided_repo_outside_chroot >> $CHROOTDIR/etc/apt/sources.list.d/upstream_chroot.list
         # Show if we can read from this new upstream repo
         in_chroot "apt-get update"
     done
