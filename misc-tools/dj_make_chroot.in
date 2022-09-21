@@ -402,6 +402,9 @@ fi
 if [ -n "$REPOLISTS" ]; then
     for provided_repo in ${REPOLISTS//,/ }
     do
+        if [ -f "${provided_repo}" ]; then
+            error "Repolist can not be read."
+        fi
         if [ -f ${provided_repo}.gpg ]; then
             GPGFILENAME=$(mktemp -p "CHROOTDIR/etc/apt/trusted.gpg.d" 'upstream_gpg_XXXXXX')
             cp ${provided_repo}.gpg $GPGFILENAME
