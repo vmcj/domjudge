@@ -103,5 +103,6 @@ run chroot script checks:
         - icpc
         - pypy3,icpc
   script:
+    - rm -rf /chroot
     - ./gitlab/chroot_checks.sh
 
