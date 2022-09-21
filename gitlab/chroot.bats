@@ -45,9 +45,9 @@ fi
         skip "Already a repolist set in the commands."
     fi
     for unreadable_file in '/notafile'; do
-        run ./dj_make_chroot $COMMANDARGS -a $unreadable_file
+        run ./dj_make_chroot $COMMANDARGS -s $unreadable_file
         assert_failure
-        assert_partial "Error: Repolist can not be read"
+        assert_partial "Error: Repolist can not be read."
     done
 }
 
