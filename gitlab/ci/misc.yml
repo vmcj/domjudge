@@ -86,7 +86,7 @@ check syntax:
 run chroot script checks:
   extends: [.normal_job]
   stage: chroot_checks
-  when: manual
+  #when: manual
   allow_failure: true
   parallel:
     matrix:
@@ -97,6 +97,11 @@ run chroot script checks:
         - arm64
         - armhf
         - i386
+      - REPO:
+        - pypy3
+        - php
+        - icpc
+        - pypy3,icpc
   script:
     - ./gitlab/chroot_checks.sh
 
