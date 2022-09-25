@@ -108,18 +108,6 @@ elif [ -r accounts.tsv ]; then
 else
     echo "Neither 'accounts.json', 'accounts.yaml' nor 'groups.tsv' found, skipping accounts import."
 fi
-if [ -r accounts.tsv ]; then
-    read -r -p "Import accounts (from accounts.tsv)? [Y/n] " response
-    response=${response,,}
-    if [[ $response =~ ^(yes|y| ) ]] || [[ -z $response ]]; then
-        echo "Importing accounts."
-        myhttp -b -f POST "$api_url/users/accounts" tsv@accounts.tsv
-    else
-        echo "Skipping accounts import."
-    fi
-else
-    echo "'accounts.tsv' not found, skipping accounts import."
-fi
 
 if [ -r contest.yaml ] || [ -r contest.json ]; then
     if [ -r contest.yaml ]; then
