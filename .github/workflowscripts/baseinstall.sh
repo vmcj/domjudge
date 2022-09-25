@@ -45,6 +45,7 @@ section_end
 
 section_start "Run composer"
 export APP_ENV="dev"
+export COMPOSER_ALLOW_SUPERUSER=1
 composer install --no-scripts
 section_end
 
