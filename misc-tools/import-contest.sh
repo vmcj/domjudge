@@ -188,6 +188,10 @@ if [ -r problems.yaml ] || [ -r problems.json ] || [ -r problemset.yaml ]; then
         else
             probs=$(grep -oP "(?<=short-name:\s)[',\"]?[[:alnum:]]*[',\"]?(?=,|$)" problemset.yaml)
         fi
+        read -r -p "Prompt for every problem? [Y/n] " response
+        promptperproblem=0
+        response=${response,,}
+        [[ $response =~ ^(yes|y| ) ]] || [[ -z $response ]] || promptperproblem=$?
         for prob in $probs; do
             prob="${prob//[,\',\"]/}"
             echo "Preparing problem '$prob'."
@@ -203,10 +207,15 @@ if [ -r problems.yaml ] || [ -r problems.json ] || [ -r problemset.yaml ]; then
                 zip -r "../$prob" -- .timelimit *
             )
             probid=$(myhttp --pretty=format "$api_url/contests/$cid/problems" | jq -r ".[] | select(.externalid==\"$prob\").id")
-            read -r -p "Ready to import problem '$prob' to probid=$probid. Continue? [Y/n] " response
-            response=${response,,}
-            if [[ $response =~ ^(yes|y| ) ]] || [[ -z $response ]]; then
-                myhttp --timeout 3000 -f POST "$api_url/contests/$cid/problems" zip@"${prob}.zip" problem="$probid"
+            importcommand="myhttp --timeout 3000 -f POST $api_url/contests/$cid/problems zip@${prob}.zip problem=$probid"
+            if [ $promptperproblem == 0 ]; then
+                read -r -p "Ready to import problem '$prob' to probid=$probid. Continue? [Y/n] " response
+                response=${response,,}
+                if [[ $response =~ ^(yes|y| ) ]] || [[ -z $response ]]; then
+                    $importcommand
+                fi
+            else
+                $importcommand
             fi
         done
     else
