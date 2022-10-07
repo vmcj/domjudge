@@ -56,6 +56,10 @@ class ScoreboardService
         ?Filter $filter = null,
         bool $visibleOnly = false
     ): ?Scoreboard {
+        if (!$jury && !$this->config->get('show_scoreboard')) {
+            return null;
+        }
+
         $freezeData = new FreezeData($contest);
 
         // Don't leak information before start of contest.
@@ -909,7 +913,7 @@ class ScoreboardService
 
             $data['contest']              = $contest;
             $data['scoreFilter']          = $scoreFilter;
-            $data['scoreboard']           = $scoreboard;
+            $data['scoreboard']           = ($jury || $this->config->get('show_scoreboard')) ? $scoreboard : null;
             $data['filterValues']         = $this->getFilterValues($contest, $jury);
             $data['groupedAffiliations']  = empty($scoreboard) ? $this->getGroupedAffiliations($contest) : null;
             $data['showFlags']            = $this->config->get('show_flags');

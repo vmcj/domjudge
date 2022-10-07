@@ -61,6 +61,9 @@ class MiscController extends BaseController
             ],
             'maxWidth' => $this->config->get('team_column_width'),
         ];
+
+        $data['show_scoreboard'] = $this->config->get('show_scoreboard');
+
         if ($contest) {
             $scoreboard = $this->scoreboardService
                 ->getTeamScoreboard($contest, $teamId, false);

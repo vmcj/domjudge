@@ -8,10 +8,12 @@
     </h2>
 {% else %}
 
-    <div id="teamscoresummary">
-        {% set displayRank = not contest.freezeData.showFrozen %}
-        {% include 'partials/scoreboard_table.html.twig' with {displayRank: displayRank, jury: false, public: false} %}
-    </div>
+    {% if show_scoreboard %}
+        <div id="teamscoresummary">
+            {% set displayRank = not contest.freezeData.showFrozen %}
+            {% include 'partials/scoreboard_table.html.twig' with {displayRank: displayRank, jury: false, public: false} %}
+        </div>
+    {% endif %}
 
     <div class="mt-4" data-flash-messages>
         {% include 'partials/messages.html.twig' %}
