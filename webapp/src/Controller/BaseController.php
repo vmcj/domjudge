@@ -561,4 +561,19 @@ abstract class BaseController extends AbstractController
             $this->addFlash('info', "Requested $numRequested remaining runs to be judged.");
         }
     }
+
+    protected function helperChangeContestAction(
+        Request $request,
+        RouterInterface $router,
+        int $contestId,
+        string $indexUrl): Response
+    {
+        if ($this->isLocalReferer($router, $request)) {
+            $response = new RedirectResponse($request->headers->get('referer'));
+        } else {
+            $response = $this->redirectToRoute($indexUrl);
+        }
+        return $this->dj->setCookie('domjudge_cid', (string)$contestId, 0, null, '', false, false,
+                                    $response);
+    }
 }

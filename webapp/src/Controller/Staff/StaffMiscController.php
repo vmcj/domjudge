@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\Jury;
+namespace App\Controller\Staff;
 
 use App\Controller\BaseController;
 use App\Entity\Contest;
@@ -28,13 +28,14 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
- * Class JuryMiscController
+ * Class StaffMiscController
  *
- * @Route("/jury")
+ * @Route("/staff")
+ * @IsGranted("ROLE_STAFF")
  *
- * @package App\Controller\Jury
+ * @package App\Controller\Staff
  */
-class JuryMiscController extends BaseController
+class StaffMiscController extends BaseController
 {
     protected EntityManagerInterface $em;
     protected DOMJudgeService $dj;
@@ -49,16 +50,15 @@ class JuryMiscController extends BaseController
     }
 
     /**
-     * @Route("", name="jury_index")
-     * @Security("is_granted('ROLE_JURY') or is_granted('ROLE_BALLOON') or is_granted('ROLE_CLARIFICATION_RW')")
+     * @Route("", name="staff_index")
      */
     public function indexAction(): Response
     {
-        return $this->render('jury/index.html.twig');
+        return $this->render('staff/index.html.twig');
     }
 
     /**
-     * @Route("/updates", methods={"GET"}, name="jury_ajax_updates")
+     * @Route("/updates", methods={"GET"}, name="staff_ajax_updates")
      * @Security("is_granted('ROLE_JURY') or is_granted('ROLE_BALLOON')")
      */
     public function updatesAction(): JsonResponse
@@ -67,7 +67,7 @@ class JuryMiscController extends BaseController
     }
 
     /**
-     * @Route("/ajax/{datatype}", methods={"GET"}, name="jury_ajax_data")
+     * @Route("/ajax/{datatype}", methods={"GET"}, name="staff_ajax_data")
      * @Security("is_granted('ROLE_JURY') or is_granted('ROLE_BALLOON')")
      */
     public function ajaxDataAction(Request $request, string $datatype): JsonResponse
@@ -193,145 +193,10 @@ class JuryMiscController extends BaseController
     }
 
     /**
-     * @Route("/refresh-cache", name="jury_refresh_cache")
-     * @IsGranted("ROLE_ADMIN")
-     */
-    public function refreshCacheAction(Request $request, ScoreboardService $scoreboardService): Response
-    {
-        // Note: we use a XMLHttpRequest here as Symfony does not support
-        // streaming Twig output.
-
-        $contests = $this->dj->getCurrentContests();
-        if ($cid = $request->request->get('cid')) {
-            if (!isset($contests[$cid])) {
-                throw new BadRequestHttpException(sprintf('Contest %s not found', $cid));
-            }
-            $contests = [$cid => $contests[$cid]];
-        } elseif ($request->cookies->has('domjudge_cid') &&
-                  ($contest = $this->dj->getCurrentContest())) {
-            $contests = [$contest->getCid() => $contest];
-        }
-
-        if ($request->isXmlHttpRequest() && $request->isMethod('POST')) {
-            $progressReporter = function (string $data) {
-                echo Utils::specialchars($data);
-                ob_flush();
-                flush();
-            };
-            return $this->streamResponse(function () use ($contests, $progressReporter, $scoreboardService) {
-                $timeStart = microtime(true);
-
-                foreach ($contests as $contest) {
-                    $scoreboardService->refreshCache($contest, $progressReporter);
-                }
-
-                $timeEnd = microtime(true);
-
-                $progressReporter(sprintf('Scoreboard cache refresh completed in %.2lf seconds.',
-                                          $timeEnd - $timeStart));
-            });
-        }
-
-        return $this->render('jury/refresh_cache.html.twig', [
-            'contests' => $contests,
-            'contest' => count($contests) === 1 ? reset($contests) : null,
-            'doRefresh' => $request->request->has('refresh'),
-        ]);
-    }
-
-    /**
-     * @Route("/judging-verifier", name="jury_judging_verifier")
-     * @IsGranted("ROLE_JURY")
-     */
-    public function judgingVerifierAction(Request $request): Response
-    {
-        /** @var Submission[] $submissions */
-        $submissions = [];
-        if ($contests = $this->dj->getCurrentContests()) {
-            $submissions = $this->em->createQueryBuilder()
-                ->from(Submission::class, 's')
-                ->join('s.judgings', 'j', Join::WITH, 'j.valid = 1')
-                ->select('s', 'j')
-                ->andWhere('s.contest IN (:contests)')
-                ->andWhere('j.result IS NOT NULL')
-                ->setParameter('contests', $contests)
-                ->getQuery()
-                ->getResult();
-        }
-
-        $numChecked   = 0;
-        $numUnchecked = 0;
-
-        $unexpected = [];
-        $multiple   = [];
-        $verified   = [];
-        $nomatch    = [];
-        $earlier    = [];
-
-        $verifier = 'auto-verifier';
-
-        $verifyMultiple = (bool)$request->get('verify_multiple', false);
-
-        foreach ($submissions as $submission) {
-            // As we only load the needed judging, this will automatically be the first one
-            /** @var Judging $judging */
-            $judging         = $submission->getJudgings()->first();
-            $expectedResults = $submission->getExpectedResults();
-            $submissionId    = $submission->getSubmitid();
-
-            if (!empty($expectedResults) && !$judging->getVerified()) {
-                $numChecked++;
-                $result = mb_strtoupper($judging->getResult());
-                if (!in_array($result, $expectedResults)) {
-                    $submissionFiles = $submission->getFiles();
-                    $unexpected[$submissionId] = ['files' => $submissionFiles, 'actual' => $result, 'expected' => $expectedResults];
-                } elseif (count($expectedResults) > 1) {
-                    if ($verifyMultiple) {
-                        // Judging result is as expected, set judging to verified.
-                        $judging
-                            ->setVerified(true)
-                            ->setJuryMember($verifier);
-                        $multiple[$submissionId] = ['actual' => $result, 'expected' => $expectedResults, 'verified' => true];
-                    } else {
-                        $multiple[$submissionId] = ['actual' => $result, 'expected' => $expectedResults, 'verified' => false];
-                    }
-                } else {
-                    // Judging result is as expected, set judging to verified.
-                    $judging
-                        ->setVerified(true)
-                        ->setJuryMember($verifier);
-                    $verified[$submissionId] = ['actual' => $result, 'expected' => $expectedResults, 'verified' => true];
-                }
-            } else {
-                $numUnchecked++;
-
-                if (empty($expectedResults)) {
-                    $nomatch[$submissionId] = [];
-                } else {
-                    $earlier[$submissionId] = [];
-                }
-            }
-        }
-
-        $this->em->flush();
-
-        return $this->render('jury/check_judgings.html.twig', [
-            'numChecked' => $numChecked,
-            'numUnchecked' => $numUnchecked,
-            'unexpected' => $unexpected,
-            'multiple' => $multiple,
-            'verified' => $verified,
-            'nomatch' => $nomatch,
-            'earlier' => $earlier,
-            'verifyMultiple' => $verifyMultiple,
-        ]);
-    }
-
-    /**
-     * @Route("/change-contest/{contestId<-?\d+>}", name="jury_change_contest")
+     * @Route("/change-contest/{contestId<-?\d+>}", name="staff_change_contest")
      */
     public function changeContestAction(Request $request, RouterInterface $router, int $contestId): Response
     {
-        return $this->helperChangeContestAction($request, $router, $contestId, 'jury_index');
+        return $this->helperChangeContestAction($request, $router, $contestId, 'staff_index');
     }
 }
