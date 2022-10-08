@@ -58,6 +58,7 @@
                     {% if is_granted('ROLE_JURY') %}
                         <li><a href="{{ path('jury_rejudgings') }}">Rejudgings</a></li>
                         <li><a href="{{ path('jury_scoreboard') }}">Scoreboard</a></li>
+                        <li><a href="{{ path('staff_scoreboard') }}">Scoreboard (Staff)</a></li>
                         <li><a href="{{ path('analysis_index') }}">Statistics/Analysis</a></li>
                         <li><a href="{{ path('jury_submissions') }}">Submissions</a></li>
                         {% if is_granted('ROLE_ADMIN') %}
