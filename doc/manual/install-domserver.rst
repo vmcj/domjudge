@@ -21,6 +21,7 @@ System requirements
 * A TCP/IP network which connects the DOMserver and the judgehosts, and
   DOMjudge and the team workstations. All of these machines only need HTTP(S)
   access to the DOMserver.
+* A 64bit operating system. We have not tested for 32bit and test mostly on amd64.
 
 Software requirements
 `````````````````````
