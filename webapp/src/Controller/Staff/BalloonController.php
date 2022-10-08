@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\Jury;
+namespace App\Controller\Staff;
 
 use App\Entity\Team;
 use App\Entity\TeamAffiliation;

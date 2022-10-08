@@ -35,8 +35,11 @@ class RootController extends BaseController
             if ($this->dj->checkrole('team', false)) {
                 return $this->redirectToRoute('team_index');
             }
+            if ($this->dj->checkrole('clarification_rw')) {
+                return $this->redirectToRoute('staff_index');
+            }
             if ($this->dj->checkrole('balloon')) {
-                return $this->redirectToRoute('jury_balloons');
+                return $this->redirectToRoute('staff_balloons');
             }
         }
         return $this->redirectToRoute('public_index');

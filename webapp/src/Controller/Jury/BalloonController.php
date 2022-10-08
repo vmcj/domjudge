@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/jury/balloons")
+ * @Route("/staff/balloons")
  * @Security("is_granted('ROLE_JURY') or is_granted('ROLE_BALLOON')")
  */
 class BalloonController extends AbstractController
