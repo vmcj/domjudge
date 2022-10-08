@@ -13,7 +13,7 @@ class BalloonControllerTest extends BaseTest
      */
     public function testBalloonsAccessForJury(): void
     {
-        $this->verifyPageResponse('GET', '/jury/balloons', 200);
+        $this->verifyPageResponse('GET', '/staff/balloons', 200);
         self::assertSelectorExists('h1:contains("Balloons - Demo contest")');
 
         // Test database does not contain balloon info.

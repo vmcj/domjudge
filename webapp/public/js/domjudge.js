@@ -629,7 +629,7 @@ function updateMenuBalloons(data)
             text += data[i].pname + ' ' + data[i].name;
             sendNotification('New balloon:',
                  {'tag': 'ball_' + data[i].baloonid,
-                        'link': domjudge_base_url + '/jury/balloons',
+                        'link': domjudge_base_url + '/staff/balloons',
                         'body': text});
         }
     }

@@ -16,7 +16,7 @@ class PrintControllerTest extends BaseTest
      */
     public function testPrintingDisabledJuryIndexPage(): void
     {
-        $this->verifyPageResponse('GET', '/jury', 200);
+        $this->verifyPageResponse('GET', '/staff', 200);
         self::assertSelectorNotExists('a:contains("Print")');
     }
 
@@ -26,7 +26,7 @@ class PrintControllerTest extends BaseTest
      */
     public function testPrintingDisabledAccessDenied(): void
     {
-        $this->verifyPageResponse('GET', '/jury/print', 403);
+        $this->verifyPageResponse('GET', '/staff/print', 403);
     }
 
     /**
@@ -36,7 +36,7 @@ class PrintControllerTest extends BaseTest
     {
         $this->withChangedConfiguration('print_command', static::PRINT_COMMAND,
             function () {
-                $this->verifyPageResponse('GET', '/jury', 200);
+                $this->verifyPageResponse('GET', '/staff', 200);
                 $this->assertSelectorExists('a:contains("Print")');
             });
     }
@@ -48,7 +48,7 @@ class PrintControllerTest extends BaseTest
     {
         $this->withChangedConfiguration('print_command', static::PRINT_COMMAND,
             function () {
-                $this->verifyPageResponse('GET', '/jury/print', 200);
+                $this->verifyPageResponse('GET', '/staff/print', 200);
 
                 $testFile = __DIR__ . '/PrintControllerTest.php';
                 $code     = new UploadedFile($testFile, 'test.cs');
