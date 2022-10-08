@@ -1,0 +1,54 @@
+{% extends "staff/base.html.twig" %}
+
+{% block title %}{{ parent() }} - Staff Interface{% endblock %}
+
+{% block extrahead %}
+{{ parent() }}
+{% endblock %}
+
+{% block content %}
+<h1>DOMjudge Staff interface</h1>
+
+<a href="https://www.domjudge.org/">
+  <img src="{{ asset('images/DOMjudgelogo.svg') }}" id="djlogo" alt="DOMjudge logo" class="float-right d-none d-md-block" title="The DOMjudge logo: free as in beer!">
+</a>
+
+<div class="row equal mt-3">
+    <div class="col-lg-4 col-md-5 col-sm-6 mt-3">
+        <div class="card mb-3">
+            <div class="card-header">
+                During contest:
+            </div>
+            <div class="card-body">
+                <ul>
+                    {% if is_granted('ROLE_BALLOON') %}
+                        <li><a href="{{ path('jury_balloons') }}">Balloon Status</a></li>
+                    {% endif %}
+                    {% if is_granted('ROLE_CLARIFICATION_RW') %}
+                        <li><a href="{{ path('jury_clarifications') }}">Clarifications</a></li>
+                    {% endif %}
+                    {% if have_printing %}
+                        <li><a href="{{ path('staff_print') }}">Print</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+  <div class="col-lg-4 col-md-5 col-sm-6 mt-3">
+    <div class="card mb-3">
+      <div class="card-header">
+        Documentation:
+      </div>
+      <div class="card-body">
+        <ul>
+        <li><a href="{{ asset('doc/manual/html/index.html') }}">DOMjudge manual</a></li>
+        <li><a href="{{ asset('doc/manual/domjudge-team-manual.pdf') }}">Team manual <i class="fas fa-file-pdf"></i></a></li>
+        <li><a href="{{ path('app.swagger_ui') }}">API documentation</a><br />
+            See also the <a href="https://ccs-specs.icpc.io/2021-11/contest_api">ICPC Contest API</a>.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

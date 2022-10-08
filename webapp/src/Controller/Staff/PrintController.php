@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\Jury;
+namespace App\Controller\Staff;
 
 use App\Controller\BaseController;
 use App\Entity\Language;
@@ -18,10 +18,10 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Class PrintController
  *
- * @Route("/jury/print")
- * @Security("is_granted('ROLE_JURY') or is_granted('ROLE_BALLOON')")
+ * @Route("/staff/print")
+ * @IsGranted("ROLE_STAFF")
  *
- * @package App\Controller\Jury
+ * @package App\Controller\Staff
  */
 class PrintController extends BaseController
 {
@@ -40,12 +40,12 @@ class PrintController extends BaseController
     }
 
     /**
-     * @Route("", name="jury_print")
+     * @Route("", name="staff_print")
      */
     public function showAction(Request $request): Response
     {
         if (!$this->config->get('print_command')) {
-            throw new AccessDeniedHttpException("Printing disabled in config");
+            throw new AccessDeniedHttpException("Printing disabled in config.");
         }
 
         $form = $this->createForm(PrintType::class);
@@ -62,11 +62,11 @@ class PrintController extends BaseController
             $langid   = $data['langid'];
             $username = $this->getUser()->getUsername();
 
-            // Since this is the Jury interface, there's not necessarily a
+            // Since this is the staff interface, there's not necessarily a
             // team involved; do not set a teamname or location.
             $ret = $this->dj->printFile($realfile, $originalfilename, $langid, $username);
 
-            return $this->render('jury/print_result.html.twig', [
+            return $this->render('staff/print_result.html.twig', [
                 'success' => $ret[0],
                 'output' => $ret[1],
             ]);
@@ -80,7 +80,7 @@ class PrintController extends BaseController
             ->getQuery()
             ->getResult();
 
-        return $this->render('jury/print.html.twig', [
+        return $this->render('staff/print.html.twig', [
             'form' => $form->createView(),
             'languages' => $languages,
         ]);

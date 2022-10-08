@@ -53,7 +53,7 @@
                         <li><a href="{{ path('jury_internal_errors') }}">Internal Errors</a></li>
                     {% endif %}
                     {% if have_printing %}
-                        <li><a href="{{ path('jury_print') }}">Print</a></li>
+                        <li><a href="{{ path('staff_print') }}">Print</a></li>
                     {% endif %}
                     {% if is_granted('ROLE_JURY') %}
                         <li><a href="{{ path('jury_rejudgings') }}">Rejudgings</a></li>
