@@ -1,4 +1,4 @@
-{% extends "jury/base.html.twig" %}
+{% extends "staff/base.html.twig" %}
 {% import "jury/jury_macros.twig" as macros %}
 
 {% block title %}Balloons {{ current_contest.shortname | default('') }} - {{ parent() }}{% endblock %}
@@ -61,7 +61,7 @@
         </div>
     </div>
     <div data-ajax-refresh-target data-ajax-refresh-after="process_balloons_filter">
-        {%- include 'jury/partials/balloon_list.html.twig' %}
+        {%- include 'staff/partials/balloon_list.html.twig' %}
     </div>
     {% endif %}
 
