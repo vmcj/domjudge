@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/staff/balloons")
- * @Security("is_granted('ROLE_JURY') or is_granted('ROLE_BALLOON')")
+ * @Security("is_granted('ROLE_STAFF')")
  */
 class BalloonController extends AbstractController
 {
@@ -39,13 +39,13 @@ class BalloonController extends AbstractController
     }
 
     /**
-     * @Route("", name="jury_balloons")
+     * @Route("", name="staff_balloons")
      */
     public function indexAction(BalloonService $balloonService): Response
     {
         $contest = $this->dj->getCurrentContest();
         if(is_null($contest)) {
-            return $this->render('jury/balloons.html.twig');
+            return $this->render('staff/balloons.html.twig');
         }
 
         $balloons_table = $balloonService->collectBalloonTable($contest);
@@ -60,7 +60,7 @@ class BalloonController extends AbstractController
                 $balloonactions = [[
                     'icon' => 'running',
                     'title' => 'mark balloon as done',
-                    'link' => $this->generateUrl('jury_balloons_setdone', [
+                    'link' => $this->generateUrl('staff_balloons_setdone', [
                         'balloonId' => $element['data']['balloonid'],
                     ])]];
             }
@@ -93,10 +93,10 @@ class BalloonController extends AbstractController
                 ->getResult();
         }
 
-        return $this->render('jury/balloons.html.twig', [
+        return $this->render('staff/balloons.html.twig', [
             'refresh' => [
                 'after' => 60,
-                'url' => $this->generateUrl('jury_balloons'),
+                'url' => $this->generateUrl('staff_balloons'),
                 'ajax' => true
             ],
             'isfrozen' => isset($contest->getState()['frozen']),
@@ -108,12 +108,12 @@ class BalloonController extends AbstractController
     }
 
     /**
-     * @Route("/{balloonId}/done", name="jury_balloons_setdone")
+     * @Route("/{balloonId}/done", name="staff_balloons_setdone")
      */
     public function setDoneAction(int $balloonId, BalloonService $balloonService): RedirectResponse
     {
         $balloonService->setDone($balloonId);
 
-        return $this->redirectToRoute("jury_balloons");
+        return $this->redirectToRoute("staff_balloons");
     }
 }
