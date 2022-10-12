@@ -13,7 +13,7 @@ Requirements
 System requirements
 ```````````````````
 * The operating system is Linux or another Unix variant. DOMjudge has mostly
-  been tested with Debian and Ubuntu, but should work on other environments.
+  been tested with Debian and Ubuntu on AMD64, but should work on other environments.
   See our `wiki <https://github.com/DOMjudge/domjudge/wiki/Running-DOMjudge-in-WSL>`_ for information about DOMjudge and WSLv2.
 * It is probably necessary that you have root access to be able to install
   the necessary components, but it's not required for actually running the
@@ -21,7 +21,6 @@ System requirements
 * A TCP/IP network which connects the DOMserver and the judgehosts, and
   DOMjudge and the team workstations. All of these machines only need HTTP(S)
   access to the DOMserver.
-* A 64bit operating system. We have not tested for 32bit and test mostly on amd64.
 
 Software requirements
 `````````````````````
