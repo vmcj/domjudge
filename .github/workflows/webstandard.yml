@@ -1,0 +1,26 @@
+name: "W3C webstandards"
+
+on:
+  push:
+
+jobs:
+  w3c:
+    name: W3C validator
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: ["team", "guest", "admin", "jury"]
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    env:
+      DB_DATABASE: domjudge
+      DB_USER: user
+      DB_PASSWORD: password
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install DOMjudge
+        run: .github/workflowscripts/baseinstall.sh ${{ matrix.version }}
+
