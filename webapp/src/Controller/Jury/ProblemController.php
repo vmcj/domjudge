@@ -359,6 +359,23 @@ class ProblemController extends BaseController
                 $zip->addFromString($directory . $source->getFilename(), $source->getSourcecode());
             }
         }
+
+        foreach (['run','compare'] as $validator) {
+            if ($validator === 'run') {
+                $executable = $problem->getRunExecutable();
+            } else {
+                $executable = $problem->getCompareExecutable();
+            }
+            if (!$executable) {
+                continue;
+            }
+            $directory = sprintf('output_validators/%s_%s/', $problem->getName(), $validator);
+            /** @var ExecutableFile $source */
+            foreach ($executable->getImmutableExecutable()->getFiles() as $source) {
+                $zip->addFromString($directory . $source->getFilename(), $source->getFileContent());
+            }
+        }
+
         $zip->close();
 
         if ($contestProblem && $contestProblem->getShortname()) {
