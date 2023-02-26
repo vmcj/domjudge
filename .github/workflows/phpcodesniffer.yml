@@ -1,7 +1,7 @@
 name: PHP CodeSniffer
 
 # Controls when the action will run. 
-on: 
+on:
   push:
     branches:
       - main
