@@ -97,13 +97,20 @@ class ControllerRolesTraversalTest extends BaseTest
         }
         $crawler = $this->client->request('GET', $url);
         $response = $this->client->getResponse();
-        $message = var_export($response, true);
         if (($statusCode === 403 || $statusCode === 401) && $response->isRedirection()) {
             self::assertEquals($response->headers->get('location'), $this::$loginURL);
         } elseif (($response->getStatusCode() === 302 ) && $response->isRedirection()) {
-            self::assertTrue(strpos($response->headers->get('location'), '/public') !== false);
+            if (strpos($url, '/jury/external-contest') !== false) {
+                self::assertTrue(strpos($response->headers->get('location'), '/jury/external-contest/manage') !== false);
+            } else {
+                self::assertTrue(strpos($response->headers->get('location'), '/public') !== false);
+            }
         } else {
-            self::assertEquals($statusCode, $response->getStatusCode(), $message);
+            // The public URL can always be accessed but is not linked for every role.
+            if (strpos($url, '/public') !== false) {
+                $statusCode = 200;
+            }
+            self::assertEquals($statusCode, $response->getStatusCode(), 'Unexpected response code for ' . $url);
         }
         $ret = [];
         $tmp = array_unique($crawler->filter('a')->extract(['href']));

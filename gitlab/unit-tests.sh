@@ -34,15 +34,15 @@ if [ "$CODECOVERAGE" -eq 1 ]; then
     pcov="--coverage-html=${CI_PROJECT_DIR}/coverage-html --coverage-clover coverage.xml"
 fi
 set +e
-php $phpcov lib/vendor/bin/phpunit -c webapp/phpunit.xml.dist webapp/tests/$unittest --log-junit ${CI_PROJECT_DIR}/unit-tests.xml --colors=never $pcov > phpunit.out
+php $phpcov lib/vendor/bin/phpunit -c webapp/phpunit.xml.dist webapp/tests/$unittest --log-junit ${CI_PROJECT_DIR}/unit-tests.xml --colors=never $pcov > "$GITLABARTIFACTS"/phpunit.out
 UNITSUCCESS=$?
 set -e
 CNT=0
 if [ $CODECOVERAGE -eq 1 ]; then
-    CNT=$(sed -n '/Generating code coverage report/,$p' phpunit.out | grep -v DoctrineTestBundle | grep -cv ^$)
+    CNT=$(sed -n '/Generating code coverage report/,$p' "$GITLABARTIFACTS"/phpunit.out | grep -v DoctrineTestBundle | grep -cv ^$)
     FILE=deprecation.txt
-    sed -n '/Generating code coverage report/,$p' phpunit.out > ${CI_PROJECT_DIR}/$FILE
-    if [ $CNT -le 21 ]; then
+    sed -n '/Generating code coverage report/,$p' "$GITLABARTIFACTS"/phpunit.out > ${CI_PROJECT_DIR}/$FILE
+    if [ $CNT -le 12 ]; then
         STATE=success
     else
         STATE=failure
@@ -68,4 +68,13 @@ curl https://api.github.com/repos/domjudge/domjudge/statuses/$CI_COMMIT_SHA \
     -d "{\"state\": \"$STATE\", \"target_url\": \"${CI_PIPELINE_URL}/test_report\", \"description\":\"Unit tests\", \"context\": \"unit_tests ($version)\"}"
 if [ $UNITSUCCESS -ne 0 ]; then
     exit 1
+fi
+
+if [ $CODECOVERAGE -eq 1 ]; then
+    section_start_collap uploadcoverage "Upload code coverage"
+    # Only upload when we got working unit-tests.
+    set +u # Uses some variables which are not set
+    # shellcheck disable=SC1090
+    . $DIR/.github/jobs/uploadcodecov.sh 1>/dev/zero 2>/dev/zero
+    section_end uploadcoverage
 fi

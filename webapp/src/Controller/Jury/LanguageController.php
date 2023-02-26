@@ -65,10 +65,10 @@ class LanguageController extends BaseController
             'langid' => ['title' => 'ID/ext', 'sort' => true],
             'name' => ['title' => 'name', 'sort' => true, 'default_sort' => true],
             'entrypoint' => ['title' => 'entry point', 'sort' => true],
-            'allowsubmit' => ['title' => 'allow submit', 'sort' => true],
             'allowjudge' => ['title' => 'allow judge', 'sort' => true],
             'timefactor' => ['title' => 'timefactor', 'sort' => true],
             'extensions' => ['title' => 'extensions', 'sort' => true],
+            'executable' => ['title' => 'executable', 'sort' => true],
         ];
 
         // Insert external ID field when configured to use it.
@@ -79,7 +79,8 @@ class LanguageController extends BaseController
         }
 
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
-        $languages_table  = [];
+        $enabled_languages  = [];
+        $disabled_languages  = [];
         foreach ($languages as $lang) {
             $langdata    = [];
             $langactions = [];
@@ -108,23 +109,41 @@ class LanguageController extends BaseController
                 ];
             }
 
+            $executable = $lang->getCompileExecutable();
+
             // Merge in the rest of the data.
             $langdata = array_merge($langdata, [
                 'entrypoint' => ['value' => $lang->getRequireEntryPoint() ? 'yes' : 'no'],
                 'extensions' => ['value' => implode(', ', $lang->getExtensions())],
-                'allowsubmit' => ['value' => $lang->getAllowSubmit() ? 'yes' : 'no'],
                 'allowjudge' => ['value' => $lang->getAllowJudge() ? 'yes' : 'no'],
+                'executable' => [
+                    'value' => $executable === null ? '-' : $executable->getShortDescription(),
+                    'link' => $executable === null ? null : $this->generateUrl('jury_executable', [
+                        'execId' => $executable->getExecid()
+                        ]),
+                    'showlink' => true,
+                    ],
             ]);
 
-            $languages_table[] = [
-                'data' => $langdata,
-                'actions' => $langactions,
-                'link' => $this->generateUrl('jury_language', ['langId' => $lang->getLangid()]),
-                'cssclass' => $lang->getAllowSubmit() ? '' : 'disabled',
-            ];
+            if ($lang->getAllowSubmit()) {
+                $enabled_languages[] = [
+                    'data' => $langdata,
+                    'actions' => $langactions,
+                    'link' => $this->generateUrl('jury_language', ['langId' => $lang->getLangid()]),
+                    'cssclass' => '',
+                ];
+            } else {
+                $disabled_languages[] = [
+                    'data' => $langdata,
+                    'actions' => $langactions,
+                    'link' => $this->generateUrl('jury_language', ['langId' => $lang->getLangid()]),
+                    'cssclass' => 'disabled',
+                ];
+            }
         }
         return $this->render('jury/languages.html.twig', [
-            'languages' => $languages_table,
+            'enabled_languages' => $enabled_languages,
+            'disabled_languages' => $disabled_languages,
             'table_fields' => $table_fields,
             'num_actions' => $this->isGranted('ROLE_ADMIN') ? 2 : 0,
         ]);
@@ -320,10 +339,10 @@ class LanguageController extends BaseController
                           ->select('j')
                           ->join('j.submission', 's')
                           ->join('s.team', 't')
-                          ->join('t.category', 'tc')
-                          ->andWhere('tc.visible = true')
                           ->andWhere('j.valid = true')
+                          ->andWhere('j.result != :compiler_error')
                           ->andWhere('s.language = :langId')
+                          ->setParameter('compiler_error', 'compiler-error')
                           ->setParameter('langId', $langId);
         if ($contestId > -1) {
             $query->andWhere('s.contest = :contestId')

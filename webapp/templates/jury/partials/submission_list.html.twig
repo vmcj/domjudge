@@ -30,8 +30,12 @@
             <span class="badge badge-dark">{{ submissionCounts.ignored }} ignored</span>
         {% endif %}
 
+        {% if submissionCounts.judging > 0 %}
+            <span class="badge badge-primary">{{ submissionCounts.judging }} judging</span>
+        {% endif %}
+
         {% if submissionCounts.queued > 0 %}
-            <span class="badge badge-primary">{{ submissionCounts.queued }} queued (from {{submissionCounts.perteam}} teams)</span>
+            <span class="badge badge-danger">{{ submissionCounts.queued }} queued (from {{submissionCounts.perteam}} teams)</span>
         {% endif %}
     </div>
 
@@ -86,6 +90,7 @@
             <tr class="{% if not submission.valid %}ignore{% endif %}"
                 data-problem-id="{{ submission.problem.probid }}"
                 data-team-id="{{ submission.team.teamid }}"
+                data-category-id="{{ submission.team.category.categoryid }}"
                 data-language-id="{{ submission.language.langid }}"
                 data-submission-id="{{ submission.submitid }}"
                 data-result="{{ submission | printValidJurySubmissionResult(false) }}">
@@ -118,7 +123,7 @@
                 </td>
                 <td rowspan="{{ rowSpan }}" class="{{ tdExtraClass }}">
                     <a href="{{ link }}">
-                        {{ submission.team.name | u.truncate(teamname_max_length, '…') }}
+                        {{ submission.team.effectiveName | u.truncate(teamname_max_length, '…') }}
                     </a>
                 </td>
                 <td class="probid{{ tdExtraClass }}" rowspan="{{ rowSpan }}">

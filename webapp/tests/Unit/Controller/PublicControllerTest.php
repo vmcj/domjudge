@@ -42,6 +42,23 @@ class PublicControllerTest extends BaseTest
         self::assertSelectorExists('p.nodata:contains("No active contest")');
     }
 
+    public function testScoreboardWarningMessage(): void
+    {
+        $this->verifyPageResponse('GET', '/public', 200);
+        self::assertSelectorNotExists('div.alert-danger');
+
+        $msg = 'This is a test contest';
+
+        $em = static::getContainer()->get(EntityManagerInterface::class);
+        /** @var Contest $contest */
+        $contest = $em->getRepository(Contest::class)->findOneBy(['externalid' => 'demo']);
+        $contest->setWarningMessage($msg);
+        $em->flush();
+
+        $this->verifyPageResponse('GET', '/public', 200);
+        self::assertSelectorTextContains('div.alert-danger', $msg);
+    }
+
     public function testNoSelfRegister(): void
     {
         $this->verifyPageResponse('GET', static::$urlRegister, 403);
@@ -51,9 +68,9 @@ class PublicControllerTest extends BaseTest
         array $inputs,
         array $fixtures,
         string $password,
-        string $category="",
-        string $secondPassword="same"
-): array {
+        string $category = "",
+        string $secondPassword = "same"
+    ): array {
         $this->loadFixtures($fixtures);
         $this->logOut();
         $this->verifyPageResponse('GET', static::$urlRegister, 200);
@@ -174,7 +191,7 @@ class PublicControllerTest extends BaseTest
         array $fixtures,
         string $category,
         string $secondPassword
-): void {
+    ): void {
         $formFields = $this->setupSelfRegisterForm($inputs, $fixtures, $password, $category, $secondPassword);
         $selector = 'html:contains("The password fields must match.")';
         self::assertSelectorNotExists($selector);

@@ -66,6 +66,9 @@ class ImportExportService
             'start-time' => Utils::absTime($contest->getStarttime(), true),
             'duration' => Utils::relTime($contest->getContestTime((float)$contest->getEndtime())),
         ];
+        if ($warnMsg = $contest->getWarningMessage()) {
+            $data['warning-message'] = $warnMsg;
+        }
         if ($contest->getFreezetime() !== null) {
             $data['scoreboard-freeze-duration'] = Utils::relTime(
                 $contest->getContestTime((float)$contest->getEndtime()) - $contest->getContestTime((float)$contest->getFreezetime()),
@@ -96,7 +99,7 @@ class ImportExportService
 
     public function importContestData($data, ?string &$message = null, string &$cid = null): bool
     {
-        if (empty($data)) {
+        if (empty($data) || !is_array($data)) {
             $message = 'Error parsing YAML file.';
             return false;
         }
@@ -157,6 +160,7 @@ class ImportExportService
                                $data['shortname'] ?? $data['short-name'] ?? $data['id']
                            ))
             ->setExternalid($contest->getShortname())
+            ->setWarningMessage($data['warning-message'] ?? null)
             ->setStarttimeString(date_format($starttime, 'Y-m-d H:i:s e'))
             ->setActivatetimeString(date_format($activateTime, 'Y-m-d H:i:s e'))
             ->setEndtimeString(sprintf('+%s', $data['duration']));
@@ -306,7 +310,7 @@ class ImportExportService
         foreach ($teams as $team) {
             $data[] = [
                 $team->getApiId($this->eventLogService),
-                $team->getIcpcid(),
+                $team->getIcpcId(),
                 $team->getCategory()->getApiId($this->eventLogService),
                 $team->getEffectiveName(),
                 $team->getAffiliation() ? $team->getAffiliation()->getName() : '',
@@ -326,7 +330,7 @@ class ImportExportService
     {
         // We'll here assume that the requested file will be of the current contest,
         // as all our scoreboard interfaces do:
-        // 1    External ID     24314   string
+        // 1    ICPC ID     24314   string
         // 2    Rank in contest     1   integer
         // 3    Award   Gold Medal  string
         // 4    Number of problems the team has solved  4   integer
@@ -419,7 +423,7 @@ class ImportExportService
             }
 
             $data[] = [
-                $teamScore->team->getApiId($this->eventLogService),
+                $teamScore->team->getIcpcId(),
                 $rank,
                 $awardString,
                 $teamScore->numPoints,
@@ -645,8 +649,8 @@ class ImportExportService
         foreach ($data as $idx => $organization) {
             $organizationData[] = [
                 'externalid' => @$organization['id'],
-                'shortname' => @$organization['name'],
-                'name' => @$organization['formal_name'],
+                'shortname' => @$organization['shortname'] ?? @$organization['name'],
+                'name' => @$organization['formal_name'] ?? @$organization['name'],
                 'country' => @$organization['country'],
                 'icpc_id' => $organization['icpc_id'] ?? null,
             ];
@@ -678,6 +682,9 @@ class ImportExportService
                 $teamAffiliation->setExternalid($externalId);
                 $this->em->persist($teamAffiliation);
                 $added = true;
+            }
+            if (!isset($organizationItem['shortname'])) {
+                throw new BadRequestHttpException('Shortname missing.');
             }
             $teamAffiliation
                 ->setShortname($organizationItem['shortname'])
@@ -760,7 +767,7 @@ class ImportExportService
                 ]
             ];
         }
-        return $this->importTeamData($teamData);
+        return $this->importTeamData($teamData, $message);
     }
 
     /**
@@ -780,6 +787,7 @@ class ImportExportService
                     'name' => @$team['name'],
                     'display_name' => @$team['display_name'],
                     'publicdescription' => @$team['members'],
+                    'room' => @$team['room'],
                 ],
                 'team_affiliation' => [
                     'externalid' => $team['organization_id'] ?? null,
@@ -787,7 +795,7 @@ class ImportExportService
             ];
         }
 
-        return $this->importTeamData($teamData, $saved);
+        return $this->importTeamData($teamData, $message, $saved);
     }
 
     /**
@@ -871,7 +879,7 @@ class ImportExportService
      *
      * @throws NonUniqueResultException
      */
-    protected function importTeamData(array $teamData, ?array &$saved = null): int
+    protected function importTeamData(array $teamData, ?string &$message, ?array &$saved = null): int
     {
         $createdAffiliations = [];
         $createdTeams        = [];
@@ -944,10 +952,17 @@ class ImportExportService
                 $added = false;
             }
 
-            if (!empty($teamItem['team']['teamid'])) {
-                $team->setExternalid($teamItem['team']['teamid']);
-                unset($teamItem['team']['teamid']);
+            if (empty($teamItem['team']['teamid'])) {
+                $message = 'ID for team required';
+                return -1;
             }
+
+            if (preg_match('/^([a-zA-Z0-9]{1}([a-zA-Z0-9._-]{0,34}[a-zA-Z0-9])?)$/', $teamItem['team']['teamid']) === 0) {
+                $message = 'ID not in CLICS format';
+                return -1;
+            }
+            $team->setExternalid($teamItem['team']['teamid']);
+            unset($teamItem['team']['teamid']);
 
             $propertyAccessor = PropertyAccess::createPropertyAccessor();
             foreach ($teamItem['team'] as $field => $value) {
@@ -996,8 +1011,6 @@ class ImportExportService
      */
     protected function importAccountData(array $accountData, ?array &$saved = null): int
     {
-        $createdUsers = [];
-        $updatedUsers = [];
         $newTeams     = [];
         foreach ($accountData as $accountItem) {
             if (!empty($accountItem['team'])) {
@@ -1065,11 +1078,6 @@ class ImportExportService
                 $this->em->persist($user);
             }
             $this->em->flush();
-            if ($added) {
-                $createdUsers[] = $user->getUserid();
-            } else {
-                $updatedUsers[] = $user->getUserid();
-            }
 
             if ($saved !== null) {
                 $saved[] = $user;

@@ -326,7 +326,7 @@ class ImportProblemService
         }
 
         // Add problem statement, also look in obsolete location.
-        foreach (['', 'problem_statement/'] as $dir) {
+        foreach (['problem_statement/', ''] as $dir) {
             foreach (['pdf', 'html', 'txt'] as $type) {
                 $filename = sprintf('%sproblem.%s', $dir, $type);
                 $text     = $zip->getFromName($filename);
@@ -335,7 +335,7 @@ class ImportProblemService
                         ->setProblemtext($text)
                         ->setProblemtextType($type);
                     $messages['info'][] = "Added/updated problem statement from: $filename";
-                    break;
+                    break 2;
                 }
             }
         }
@@ -552,11 +552,7 @@ class ImportProblemService
             }
 
             // Check if an attachment already exists, since then we overwrite it.
-            if (isset($existingAttachments[$name])) {
-                $attachment = $existingAttachments[$name];
-            } else {
-                $attachment = null;
-            }
+            $attachment = $existingAttachments[$name] ?? null;
 
             if ($attachment) {
                 $attachmentContent = $attachment->getContent();
@@ -873,7 +869,7 @@ class ImportProblemService
                 $errors = array_merge($errors, $messages);
             }
         } catch (Exception $e) {
-            $allMessages[] = $e->getMessage();
+            $errors[] = $e->getMessage();
         } finally {
             if ($zip) {
                 $zip->close();

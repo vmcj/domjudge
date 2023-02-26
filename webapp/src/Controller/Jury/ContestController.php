@@ -333,11 +333,11 @@ class ContestController extends BaseController
                     if ($timeField === 'activate' && $contest->getStarttimeEnabled()) {
                         if (Utils::difftime($contestdata['starttime']['value'], $time)>Utils::DAY_IN_SECONDS) {
                             $timeIcon  = 'calendar-minus';
-                        };
+                        }
                     } elseif ($timeField === 'end' && $contest->getStarttimeEnabled()) {
                         if (Utils::difftime($time, $startTime)>Utils::DAY_IN_SECONDS) {
                             $timeIcon  = 'calendar-plus';
-                        };
+                        }
                     }
                 }
                 $contestdata[$timeField . 'time']['value']     = $timeValue;
@@ -403,6 +403,9 @@ class ContestController extends BaseController
             $this->em->persist($newRemovedInterval);
             $this->em->flush();
 
+            $this->addFlash('scoreboard_refresh',
+                'After adding a removed time interval, it is ' .
+                'necessary to recalculate any cached scoreboards.');
             return $this->redirectToRoute('jury_contest', ['contestId' => $contestId]);
         }
 
@@ -437,6 +440,25 @@ class ContestController extends BaseController
     }
 
     /**
+     * @Route("/{contestId}/toggle-submit", name="jury_contest_toggle_submit")
+     */
+    public function toggleSubmitAction(Request $request, string $contestId): Response
+    {
+        /** @var Contest $contest */
+        $contest = $this->em->getRepository(Contest::class)->find($contestId);
+        if (!$contest) {
+            throw new NotFoundHttpException(sprintf('Contest with ID %s not found', $contestId));
+        }
+
+        $contest->setAllowSubmit($request->request->getBoolean('allow_submit'));
+        $this->em->flush();
+
+        $this->dj->auditlog('contest', $contestId, 'set allow submit',
+            $request->request->getBoolean('allow_submit') ? 'yes' : 'no');
+        return $this->redirectToRoute('jury_contest', ['contestId' => $contestId]);
+    }
+
+    /**
      * @Route("/{contestId<\d+>}/remove-interval/{intervalId}",
      *        name="jury_contest_remove_interval", methods={"POST"})
      */
@@ -466,6 +488,9 @@ class ContestController extends BaseController
         $contest->setStarttimeString($contest->getStarttimeString());
         $this->em->flush();
 
+        $this->addFlash('scoreboard_refresh',
+            'After removing a removed time interval, it is ' .
+            'necessary to recalculate any cached scoreboards.');
         return $this->redirectToRoute('jury_contest', ['contestId' => $contest->getCid()]);
     }
 
@@ -858,7 +883,9 @@ class ContestController extends BaseController
                              ->join('t.category', 'tc')
                              ->andWhere('tc.visible = true')
                              ->andWhere('j.valid = true')
+                             ->andWhere('j.result != :compiler_error')
                              ->andWhere('s.contest = :contestId')
+                             ->setParameter('compiler_error', 'compiler-error')
                              ->setParameter('contestId', $contestId)
                              ->getQuery()
                              ->getResult();
@@ -888,13 +915,13 @@ class ContestController extends BaseController
                              ->select('j')
                              ->join('j.submission', 's')
                              ->join('s.team', 't')
-                             ->join('t.category', 'tc')
                              ->andWhere('s.problem = :problemId')
-                             ->andWhere('tc.visible = true')
                              ->andWhere('j.valid = true')
+                             ->andWhere('j.result != :compiler_error')
                              ->andWhere('s.contest = :contestId')
                              ->setParameter('problemId', $probId)
                              ->setParameter('contestId', $contestId)
+                             ->setParameter('compiler_error', 'compiler-error')
                              ->getQuery()
                              ->getResult();
         $this->judgeRemaining($judgings);
@@ -940,6 +967,20 @@ class ContestController extends BaseController
     public function unlockAction(Request $request, int $contestId): Response
     {
         return $this->doLock($contestId, false);
+    }
+
+    /**
+     * @Route("/{contestId<\d+>}/samples.zip", name="jury_contest_samples_data_zip")
+     */
+    public function samplesDataZipAction(Request $request, int $contestId): Response
+    {
+        /** @var Contest $contest */
+        $contest = $this->em->getRepository(Contest::class)->find($contestId);
+        if (!$contest) {
+            throw new NotFoundHttpException(sprintf('Contest with ID %s not found', $contestId));
+        }
+
+        return $this->dj->getSamplesZipForContest($contest);
     }
 
     private function doLock(int $contestId, bool $locked): Response

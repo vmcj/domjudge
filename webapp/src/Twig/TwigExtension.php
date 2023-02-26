@@ -13,6 +13,7 @@ use App\Entity\Language;
 use App\Entity\Submission;
 use App\Entity\SubmissionFile;
 use App\Entity\Testcase;
+use App\Service\AwardService;
 use App\Service\ConfigurationService;
 use App\Service\DOMJudgeService;
 use App\Service\EventLogService;
@@ -40,6 +41,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     protected EntityManagerInterface $em;
     protected SubmissionService $submissionService;
     protected EventLogService $eventLogService;
+    protected AwardService $awards;
     protected TokenStorageInterface $tokenStorage;
     protected AuthorizationCheckerInterface $authorizationChecker;
     protected string $projectDir;
@@ -51,6 +53,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
         EntityManagerInterface        $em,
         SubmissionService             $submissionService,
         EventLogService               $eventLogService,
+        AwardService                  $awards,
         TokenStorageInterface         $tokenStorage,
         AuthorizationCheckerInterface $authorizationChecker,
         string                        $projectDir
@@ -61,6 +64,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
         $this->em                   = $em;
         $this->submissionService    = $submissionService;
         $this->eventLogService      = $eventLogService;
+        $this->awards               = $awards;
         $this->tokenStorage         = $tokenStorage;
         $this->authorizationChecker = $authorizationChecker;
         $this->projectDir           = $projectDir;
@@ -81,6 +85,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     {
         return [
             new TwigFilter('printtimediff', [$this, 'printtimediff']),
+            new TwigFilter('printremainingminutes', [$this, 'printremainingminutes']),
             new TwigFilter('printtime', [$this, 'printtime']),
             new TwigFilter('printtimeHover', [$this, 'printtimeHover'], ['is_safe' => ['html']]),
             new TwigFilter('printResult', [$this, 'printResult'], ['is_safe' => ['html']]),
@@ -122,6 +127,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             new TwigFilter('printMetadata', [$this, 'printMetadata'], ['is_safe' => ['html']]),
             new TwigFilter('printWarningContent', [$this, 'printWarningContent'], ['is_safe' => ['html']]),
             new TwigFilter('entityIdBadge', [$this, 'entityIdBadge'], ['is_safe' => ['html']]),
+            new TwigFilter('medalType', [$this->awards, 'medalType']),
         ];
     }
 
@@ -167,6 +173,18 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     public function printtimediff(float $start, ?float $end = null): string
     {
         return Utils::printtimediff($start, $end);
+    }
+
+    public function printremainingminutes(float $start, float $end): string
+    {
+        $minutesRemaining = floor(($end - $start)/60);
+        if ($minutesRemaining < 1) {
+            return 'less than 1 minute to go';
+        } elseif ($minutesRemaining == 1) {
+            return '1 minute to go';
+        } else {
+            return $minutesRemaining . ' minutes to go';
+        }
     }
 
     /**
@@ -355,7 +373,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
                   WHERE t.probid = :probid ORDER BY ranknumber',
                 ['extjudgementid' => $externalJudgementId, 'probid' => $probId]);
 
-            $submissionDone = $externalJudgement ? !empty($externalJudgement->getEndtime()) : false;
+            $submissionDone = $externalJudgement && !empty($externalJudgement->getEndtime());
         } else {
             /** @var Judging|null $judging */
             $judging   = $submission->getJudgings()->first();
@@ -371,7 +389,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
                   WHERE t.probid = :probid ORDER BY ranknumber',
                 ['judgingid' => $judgingId, 'probid' => $probId]);
 
-            $submissionDone = $judging ? !empty($judging->getEndtime()) : false;
+            $submissionDone = $judging && !empty($judging->getEndtime());
         }
 
         $results = '';
@@ -588,7 +606,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     public function printHost(?string $hostname, bool $full = false): string
     {
         if ($hostname === null) {
-           return '<span class="nodata">hostname unset</span>';
+            return '<span class="nodata">hostname unset</span>';
         }
         // Shorten the hostname to first label, but not if it's an IP address.
         if (!$full && !preg_match('/^\d{1,3}(\.\d{1,3}){3}$/', $hostname)) {
@@ -600,7 +618,30 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     }
 
     /**
-     * Formats a list of given hostnames, extracting a common prefix.
+     * Extract the longest common prefix of all the provided strings.
+     */
+    private function getCommonPrefix(array $strings): string
+    {
+        $common_prefix = $strings[0];
+        foreach ($strings as $string) {
+            $len = strlen($string);
+            while ($len > 0) {
+                if (substr_compare($common_prefix, $string, 0, $len) == 0) {
+                    break;
+                }
+                $len--;
+            }
+            if ($len == 0) {
+                $common_prefix = "";
+                break;
+            }
+            $common_prefix = substr($common_prefix, 0, $len);
+        }
+        return $common_prefix;
+    }
+
+    /**
+     * Formats a list of given hostnames, extracting a common prefix and suffix.
      */
     public function printHosts(array $hostnames): string
     {
@@ -621,27 +662,28 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
             }
             $local_parts[] = $hostname;
         }
-        $common_prefix = $local_parts[0];
-        foreach ($local_parts as $local_part) {
-            $len = strlen($local_part);
-            while ($len > 0) {
-                if (substr_compare($common_prefix, $local_part, 0, $len) == 0) {
-                    break;
-                }
-                $len--;
-            }
-            if ($len == 0) {
-                $common_prefix = "";
-                break;
-            }
-            $common_prefix = substr($common_prefix, 0, $len);
-        }
-        if (empty($common_prefix)) {
+
+        // Extract the longest common prefix.
+        $common_prefix = $this->getCommonPrefix($local_parts);
+        $prefix_len = strlen($common_prefix);
+
+        // Extract the longest common suffix.
+        $reversed = array_map('strrev', $local_parts);
+        $common_suffix = strrev($this->getCommonPrefix($reversed));
+        $suffix_len = strlen($common_suffix);
+
+        // Extract the list of remaining parts. This list may contain empty values. If $common_prefix overlaps
+        // $common_suffix, then $common_prefix = $common_suffix = the entire string.
+        $middle_parts = array_map(fn($host) => substr($host, $prefix_len, strlen($host) - $prefix_len - $suffix_len), $local_parts);
+        // Usually the middle parts contain numbers, so use natural sort for them.
+        usort($middle_parts, 'strnatcmp');
+
+        if (empty($common_prefix) && empty($common_suffix)) {
+            // No common prefix nor suffix: list all the names without "{}".
             return implode(", ", array_map([$this, 'printHost'], $hostnames));
         } else {
-            $len_prefix  = strlen($common_prefix);
-            $local_parts = array_map(fn($host) => substr($host, $len_prefix), $local_parts);
-            return $this->printHost($common_prefix . "{" . implode(",", $local_parts) . "}", true);
+            $hosts = $common_prefix . "{" . implode(",", $middle_parts) . "}" . $common_suffix;
+            return $this->printHost($hosts, true);
         }
     }
 
@@ -1069,18 +1111,17 @@ EOF;
             return '';
         }
         $metadata = $this->dj->parseMetadata($metadata);
-        $ret      = '<span style="display:inline; margin-left: 5px;">'
-                    . '<i class="fas fa-stopwatch" title="runtime"></i>'
-                    . $metadata['cpu-time'] . 's'
-                    . ' CPU, '
-                    . $metadata['wall-time'] . 's'
-                    . ' wall time, '
-                    . '<i class="fas fa-memory" title="RAM"></i>'
-                    . Utils::printsize((int)($metadata['memory-bytes']))
-                    . ', '
-                    . '<i class="fas fa-exitcode" title="runtime"></i>'
-                    . 'exit-code: ' . $metadata['exitcode'];
-        return $ret;
+        return '<span style="display:inline; margin-left: 5px;">'
+            . '<i class="fas fa-stopwatch" title="runtime"></i>'
+            . $metadata['cpu-time'] . 's'
+            . ' CPU, '
+            . $metadata['wall-time'] . 's'
+            . ' wall time, '
+            . '<i class="fas fa-memory" title="RAM"></i>'
+            . Utils::printsize((int)($metadata['memory-bytes']))
+            . ', '
+            . '<i class="fas fa-exitcode" title="runtime"></i>'
+            . 'exit-code: ' . $metadata['exitcode'];
     }
 
     public function printWarningContent(ExternalSourceWarning $warning): string
@@ -1102,7 +1143,7 @@ EOF;
                         '<td><code>%s</code></td>',
                         $diff['external'] === null ? $null : $diff['external']
                     );
-                    $rows[]     = "<tr>${tdField}${tdUs}${tdExternal}</tr>";
+                    $rows[]     = "<tr>{$tdField}{$tdUs}{$tdExternal}</tr>";
                 }
 
                 $header  = <<<'EOF'

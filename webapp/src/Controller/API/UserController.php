@@ -84,12 +84,11 @@ class UserController extends AbstractRestController
             throw new BadRequestHttpException('Supply exactly one of \'json\' or \'tsv\'');
         }
         $message = null;
-        if ($tsvFile && ($result = $this->importExportService->importTsv('groups', $tsvFile, $message))) {
-            // TODO: better return all groups here
-            return "$result new group(s) successfully added.";
-        } elseif ($jsonFile && ($result = $this->importExportService->importJson('groups', $jsonFile, $message))) {
-            // TODO: better return all groups here
-            return "$result new group(s) successfully added.";
+        $result = -1;
+        if ((($tsvFile && ($result = $this->importExportService->importTsv('groups', $tsvFile, $message))) ||
+             ($jsonFile && ($result = $this->importExportService->importJson('groups', $jsonFile, $message)))) &&
+            $result >= 0) {
+             return "$result new group(s) successfully added.";
         } else {
             throw new BadRequestHttpException("Error while adding groups: $message");
         }
@@ -122,10 +121,12 @@ class UserController extends AbstractRestController
      */
     public function addOrganizationsAction(Request $request): string
     {
-        /** @var UploadedFile $jsonFile */
-        $jsonFile = $request->files->get('json') ?: [];
         $message = null;
-        if ($result = $this->importExportService->importJson('organizations', $jsonFile, $message)) {
+        /** @var UploadedFile $jsonFile */
+        if (($jsonFile = $request->files->get('json')) &&
+            ($result = $this->importExportService->importJson('organizations', $jsonFile, $message)) &&
+            $result >= 0
+        ) {
             // TODO: better return all organizations here
             return "$result new organization(s) successfully added.";
         } else {
@@ -172,10 +173,9 @@ class UserController extends AbstractRestController
             throw new BadRequestHttpException('Supply exactly one of \'json\' or \'tsv\'');
         }
         $message = null;
-        if ($tsvFile && ($result = $this->importExportService->importTsv('teams', $tsvFile, $message))) {
-            // TODO: better return all teams here?
-            return "$result new team(s) successfully added.";
-        } elseif ($jsonFile && ($result = $this->importExportService->importJson('teams', $jsonFile, $message))) {
+        if ((($tsvFile && ($result = $this->importExportService->importTsv('teams', $tsvFile, $message))) ||
+             ($jsonFile && ($result = $this->importExportService->importJson('teams', $jsonFile, $message)))) &&
+            $result >= 0) {
             // TODO: better return all teams here?
             return "$result new team(s) successfully added.";
         } else {
@@ -239,10 +239,9 @@ class UserController extends AbstractRestController
         }
 
         $message = null;
-        if ($tsvFile && ($result = $this->importExportService->importTsv('accounts', $tsvFile, $message))) {
-            // TODO: better return all accounts here?
-            return "$result new account(s) successfully added.";
-        } elseif ($jsonFile && ($result = $this->importExportService->importJson('accounts', $jsonFile, $message))) {
+        if ((($tsvFile && ($result = $this->importExportService->importTsv('accounts', $tsvFile, $message))) ||
+             ($jsonFile && ($result = $this->importExportService->importJson('accounts', $jsonFile, $message)))) &&
+            $result >= 0) {
             // TODO: better return all accounts here?
             return "$result new account(s) successfully added.";
         } else {
@@ -361,7 +360,7 @@ class UserController extends AbstractRestController
             $user->setTeam($team);
         }
 
-        $roles = (array)$request->request->get('roles');
+        $roles = $request->request->all('roles');
         foreach ($roles as $djRole) {
             if ($djRole === '') {
                 continue;

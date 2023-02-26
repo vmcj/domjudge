@@ -6,6 +6,7 @@
 {% block extrahead %}
     {{ parent() }}
     {{ macros.table_extrahead() }}
+    {{ macros.toggle_extrahead() }}
 {% endblock %}
 
 {% block content %}
@@ -49,10 +50,6 @@
                 <tr>
                     <th>Short name</th>
                     <td>{{ contest.shortname }}</td>
-                </tr>
-                <tr>
-                    <th>Name</th>
-                    <td>{{ contest.name }}</td>
                 </tr>
                 <tr>
                     <th>Activate time</th>
@@ -106,6 +103,15 @@
                 <tr>
                     <th>Deactivate time</th>
                     <td>{{ contest.deactivatetimeString }}</td>
+                </tr>
+                <tr>
+                    <th>Allow submit</th>
+                    <td>
+                        <form action="{{ path('jury_contest_toggle_submit', {'contestId': contest.cid}) }}" method="post" class="d-inline">
+                            <input type="checkbox" data-toggle="toggle" data-size="mini" data-on="Yes" data-off="No"
+                                   name="allow_submit" {% if contest.allowSubmit %}checked{% endif %}>
+                        </form>
+                    </td>
                 </tr>
                 <tr>
                     <th>Process balloons</th>
@@ -190,6 +196,18 @@
                         </a>
                     </td>
                 </tr>
+                <tr>
+                    <th>Sample data ZIP</th>
+                    <td>
+                        <a class="btn btn-sm btn-secondary" href="{{ path('jury_contest_samples_data_zip', {contestId: contest.cid}) }}">
+                            <i class="fas fa-download"></i> Download
+                        </a>
+                        <br/>
+                        <small class="text-muted">
+                            Contains samples, attachments and statement for all problems.
+                        </small>
+                    </td>
+                </tr>
                 {% set contestId = contest.cid %}
                 {% if showExternalId(contest) %}
                     {% set contestId = contest.externalid %}
@@ -203,6 +221,10 @@
                         <th>Banner</th>
                         <td><img style="max-width: 300px;" src="{{ asset(banner) }}" title="{{ contest.name }}" /></td>
                 {% endif %}
+                <tr>
+                    <th>Warning message</th>
+                    <td>{{ contest.warningMessage }}</td>
+                </tr>
             </table>
         </div>
     </div>
@@ -368,7 +390,7 @@
                             </td>
                             <td>
                                 {% if is_granted('ROLE_ADMIN') %}
-                                    <a title="Judge remaining" href="{{ path('jury_contest_problem_request_remaining', {'contestId': contest.cid, 'probId': problem.probid}) }}">
+                                    <a title="Judge remaining testcases" href="{{ path('jury_contest_problem_request_remaining', {'contestId': contest.cid, 'probId': problem.probid}) }}">
                                         <i class="fas fa-gavel"></i>
                                     </a>
                                 {% endif %}
@@ -395,10 +417,15 @@
                     {{ button(path('jury_contest_finalize', {'contestId': contest.cid}), 'Finalize this contest', 'secondary', 'flag-checkered') }}
                 {% endif %}
             {% endif %}
-            {{ button(path('jury_contest_request_remaining', {'contestId': contest.cid}), 'Judge remaining', 'secondary', 'gavel') }}
+            {{ button(path('jury_contest_request_remaining', {'contestId': contest.cid}), 'Judge remaining testcases', 'secondary', 'gavel') }}
         {% endif %}
         {{ button(path('jury_contest_prefetch', {'contestId': contest.cid}), 'Heat up judgehosts with contest data', 'secondary', 'download') }}
         {% include 'jury/partials/rejudge_form.html.twig' with {table: 'contest', id: contest.cid, buttonClass: 'btn-secondary'} %}
     </div>
 
 {% endblock %}
+
+{% block extrafooter %}
+    {{ macros.toggle_autosubmit_extrafooter() }}
+{% endblock %}
+

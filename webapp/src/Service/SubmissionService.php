@@ -215,6 +215,12 @@ class SubmissionService
                 ->setParameter('categoryid', $restrictions['categoryid']);
         }
 
+        if (isset($restrictions['visible'])) {
+            $queryBuilder
+                ->innerJoin('t.category', 'cat')
+                ->andWhere('cat.visible = true');
+        }
+
         if (isset($restrictions['probid'])) {
             $queryBuilder
                 ->andWhere('s.problem = :probid')
@@ -270,7 +276,8 @@ class SubmissionService
             'correct' => 'j.result LIKE \'correct\'',
             'ignored' => 's.valid = 0',
             'unverified' => 'j.verified = 0 AND j.result IS NOT NULL',
-            'queued' => 'j.result IS NULL'
+            'queued' => 'j.result IS NULL AND j.starttime IS NULL',
+            'judging' => 'j.starttime IS NOT NULL AND j.endtime IS NULL'
         ];
         foreach ($countQueryExtras as $count => $countQueryExtra) {
             $countQueryBuilder = (clone $queryBuilder)->select('COUNT(s.submitid) AS cnt');
@@ -432,6 +439,10 @@ class SubmissionService
         if (!$this->dj->checkrole('jury') && !$freezeData->started()) {
             throw new AccessDeniedHttpException(
                 sprintf("The contest is closed, no submissions accepted. [c%d]", $contest->getCid()));
+        }
+
+        if (!$contest->getAllowSubmit()) {
+            throw new BadRequestHttpException('Submissions for contest (temporarily) disabled');
         }
 
         if (!$language->getAllowSubmit()) {

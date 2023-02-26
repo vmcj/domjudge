@@ -64,7 +64,6 @@ class JudgehostController extends BaseController
             ->from(Judgehost::class, 'j')
             ->select('j')
             ->andWhere('j.hidden = 0')
-            ->orderBy('j.hostname')
             ->getQuery()->getResult();
 
         $table_fields = [
@@ -178,6 +177,10 @@ class JudgehostController extends BaseController
             ];
         }
 
+        usort($judgehosts_table, function (array $a, array $b) {
+            return strnatcasecmp($a['data']['hostname']['value'], $b['data']['hostname']['value']);
+        });
+
         $data = [
             'judgehosts' => $judgehosts_table,
             'table_fields' => $table_fields,
@@ -217,10 +220,13 @@ class JudgehostController extends BaseController
 
         $reltime = floor(Utils::difftime(Utils::now(), (float)$judgehost->getPolltime()));
         if ($reltime < $this->config->get('judgehost_warning')) {
+            $statusIcon = 'ok';
             $status = 'OK';
         } elseif ($reltime < $this->config->get('judgehost_critical')) {
+            $statusIcon = 'warn';
             $status = 'Warning';
         } else {
+            $statusIcon = 'crit';
             $status = 'Critical';
         }
 
@@ -247,6 +253,7 @@ class JudgehostController extends BaseController
         $data = [
             'judgehost' => $judgehost,
             'status' => $status,
+            'statusIcon' => $statusIcon,
             'judgings' => $judgings,
             'refresh' => [
                 'after' => 15,

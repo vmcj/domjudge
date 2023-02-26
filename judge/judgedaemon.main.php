@@ -77,7 +77,7 @@ function setup_curl_handle(string $restuser, string $restpass)
 function close_curl_handles(): void
 {
     global $endpoints;
-    foreach($endpoints as $id => $endpoint) {
+    foreach ($endpoints as $id => $endpoint) {
         if (! empty($endpoint['ch'])) {
             curl_close($endpoint['ch']);
             unset($endpoints[$id]['ch']);
@@ -137,7 +137,7 @@ function request(string $url, string $verb = 'GET', $data = '', bool $failonerro
         curl_setopt($curl_handle, CURLOPT_POSTFIELDS, null);
     }
 
-    $delay_in_ms = BACKOFF_INITIAL_DELAY_MS;
+    $delay_in_sec = BACKOFF_INITIAL_DELAY_SEC;
     $succeeded = false;
     $response = null;
     $errstr = null;
@@ -152,7 +152,7 @@ function request(string $url, string $verb = 'GET', $data = '', bool $failonerro
                 $errstr = "Authentication failed (error $status) while contacting $url. " .
                     "Check credentials in restapi.secret.";
                 break;
-            } else if ($status < 200 || $status >= 300) {
+            } elseif ($status < 200 || $status >= 300) {
                 $json = dj_json_try_decode($response);
                 if ($json !== null) {
                     $response = var_export($json, true);
@@ -172,12 +172,12 @@ function request(string $url, string $verb = 'GET', $data = '', bool $failonerro
         if ($trial == BACKOFF_STEPS) {
             $errstr = $errstr . " Retry limit reached.";
         } else {
-            $retry_in_ms = $delay_in_ms + random_int(0, BACKOFF_JITTER_MS);
+            $retry_in_sec = $delay_in_sec + BACKOFF_JITTER_SEC*rand()/getrandmax();
             $warnstr = $errstr . " This request will be retried after about " .
-                $retry_in_ms . "ms... (" . $trial . "/" . BACKOFF_STEPS . ")";
+                $retry_in_sec . "sec... (" . $trial . "/" . BACKOFF_STEPS . ")";
             warning($warnstr);
-            usleep(1000 * $retry_in_ms);
-            $delay_in_ms = $delay_in_ms * BACKOFF_FACTOR;
+            dj_sleep($retry_in_sec);
+            $delay_in_sec = $delay_in_sec * BACKOFF_FACTOR;
         }
     }
     if (!$succeeded) {
@@ -246,11 +246,9 @@ function rest_encode_file(string $file, $sizelimit = true) : string
     return base64_encode(dj_file_get_contents($file, $maxsize));
 }
 
-// Both constants in microseconds
-const SECOND_IN_USEC = 1000*1000;
-const INITIAL_WAITTIME_USEC =  100*1000;
-const MAXIMAL_WAITTIME_USEC = 5000*1000;
-$waittime = INITIAL_WAITTIME_USEC;
+const INITIAL_WAITTIME_SEC = 0.1;
+const MAXIMAL_WAITTIME_SEC = 5.0;
+$waittime = INITIAL_WAITTIME_SEC;
 
 const SCRIPT_ID = 'judgedaemon';
 const CHROOT_SCRIPT = 'chroot-startstop.sh';
@@ -277,8 +275,13 @@ function read_judgehostlog(int $n = 20) : string
 // Fetches new executable from database if necessary, and runs build script to compile executable.
 // Returns an array with absolute path to run script and possibly an error message.
 function fetch_executable(
-    string $workdirpath, string $type, string $execid, string $hash, int $judgeTaskId, bool $combined_run_compare = false) : array
-{
+    string $workdirpath,
+    string $type,
+    string $execid,
+    string $hash,
+    int $judgeTaskId,
+    bool $combined_run_compare = false
+) : array {
     list($execrunpath, $error, $buildlogpath) = fetch_executable_internal($workdirpath, $type, $execid, $hash, $combined_run_compare);
     if (isset($error)) {
         $extra_log = null;
@@ -306,8 +309,12 @@ function fetch_executable(
 // - an error message (null if successful)
 // - optional extra build log.
 function fetch_executable_internal(
-    string $workdirpath, string $type, string $execid, string $hash, bool $combined_run_compare = false) : array
-{
+    string $workdirpath,
+    string $type,
+    string $execid,
+    string $hash,
+    bool $combined_run_compare = false
+) : array {
     $execdir         = join('/', [
         $workdirpath,
         'executable',
@@ -332,6 +339,7 @@ function fetch_executable_internal(
         $files = dj_json_decode($content);
         unset($content);
         $concatenatedMd5s = '';
+        $filesArray = [];
         foreach ($files as $file) {
             $filename = $execbuilddir . '/' . $file['filename'];
             $content = base64_decode($file['content']);
@@ -340,9 +348,22 @@ function fetch_executable_internal(
             if ($file['is_executable']) {
                 chmod($filename, 0755);
             }
+            $filesArray[] = [
+                'hash' => md5($content),
+                'filename' => $file['filename'],
+                'is_executable' => $file['is_executable'],
+            ];
         }
         unset($files);
-        $computedHash = md5($concatenatedMd5s);
+        uasort($filesArray, fn(array $a, array $b) => strcmp($a['filename'], $b['filename']));
+        $computedHash = md5(
+            join(
+                array_map(
+                    fn($file) => $file['hash'] . $file['filename'] . $file['is_executable'],
+                    $filesArray
+                )
+            )
+        );
         if ($hash !== $computedHash) {
             return [null, "Unexpected hash ($computedHash), expected hash: $hash", null];
         }
@@ -387,22 +408,22 @@ function fetch_executable_internal(
                 switch ($execlang) {
                     case 'c':
                         $buildscript .= "gcc -Wall -O2 -std=gnu11 '$source' -o run -lm\n";
-                    break;
+                        break;
                     case 'cpp':
                         $buildscript .= "g++ -Wall -O2 -std=gnu++17 '$source' -o run\n";
-                    break;
+                        break;
                     case 'java':
                         $source = basename($source, ".java");
                         $buildscript .= "javac -cp ./ -d ./ '$source'.java\n";
                         $buildscript .= "echo '#!/bin/sh' > run\n";
                         // no main class detection here
                         $buildscript .= "echo 'java -cp ./ '$source >> run\n";
-                    break;
+                        break;
                     case 'py':
                         $buildscript .= "echo '#!/bin/sh' > run\n";
                         // TODO: Check if it's 'python' or 'python3'
                         $buildscript .= "echo 'python '$source >> run\n";
-                    break;
+                        break;
                 }
                 if (file_put_contents($execbuildpath, $buildscript) === false) {
                     error("Could not write file 'build' in $execbuilddir");
@@ -430,47 +451,7 @@ function fetch_executable_internal(
             # handle the bidirectional communication.  First 'run' is renamed to
             # 'runjury', and then replaced by the script below, which runs the
             # team submission and runjury programs and connects their pipes.
-            $runscript = <<<'EOF'
-#!/bin/sh
-
-# Run wrapper-script to be called from 'testcase_run.sh'.
-#
-# This script is meant to simplify writing interactive problems where the
-# contestants' solution bi-directionally communicates with a jury program, e.g.
-# while playing a two player game.
-#
-# Usage: $0 <testin> <progout> <testout> <metafile> <feedbackdir> <program>...
-#
-# <testin>      File containing test-input.
-# <testout>     File containing test-output.
-# <progout>     File where to write solution output. Note: this is unused.
-# <feedbackdir> Directory to write jury feedback files to.
-# <program>     Command and options of the program to be run.
-
-# A jury-written program called 'runjury' should be available; this program
-# will normally be compiled by the build script in the validator directory.
-# This program should communicate with the contestants' program to provide
-# input and read output via stdin/stdout. This wrapper script handles the setup
-# of bi-directional pipes. The jury program should accept the following calling
-# syntax:
-#
-#    runjury <testin> <testout> <feedbackdir> < <output of the program>
-#
-# The jury program should exit with exitcode 42 if the submissions is accepted,
-# 43 otherwise.
-
-TESTIN="$1";  shift
-PROGOUT="$1"; shift
-TESTOUT="$1"; shift
-META="$1"; shift
-FEEDBACK="$1"; shift
-
-MYDIR=$(dirname $0)
-
-# Run the program while redirecting its stdin/stdout to 'runjury' via
-# 'runpipe'. Note that "$@" expands to separate, quoted arguments.
-exec ../dj-bin/runpipe ${DEBUG:+-v} -M "$META" -o "$PROGOUT" "$MYDIR/runjury" "$TESTIN" "$TESTOUT" "$FEEDBACK" = "$@"
-EOF;
+            $runscript = file_get_contents(LIBJUDGEDIR . '/run-interactive.sh');
             if (rename($execrunpath, $execrunjurypath) === false) {
                 error("Could not move file 'run' to 'runjury' in $execbuilddir");
             }
@@ -607,7 +588,8 @@ if (!empty($options['e'])) {
             break;
         }
         logmsg(LOG_WARNING, "Failed to report $judgeTaskId in attempt #" . ($i + 1) . ".");
-        usleep(100 + random_int(200, ($i+1)*1000));
+        $sleep_ms = 100 + random_int(200, ($i+1)*1000);
+        dj_sleep(0.001 * $sleep_ms);
     }
     unlink($options['j']);
     exit(0);
@@ -646,18 +628,14 @@ while (true) {
         }
         if (!$endpoint['waiting']) {
             $dosleep = false;
-            $waittime = INITIAL_WAITTIME_USEC;
+            $waittime = INITIAL_WAITTIME_SEC;
             break;
         }
     }
     // Sleep only if everything is "waiting" and only if we're looking at the first endpoint again
     if ($dosleep && $currentEndpoint==0) {
-        if ($waittime>SECOND_IN_USEC) {
-            sleep((int)($waittime/SECOND_IN_USEC));
-        } else {
-            usleep($waittime);
-        }
-        $waittime = min($waittime*2, MAXIMAL_WAITTIME_USEC);
+        dj_sleep($waittime);
+        $waittime = min($waittime*2, MAXIMAL_WAITTIME_SEC);
     }
 
     // Increment our currentEndpoint pointer
@@ -978,9 +956,14 @@ function registerJudgehost(string $myhost): void
     }
 }
 
-function disable(string $kind, string $idcolumn, $id, string $description,
-                 ?int $judgeTaskId = null, ?string $extra_log = null): void
-{
+function disable(
+    string $kind,
+    string $idcolumn,
+    $id,
+    string $description,
+    ?int $judgeTaskId = null,
+    ?string $extra_log = null
+): void {
     global $myhost;
     $disabled = dj_json_encode(array(
         'kind' => $kind,
@@ -1006,12 +989,14 @@ function disable(string $kind, string $idcolumn, $id, string $description,
 
 function read_metadata(string $filename): ?array
 {
-    if (!is_readable($filename)) return null;
+    if (!is_readable($filename)) {
+        return null;
+    }
 
     // Don't quite treat it as YAML, but simply key/value pairs.
     $contents = explode("\n", dj_file_get_contents($filename));
     $res = [];
-    foreach($contents as $line) {
+    foreach ($contents as $line) {
         if (strpos($line, ":") !== false) {
             list($key, $value) = explode(":", $line, 2);
             $res[$key] = trim($value);
@@ -1046,9 +1031,14 @@ function cleanup_judging(string $workdir) : void
     }
 }
 
-function compile(array $judgeTask, string $workdir, string $workdirpath, array $compile_config, string $cpuset_opt,
-    int $output_storage_limit): bool
-{
+function compile(
+    array $judgeTask,
+    string $workdir,
+    string $workdirpath,
+    array $compile_config,
+    string $cpuset_opt,
+    int $output_storage_limit
+): bool {
     global $myhost, $EXITCODES;
 
     // Re-use compilation if it already exists.
@@ -1349,9 +1339,15 @@ function judge(array $judgeTask): bool
     }
 
     if ($result === 'compare-error') {
-        logmsg(LOG_ERR, "comparing failed for compare script '" . $judgeTask['compare_script_id'] . "'");
-        $description = 'compare script ' . $judgeTask['compare_script_id'] . ' crashed';
-        disable('compare_script', 'compare_script_id', $judgeTask['compare_script_id'], $description, $judgeTask['judgetaskid']);
+        if ($combined_run_compare) {
+            logmsg(LOG_ERR, "comparing failed for combined run/compare script '" . $judgeTask['run_script_id'] . "'");
+            $description = 'combined run/compare script ' . $judgeTask['run_script_id'] . ' crashed';
+            disable('run_script', 'run_script_id', $judgeTask['run_script_id'], $description, $judgeTask['judgetaskid']);
+        } else {
+            logmsg(LOG_ERR, "comparing failed for compare script '" . $judgeTask['compare_script_id'] . "'");
+            $description = 'compare script ' . $judgeTask['compare_script_id'] . ' crashed';
+            disable('compare_script', 'compare_script_id', $judgeTask['compare_script_id'], $description, $judgeTask['judgetaskid']);
+        }
         return false;
     }
 
