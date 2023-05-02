@@ -1,8 +1,11 @@
 '''
 Sample solution in Python for the "boolfind" interactive problem.
 
+<<<<<<< HEAD
 This waits for one more testcase which is not specified.
 
+=======
+>>>>>>> e281f8da1 (Add python examples to have the same tests as for Java/C++)
 @EXPECTED_RESULTS@: TIMELIMIT
 '''
 
