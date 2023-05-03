@@ -1,7 +1,10 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 0c6114514 (Add some extra test files)
+=======
+>>>>>>> 44b94df01 (Add some extra test files)
 '''
 This is an auxiliary source file that declares another public class 'message'.
 '''
