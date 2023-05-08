@@ -383,19 +383,21 @@ abstract class JuryControllerTestCase extends BaseTestCase
     public function provideEditEntities(): Generator
     {
         foreach (static::$addEntities as $row) {
-            $formdataKeys = [];
-            $formdataValues = [];
-            foreach (static::$addEntities[0] as $key => $value) {
-                if (!in_array($key, static::$editEntitiesSkipFields)) {
-                    $formdataKeys[] = $key;
-                    // There are some special fields like passwords which we only update when set.
-                    if (in_array($key, static::$specialFieldOnlyUpdate)) {
-                        $value = '';
-                    }
-                    $formdataValues[] = $row[$key] ?? $value;
-                }
+            $formDataKeys = [];
+            $formDataValues = [];
+            $tmpValues = array_merge(static::$addEntities[0], $row);
+            foreach (static::$editEntitiesSkipFields as $unwantedField) {
+                unset($tmpValues[$unwantedField]);
             }
-            yield [static::$defaultEditEntityName, $formdataKeys, $formdataValues];
+            foreach ($tmpValues as $key => $value) {
+                $formDataKeys[] = $key;
+                // There are some special fields like passwords which we only update when set.
+                if (in_array($key, static::$specialFieldOnlyUpdate)) {
+                    $value = '';
+                }
+                $formDataValues[] = $value;
+            }
+            yield [static::$defaultEditEntityName, $formDataKeys, $formDataValues];
         }
     }
 
