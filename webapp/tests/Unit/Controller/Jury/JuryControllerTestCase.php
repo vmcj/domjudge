@@ -423,6 +423,17 @@ abstract class JuryControllerTestCase extends BaseTestCase
         //$response = $this->client->request($form->getMethod(), $form->getUri(), $rawValues, $form->getPhpFiles());
         //var_dump($response);
         //self::assertNotEquals(500, $this->client->getResponse()->getStatusCode());
+        //var_dump($formDataKeys[$indexAddPlusField], $formDataValues[$indexAddPlusField]);
+        //var_dump($formDataKeys, $formDataValues);
+        //$rawValues[$formName][static::$addPlus] = $formDataValues[$indexAddPlusField];
+        //var_dump($formDataValues[$indexAddPlusField]);
+        //$response = $this->client->request($form->getMethod(), $form->getUri(), $rawValues, $form->getPhpFiles());
+        //$myfile = fopen(static::$addPlus . '-after.htm', "w");
+        //var_dump($rawValues);
+        //fwrite($myfile, $this->getCurrentCrawler()->html());
+        //fclose($myfile);
+        //var_dump($response);
+        //self::assertNotEquals(500, $this->client->getResponse()->getStatusCode());
         //$this->verifyPageResponse('GET', $singlePageLink, 200);
         //var_dump($singlePageLink);*/
         //$this->client->submit($form);
@@ -441,6 +452,7 @@ abstract class JuryControllerTestCase extends BaseTestCase
     public function provideEditEntities(): Generator
     {
         foreach (static::$addEntities as $row) {
+<<<<<<< HEAD
             $formDataKeys = [];
             $formDataValues = [];
             $tmpValues = array_merge(static::$addEntities[0], $row);
@@ -452,6 +464,21 @@ abstract class JuryControllerTestCase extends BaseTestCase
                 // There are some special fields like passwords which we only update when set.
                 if (in_array($key, static::$specialFieldOnlyUpdate)) {
                     $value = '';
+=======
+            $formdataKeys = [];
+            $formdataValues = [];
+            foreach (static::$addEntities[0] as $key => $value) {
+                if (!in_array($key, static::$editEntitiesSkipFields)) {
+                    $formdataKeys[] = $key;
+                    // There are some special fields like passwords which we only update when set.
+                    if (in_array($key, static::$specialFieldOnlyUpdate)) {
+                        $value = '';
+                    }
+                    /*if ($key === 'extensions') {
+                        var_dump($key, $value, $row, $row[$key] ?? $value);
+                    }*/
+                    $formdataValues[] = $row[$key] ?? $value;
+>>>>>>> be0daf0e5... Working solution
                 }
                 $formDataValues[] = $value;
             }
