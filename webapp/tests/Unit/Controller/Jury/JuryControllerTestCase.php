@@ -332,7 +332,7 @@ abstract class JuryControllerTestCase extends BaseTestCase
      */
     public function testCheckEditEntityAdmin(string $identifier, array $formDataKeys, array $formDataValues): void
     {
-        if (static::$addPlus != '') {
+        if (static::$addPlus == 'extensions') {
             static::markTestSkipped('Edit not implemented yet for ' . static::$shortTag . '.');
         }
         $editLink = null;
