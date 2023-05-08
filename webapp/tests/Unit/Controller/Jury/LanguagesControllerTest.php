@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 class LanguagesControllerTest extends JuryControllerTestCase
 {
     protected static string  $identifyingEditAttribute = 'name';
-    protected static ?string $defaultEditEntityName    = 'Java';
+    protected static ?string $defaultEditEntityName    = 'C++';
     protected static string  $baseUrl                  = '/jury/languages';
     protected static array   $exampleEntries           = ['c', 'csharp', 'Haskell', 'Bash shell', "pas, p", 'no', 'yes', 'R', 'r'];
     protected static string  $shortTag                 = 'language';
