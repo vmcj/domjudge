@@ -22,6 +22,7 @@ class LanguagesControllerTest extends JuryControllerTestCase
     protected static array   $DOM_elements             = ['h1' => ['Enabled languages', 'Disabled languages']];
     protected static ?string $addPlus                  = 'extensions';
     protected static string  $addForm                  = 'language[';
+    protected static array   $editEntitiesSkipFields   = ['langid'];
     protected static array   $addEntitiesShown         = ['langid', 'externalid', 'name', 'timefactor'];
     protected static array   $addEntities              = [['langid' => 'simple',
                                                            'name' => 'Simple',
