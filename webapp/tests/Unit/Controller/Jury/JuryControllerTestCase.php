@@ -332,9 +332,6 @@ abstract class JuryControllerTestCase extends BaseTestCase
      */
     public function testCheckEditEntityAdmin(string $identifier, array $formDataKeys, array $formDataValues): void
     {
-        if (static::$addPlus == 'extensions') {
-            static::markTestSkipped('Edit not implemented yet for ' . static::$shortTag . '.');
-        }
         $editLink = null;
         $formFields = [];
         $this->roles = ['admin'];
@@ -363,11 +360,32 @@ abstract class JuryControllerTestCase extends BaseTestCase
         $this->verifyPageResponse('GET', $editLink, 200);
         $crawler = $this->getCurrentCrawler();
         foreach ($formDataKeys as $id => $key) {
+            // Skip elements which we cannot set yet.
+            // We can not set the fields set by JS directly.
+            if (str_contains($key, static::$addPlus)) {
+                continue;
+            }
             $formFields[static::$addForm . $key . "]"] = $formDataValues[$id];
         }
         $button = $this->client->getCrawler()->selectButton('Save');
         $form = $button->form($formFields, 'POST');
-        $this->client->submit($form);
+
+        //Fix the last fields which are set by JS fields normally
+        $rawValues = $form->getPhpValues();
+        // Assume for now there is only 1 field set by JS.
+        $formName = str_replace('[', '', static::$addForm);
+        $indexAddPlusField = array_search(static::$addPlus, $formDataKeys);
+        if ($indexAddPlusField === false) {
+            unset($rawValues[$formName][static::$addPlus]);
+        } else {
+            $rawValues[$formName][static::$addPlus] = $formDataValues[$indexAddPlusField];
+            //unset($rawValues[$formName][static::$addPlus]);// = $formDataValues[$indexAddPlusField];
+            var_dump($rawValues);
+        }
+        $response = $this->client->request($form->getMethod(), $form->getUri(), $rawValues, $form->getPhpFiles());
+        $myfile = fopen(static::$addPlus . '-after.htm', "w");
+        fwrite($myfile, $this->getCurrentCrawler()->html());
+        fclose($myfile);
         self::assertNotEquals(500, $this->client->getResponse()->getStatusCode());
         $this->verifyPageResponse('GET', $singlePageLink, 200);
         foreach ($formDataValues as $id => $element) {
