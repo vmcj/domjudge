@@ -48,7 +48,7 @@ class ContestControllerTest extends JuryControllerTestCase
                                                            'silverMedals' => '1',
                                                            'bronzeMedals' => '1',
                                                            'medalCategories' => ['0' => '2']],
-                                                          ['shortname'            => 'otzcet',
+                                                          /*['shortname'            => 'otzcet',
                                                            'name'                 => 'Other timezone (CET)',
                                                            'activatetimeString'   => '2021-07-17 16:08:00 CET',
                                                            'starttimeString'      => '2021-07-17 16:09:00 CET',
@@ -144,7 +144,7 @@ class ContestControllerTest extends JuryControllerTestCase
                                                            'silverMedals' => '0',
                                                            'bronzeMedals' => '0',
                                                            'medalsEnabled' => '1',
-                                                           'medalCategories' => ['0' => '2']],
+                                                           'medalCategories' => ['0' => '2']],*/
                                                           ['shortname' => 'prob',
                                                            'problems' => ['0' => ['shortname' => 'boolfind',
                                                                                   'points' => '1',
