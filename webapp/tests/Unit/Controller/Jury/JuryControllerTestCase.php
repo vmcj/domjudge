@@ -364,25 +364,32 @@ abstract class JuryControllerTestCase extends BaseTestCase
                     $editLink = $node->getAttribute('href');
                 }
             }
-            $this->verifyPageResponse('GET', $editLink, 200);
-            $crawler = $this->getCurrentCrawler();
-            foreach ($formDataKeys as $id => $key) {
-                $formFields[static::$addForm . $key . "]"] = $formDataValues[$id];
-            }
-            $button = $this->client->getCrawler()->selectButton('Save');
-            $form = $button->form($formFields, 'POST');
-            $this->client->submit($form);
-            self::assertNotEquals(500, $this->client->getResponse()->getStatusCode());
-            $this->verifyPageResponse('GET', $singlePageLink, 200);
-            foreach ($formDataValues as $id => $element) {
-                if (in_array($formDataKeys[$id], static::$addEntitiesShown)) {
-                    self::assertSelectorExists('body:contains("' . $element . '")');
-                }
-            }
-            // Check that the Edit button is visible on an entity page.
-            $this->verifyPageResponse('GET', substr($editLink, 0, strlen($editLink)-strlen(static::$edit)), 200);
-            self::assertSelectorExists('a:contains("' . $this->editButton . '")');
         }
+        $this->verifyPageResponse('GET', $singlePageLink, 200);
+        $crawler = $this->getCurrentCrawler();
+        foreach ($crawler->filter('a') as $node) {
+            if (str_contains($node->nodeValue, 'Edit')) {
+                $editLink = $node->getAttribute('href');
+            }
+        }
+        $this->verifyPageResponse('GET', $editLink, 200);
+        $crawler = $this->getCurrentCrawler();
+        foreach ($formDataKeys as $id => $key) {
+            $formFields[static::$addForm . $key . "]"] = $formDataValues[$id];
+        }
+        $button = $this->client->getCrawler()->selectButton('Save');
+        $form = $button->form($formFields, 'POST');
+        $this->client->submit($form);
+        self::assertNotEquals(500, $this->client->getResponse()->getStatusCode());
+        $this->verifyPageResponse('GET', $singlePageLink, 200);
+        foreach ($formDataValues as $id => $element) {
+            if (in_array($formDataKeys[$id], static::$addEntitiesShown)) {
+                self::assertSelectorExists('body:contains("' . $element . '")');
+            }
+        }
+        // Check that the Edit button is visible on an entity page.
+        $this->verifyPageResponse('GET', substr($editLink, 0, strlen($editLink)-strlen(static::$edit)), 200);
+        self::assertSelectorExists('a:contains("' . $this->editButton . '")');
     }
 
     public function provideEditEntities(): Generator
