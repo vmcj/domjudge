@@ -352,14 +352,6 @@ abstract class JuryControllerTestCase extends BaseTestCase
         }
         $this->verifyPageResponse('GET', $singlePageLink, 200);
         $crawler = $this->getCurrentCrawler();
-        /*foreach ($formDataKeys as $id => $key) {
-            // Skip elements which we cannot set yet.
-            // We can not set the fields set by JS directly.
-            if (is_bool($key) || str_contains($key, static::$addPlus)) {
-                continue;
-            }
-            $formFields[static::$addForm . $key . "]"] = $formDataValues[$id];
-        }*/
         foreach ($crawler->filter('a') as $node) {
             if (str_contains($node->nodeValue, 'Edit')) {
                 $editLink = $node->getAttribute('href');
@@ -374,13 +366,6 @@ abstract class JuryControllerTestCase extends BaseTestCase
                 continue;
             }
             $formFields[static::$addForm . $key . "]"] = $formDataValues[$id];
-        }
-        $newFields = [];
-        foreach (array_keys($formFields) as $index => $key) {
-            if ($index > 8) {
-                continue;
-            }
-            $newFields[$key] = $formFields[$key];
         }
         $button = $this->client->getCrawler()->selectButton('Save');
         $form = $button->form($formFields, 'POST');
@@ -401,19 +386,6 @@ abstract class JuryControllerTestCase extends BaseTestCase
         $myfile = fopen(static::$addPlus . '-after.htm', "w");
         fwrite($myfile, $this->getCurrentCrawler()->html());
         fclose($myfile);
-        /*
-        // Get the underlying object to inject elements not currently in the DOM.
-        //$rawValues = $form->getPhpValues();
-        // Assume for now there is only 1 field set by JS.
-        //$formName = str_replace('[', '', static::$addForm);
-        //$indexAddPlusField = array_search(static::$addPlus, $formDataValues);
-        //$rawValues[$formName][static::$addPlus] = $formDataValues[$indexAddPlusField];
-        //$response = $this->client->request($form->getMethod(), $form->getUri(), $rawValues, $form->getPhpFiles());
-        //var_dump($response);
-        //self::assertNotEquals(500, $this->client->getResponse()->getStatusCode());
-        //$this->verifyPageResponse('GET', $singlePageLink, 200);
-        //var_dump($singlePageLink);*/
-        //$this->client->submit($form);
         self::assertNotEquals(500, $this->client->getResponse()->getStatusCode());
         $this->verifyPageResponse('GET', $singlePageLink, 200);
         foreach ($formDataValues as $id => $element) {
