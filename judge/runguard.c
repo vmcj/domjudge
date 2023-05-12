@@ -450,6 +450,7 @@ void output_exit_time(int exitcode, double cpudiff)
  */
 int use_cgroup()
 {
+	return 0;
 	return use_cputime || memsize!=RLIM_INFINITY ||
 	    ( cpuset!=NULL && strlen(cpuset)>0 );
 }
