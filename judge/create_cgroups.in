@@ -54,14 +54,28 @@ for i in cpuset memory; do
     fi
     mkdir -p $(translate_cgroup_dir $i)
 done
+#for i in cpuset; do
+#    mkdir -p $CGROUPBASE/$i
+#    if [ ! -d $CGROUPBASE/$i/ ]; then
+#        if ! mount -t cgroup -o$i $i $CGROUPBASE/$i/; then
+#            echo "Error: Can not mount $i cgroup. Probably cgroup support is missing from running kernel. Unable to continue."
+#            print_cgroup_instruction
+#        fi
+#    fi
+#    mkdir -p $CGROUPBASE/$i/domjudge
+#done
 
-if [ ! -f $CGROUPBASE/memory/memory.limit_in_bytes ] || [ ! -f $CGROUPBASE/memory/memory.memsw.limit_in_bytes ]; then
-    echo "Error: cgroup support missing memory features in running kernel. Unable to continue."
-    print_cgroup_instruction
-fi
+#if [ ! -f $CGROUPBASE/memory/memory.limit_in_bytes ] || [ ! -f $CGROUPBASE/memory/memory.memsw.limit_in_bytes ]; then
+#    echo "Error: cgroup support missing memory features in running kernel. Unable to continue."
+#    print_cgroup_instruction
+#fi
 
 chown -R $JUDGEHOSTUSER $(translate_cgroup_dir "*")
 
 for t in cpus mems; do
     cat $CGROUPBASE/cpuset/cpuset.$t > $(translate_cgroup_dir "cpuset")/cpuset.$t
 done
+#chown -R $JUDGEHOSTUSER $CGROUPBASE/*/domjudge
+
+#cat $CGROUPBASE/cpuset/cpuset.cpus > $CGROUPBASE/cpuset/domjudge/cpuset.cpus
+#cat $CGROUPBASE/cpuset/cpuset.mems > $CGROUPBASE/cpuset/domjudge/cpuset.mems
