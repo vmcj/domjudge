@@ -11,6 +11,23 @@ AC_DEFUN([AX_WITH_COMMENT], [
 	AC_ARG_WITH([ax_comment_$1],[$2],[],[])
 	])
 
+AC_SUBST(INSTALL_DOMSERVER,no)
+AC_ARG_ENABLE([domserver],AS_HELP_STRING([--enable-domserver],
+ [configure the domserver (default: no).]),
+ [if test "x$enableval" != xno ; then AC_SUBST(INSTALL_DOMSERVER,yes) fi]
+)
+
+AC_SUBST(INSTALL_JUDGEHOST,no)
+AC_ARG_ENABLE([judgehost],AS_HELP_STRING([--enable-judgehost],
+ [configure the judgehost (default: no).]),
+ [if test "x$enableval" != xno ; then AC_SUBST(INSTALL_JUDGEHOST,yes) fi]
+)
+
+if test "x$INSTALL_JUDGEHOST" == xno && test "x$INSTALL_DOMSERVER" == xno; then
+    echo "Run with one or more of --enable-domserver & --enable-judgehost"
+    exit 0
+fi
+
 AC_SUBST(FHS_ENABLED,no)
 AC_ARG_ENABLE(fhs,AS_HELP_STRING([--enable-fhs],
 [use FHS directories (default: no), see below under "Optional
@@ -31,6 +48,7 @@ AC_SUBST(DOMJUDGE_VERSION, $PACKAGE_VERSION)
 AC_DEFINE_UNQUOTED(DOMJUDGE_VERSION, "$PACKAGE_VERSION",
 [DOMjudge version number (alias for PACKAGE_VERSION)])
 
+if test "x$INSTALL_JUDGEHOST" != xno; then
 # Set default {C,CXX,LD}FLAGS. This might screw up portability, but
 # adds important security. Only set these flags when none are supplied
 # by the user.
@@ -55,6 +73,7 @@ AX_APPEND_LINK_FLAGS([-Wl,-z,now],   DEF_LDFLAGS)
 test "x$enable_CFLAGS_setting"   = xyes && AC_SUBST(CFLAGS,   $DEF_CXFLAGS)
 test "x$enable_CXXFLAGS_setting" = xyes && AC_SUBST(CXXFLAGS, $DEF_CXFLAGS)
 test "x$enable_LDFLAGS_setting"  = xyes && AC_SUBST(LDFLAGS,  $DEF_LDFLAGS)
+fi
 
 # {{{ File ownership for e.g. password files.
 
@@ -78,6 +97,7 @@ else
 	AC_MSG_RESULT([$DOMJUDGE_USER])
 fi
 
+if test "x$INSTALL_DOMSERVER" != xno; then
 AC_MSG_CHECKING([webserver-group])
 AC_ARG_WITH([webserver-group], [AS_HELP_STRING([--with-webserver-group=GROUP],
 [Webserver group for password files (default: try to detect).])], [], [])
@@ -101,9 +121,11 @@ else
 	AC_SUBST(WEBSERVER_GROUP,$with_webserver_group)
 	AC_MSG_RESULT([$WEBSERVER_GROUP])
 fi
+fi
 
 # }}}
 
+if test "x$INSTALL_JUDGEHOST" != xno; then
 # {{{ runguard
 AC_MSG_CHECKING([runuser])
 AC_ARG_WITH([runuser], [AS_HELP_STRING([--with-runuser=USER],
@@ -138,6 +160,8 @@ fi
 
 # Check for using Linux cgroups for memory control
 AC_CHECK_LIB(cgroup, cgroup_init, AC_SUBST(LIBCGROUP,[-lcgroup]), AC_MSG_ERROR([Linux cgroup library not found.]))
+
+fi
 
 # }}}
 
@@ -248,10 +272,13 @@ else
 fi
 
 # Checks for programs.
+if test "x$INSTALL_JUDGEHOST" != xno; then
 AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_CXXCPP
 AC_PROG_CPP
+fi
+
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
@@ -259,13 +286,15 @@ AC_PROG_MKDIR_P
 
 # Check option to build documentation. This option is provided to
 # allow disabling it.
-AC_ARG_ENABLE(doc-build,AS_HELP_STRING([--enable-doc-build],
-[enable building documentation (default: yes).]))
-
-if test "x$enable_doc_build" = "xno"; then
-	AC_SUBST(DOC_BUILD_ENABLED,[no])
-else
-	AC_SUBST(DOC_BUILD_ENABLED,[yes])
+if test "x$INSTALL_DOMSERVER" != xno; then
+    AC_ARG_ENABLE(doc-build,AS_HELP_STRING([--enable-doc-build],
+    [enable building documentation (default: yes).]))
+    
+    if test "x$enable_doc_build" = "xno"; then
+    	AC_SUBST(DOC_BUILD_ENABLED,[no])
+    else
+    	AC_SUBST(DOC_BUILD_ENABLED,[yes])
+    fi
 fi
 
 # See 'man feature_test_macros' under Linux:
@@ -276,6 +305,7 @@ fi
 AC_DEFINE_UNQUOTED(_POSIX_C_SOURCE, 200809L, [Include POSIX.1-2008 base specification])
 AC_DEFINE_UNQUOTED(_XOPEN_SOURCE, 500,       [Include SUSv2 (UNIX 98) extensions])
 
+if test "x$INSTALL_JUDGEHOST" != xno; then
 # Checks for header files.
 AC_HEADER_STDBOOL
 AC_CHECK_HEADERS([fcntl.h stdlib.h string.h sys/param.h sys/time.h syslog.h termios.h unistd.h magic.h libcgroup.h])
@@ -296,6 +326,7 @@ AC_FUNC_STRTOD
 AC_REPLACE_FUNCS([atexit dup2 getcwd gettimeofday memset mkdir realpath setenv \
                   socket strchr strdup strerror strncasecmp strrchr strstr strtol],
                  [],[AC_MSG_ERROR([required C function is missing.])])
+fi
 
 AC_CHECK_PROG(PHP_CHECK,php,yes)
 AS_IF([test x"$PHP_CHECK" != x"yes"],
@@ -316,15 +347,21 @@ echo ""
 echo "Summary:"
 echo " * project.............: $PACKAGE_NAME $PACKAGE_VERSION"
 echo " * prefix..............: $prefix"
+if test "x$INSTALL_JUDGEHOST" != xno; then
 echo " * CPPFLAGS............: $CPPFLAGS"
 echo " * CFLAGS..............: $CFLAGS"
 echo " * CXXFLAGS............: $CXXFLAGS"
 echo " * LDFLAGS.............: $LDFLAGS"
+fi
 echo ""
 echo " * default user........: $DOMJUDGE_USER"
+if test "x$INSTALL_JUDGEHOST" != xno; then
 echo " * runguard user.......: $RUNUSER"
 echo " * runguard group......: $RUNGROUP"
+fi
+if test "x$INSTALL_DOMSERVER" != xno; then
 echo " * webserver group.....: $WEBSERVER_GROUP"
+fi
 echo ""
 echo " * website base URL....: $BASEURL"
 echo ""
@@ -334,6 +371,7 @@ if test "x$DOC_BUILD_ENABLED" != xyes ; then
 else
    echo ""
 fi
+if test "x$INSTALL_DOMSERVER" = x; then
 echo ""
 echo " * domserver...........: AX_VAR_EXPAND($domserver_root)"
 echo "    - bin..............: AX_VAR_EXPAND($domserver_bindir)"
@@ -346,6 +384,8 @@ echo "    - sql..............: AX_VAR_EXPAND($domserver_sqldir)"
 echo "    - tmp..............: AX_VAR_EXPAND($domserver_tmpdir)"
 echo "    - webapp...........: AX_VAR_EXPAND($domserver_webappdir)"
 echo "    - example_problems.: AX_VAR_EXPAND($domserver_exampleprobdir)"
+fi
+if test "x$INSTALL_JUDGEHOST" = x; then
 echo ""
 echo " * judgehost...........: AX_VAR_EXPAND($judgehost_root)"
 echo "    - bin..............: AX_VAR_EXPAND($judgehost_bindir)"
@@ -361,13 +401,16 @@ echo "    - cgroup...........: AX_VAR_EXPAND($judgehost_cgroupdir)"
 echo ""
 echo " * systemd unit files..: AX_VAR_EXPAND($systemd_unitdir)"
 echo ""
+fi
 echo "Run 'make' without arguments to get a list of (build) targets."
 echo ""
+if test "x$INSTALL_DOMSERVER" = x; then
 if test "x$BASEURL_UNCONFIGURED" = x1 ; then
    echo "Warning: base URL is unconfigured; generating team documentation will"
    echo "not work out of the box!"
    echo "Rerun configure with option '--with-baseurl=BASEURL' to correct this."
    echo ""
+fi
 fi
 fi # !QUIET
 # }}}

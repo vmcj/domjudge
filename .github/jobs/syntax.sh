@@ -7,7 +7,7 @@ MYDIR=$(dirname "$0")
 $MYDIR/syntax-check
 
 make configure
-./configure --with-baseurl='http://localhost/domjudge/' --with-domjudge-user=root
+./configure --with-baseurl='http://localhost/domjudge/' --with-domjudge-user=root --enable-domserver --enable-judgehost
 make install-docs
 make clean
 
