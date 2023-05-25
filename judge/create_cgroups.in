@@ -104,6 +104,13 @@ for t in cpus mems; do
     cat $CGROUPBASE/cpuset/cpuset.$t > $(translate_cgroup_dir "cpuset")/cpuset.$t
 done
 #chown -R $JUDGEHOSTUSER $CGROUPBASE/*/domjudge
+translate_cgroup_dir () {
+    cgroup_path="$CGROUPBASE/$1/$CGROUP_DIR"
+    if [ "$cgroup_version" = "cgroup2fs" ]; then
+        cgroup_path="$CGROUPBASE/$CGROUP_DIR/$1"
+    fi
+    
+}
 
 #cat $CGROUPBASE/cpuset/cpuset.cpus > $CGROUPBASE/cpuset/domjudge/cpuset.cpus
 #cat $CGROUPBASE/cpuset/cpuset.mems > $CGROUPBASE/cpuset/domjudge/cpuset.mems
