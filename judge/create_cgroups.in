@@ -8,6 +8,7 @@
 
 JUDGEHOSTUSER=@DOMJUDGE_USER@
 CGROUPBASE=@judgehost_cgroupdir@
+CGROUP_VERSION=$(stat -fc %T /sys/fs/cgroup/)
 
 print_cgroup_instruction () {
     echo ""
@@ -19,6 +20,15 @@ print_cgroup_instruction () {
     3. Reboot" >&2
     exit 1
 }
+
+if [ "$CGROUP_VERSION" = "tmpfs" ]; then
+    CGROUP_VERSION=1
+elif [ "$CGROUP_VERSION" = "cgroup2fs" ]; then
+    CGROUP_VERSION=2
+else
+    echo "cgroup version not properly detected. Please report this bug to development@domjudge.org."
+    exit 1
+fi
 
 for i in cpuset memory; do
     mkdir -p $CGROUPBASE/$i
