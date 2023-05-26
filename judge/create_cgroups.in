@@ -40,6 +40,11 @@ else
     exit 1
 fi
 
+if [ "$CGROUP_VERSION" -eq 2 ]; then
+    echo "CGroupV2 support is not implemented for judgehosts."
+    exit 0
+fi
+
 for i in cpuset memory; do
     mkdir -p $CGROUPBASE/$i
     if [ ! -d $CGROUPBASE/$i/ ]; then
