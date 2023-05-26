@@ -64,6 +64,15 @@ done
 #    fi
 #    mkdir -p $CGROUPBASE/$i/domjudge
 #done
+if [ "$CGROUP_VERSION" = "tmpfs" ]; then
+    CGROUP_VERSION=1
+elif [ "$CGROUP_VERSION" = "cgroup2fs" ]; then
+    CGROUP_VERSION=2
+else
+    echo "CGroup version not properly detected. Please report this bug to development@domjudge.org."
+    exit 1
+fi
+
 for i in cpuset memory; do
     mkdir -p $CGROUPBASE/$i
     if [ ! -d $CGROUPBASE/$i/ ]; then
