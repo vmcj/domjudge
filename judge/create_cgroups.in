@@ -47,7 +47,7 @@ for i in cpuset memory; do
             print_cgroup_instruction
         fi
     fi
-    mkdir -p $CGROUPBASE/$i/domjudge
+    mkdir -p $(translate_cgroup_dir $i)
 done
 
 if [ ! -f $CGROUPBASE/memory/memory.limit_in_bytes ] || [ ! -f $CGROUPBASE/memory/memory.memsw.limit_in_bytes ]; then
@@ -55,7 +55,7 @@ if [ ! -f $CGROUPBASE/memory/memory.limit_in_bytes ] || [ ! -f $CGROUPBASE/memor
     print_cgroup_instruction
 fi
 
-chown -R $JUDGEHOSTUSER $CGROUPBASE/*/domjudge
+chown -R $JUDGEHOSTUSER $(translate_cgroup_dir "*")
 
-cat $CGROUPBASE/cpuset/cpuset.cpus > $CGROUPBASE/cpuset/domjudge/cpuset.cpus
-cat $CGROUPBASE/cpuset/cpuset.mems > $CGROUPBASE/cpuset/domjudge/cpuset.mems
+cat $CGROUPBASE/cpuset/cpuset.cpus > $(translate_cgroup_dir "cpuset")/cpuset.cpus
+cat $CGROUPBASE/cpuset/cpuset.mems > $(translate_cgroup_dir "cpuset")/cpuset.mems
