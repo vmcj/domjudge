@@ -21,6 +21,15 @@ print_cgroup_instruction () {
     exit 1
 }
 
+translate_cgroup_dir () {
+    local TRANSLATED_PATH="$CGROUPBASE/$1/domjudge"
+    if [ "$CGROUP_VERSION" -eq 2 ]; then
+        TRANSLATED_PATH="$CGROUPBASE/domjudge/$1"
+    fi
+    echo "$TRANSLATED_PATH"
+    return 0
+}
+
 if [ "$CGROUP_VERSION" = "tmpfs" ]; then
     CGROUP_VERSION=1
 elif [ "$CGROUP_VERSION" = "cgroup2fs" ]; then
