@@ -8,7 +8,6 @@
 
 JUDGEHOSTUSER=@DOMJUDGE_USER@
 CGROUPBASE=@judgehost_cgroupdir@
-CGROUP_DIR=domjudge
 
 print_cgroup_instruction () {
     echo ""
@@ -29,7 +28,7 @@ for i in cpuset memory; do
             print_cgroup_instruction
         fi
     fi
-    mkdir -p $CGROUPBASE/$i/$CGROUP_DIR
+    mkdir -p $CGROUPBASE/$i/domjudge
 done
 
 if [ ! -f $CGROUPBASE/memory/memory.limit_in_bytes ] || [ ! -f $CGROUPBASE/memory/memory.memsw.limit_in_bytes ]; then
@@ -37,7 +36,7 @@ if [ ! -f $CGROUPBASE/memory/memory.limit_in_bytes ] || [ ! -f $CGROUPBASE/memor
     print_cgroup_instruction
 fi
 
-chown -R $JUDGEHOSTUSER $CGROUPBASE/*/$CGROUP_DIR
+chown -R $JUDGEHOSTUSER $CGROUPBASE/*/domjudge
 
-cat $CGROUPBASE/cpuset/cpuset.cpus > $CGROUPBASE/cpuset/$CGROUP_DIR/cpuset.cpus
-cat $CGROUPBASE/cpuset/cpuset.mems > $CGROUPBASE/cpuset/$CGROUP_DIR/cpuset.mems
+cat $CGROUPBASE/cpuset/cpuset.cpus > $CGROUPBASE/cpuset/domjudge/cpuset.cpus
+cat $CGROUPBASE/cpuset/cpuset.mems > $CGROUPBASE/cpuset/domjudge/cpuset.mems
