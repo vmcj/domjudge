@@ -202,6 +202,8 @@ if [ "$DISTRO" = 'Ubuntu' ]; then
     INSTALLDEBS="gcc g++ make default-jdk-headless default-jre-headless locales"
     if [ "$ARCH" = "i386" ]; then
         INSTALLDEBS="$INSTALLDEBS python3"
+    elif [ "$RELEASE" = "bionic" ]; then
+        INSTALLDEBS="$INSTALLDEBS python3"
     else
         INSTALLDEBS="$INSTALLDEBS pypy3"
     fi
