@@ -25,6 +25,10 @@ if [ "$CGROUP_VERSION" = "tmpfs" ]; then
     CGROUP_VERSION=1
 elif [ "$CGROUP_VERSION" = "cgroup2fs" ]; then
     CGROUP_VERSION=2
+    # Mount the cgroupV1 in another location
+    CGROUPBASE="/tmp"$CGROUPBASE
+    mkdir -p $CGROUPBASE
+    mount cgroup -t tmpfs $CGROUPBASE
 else
     echo "cgroup version not properly detected. Please report this bug to development@domjudge.org."
     exit 1
