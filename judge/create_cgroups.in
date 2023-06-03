@@ -30,6 +30,11 @@ translate_cgroup_dir () {
     return 0
 }
 
+error_memory_controller_missing () {
+    echo "Error: cgroup support missing memory features in running kernel. Unable to continue."
+    print_cgroup_instruction
+}
+
 if [ "$CGROUP_VERSION" = "tmpfs" ]; then
     CGROUP_VERSION=1
 elif [ "$CGROUP_VERSION" = "cgroup2fs" ]; then
@@ -61,9 +66,14 @@ done
 
 if [ "$CGROUP_VERSION" -eq 1 ]; then
     if [ ! -f $CGROUPBASE/memory/memory.limit_in_bytes ] || [ ! -f $CGROUPBASE/memory/memory.memsw.limit_in_bytes ]; then
-        echo "Error: cgroup support missing memory features in running kernel. Unable to continue."
-        print_cgroup_instruction
+        error_memory_controller_missing
     fi
+elif [ "$CGROUP_VERSION" -eq 2 ]; then
+    for f in memory.max memory.swap.max; do
+        if [ ! -f $(translate_cgroup_dir "$f") ]; then
+            error_memory_controller_missing
+        fi
+    done
 fi
 
 chown -R $JUDGEHOSTUSER $(translate_cgroup_dir "*")
