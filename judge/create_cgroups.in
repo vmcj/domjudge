@@ -59,9 +59,11 @@ for i in cpuset memory; do
     fi
 done
 
-if [ ! -f $CGROUPBASE/memory/memory.limit_in_bytes ] || [ ! -f $CGROUPBASE/memory/memory.memsw.limit_in_bytes ]; then
-    echo "Error: cgroup support missing memory features in running kernel. Unable to continue."
-    print_cgroup_instruction
+if [ "$CGROUP_VERSION" -eq 1 ]; then
+    if [ ! -f $CGROUPBASE/memory/memory.limit_in_bytes ] || [ ! -f $CGROUPBASE/memory/memory.memsw.limit_in_bytes ]; then
+        echo "Error: cgroup support missing memory features in running kernel. Unable to continue."
+        print_cgroup_instruction
+    fi
 fi
 
 chown -R $JUDGEHOSTUSER $(translate_cgroup_dir "*")
