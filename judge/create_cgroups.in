@@ -39,16 +39,18 @@ else
     exit 1
 fi
 
-for i in cpuset memory; do
-    mkdir -p $CGROUPBASE/$i
-    if [ ! -d $CGROUPBASE/$i/ ]; then
-        if ! mount -t cgroup -o$i $i $CGROUPBASE/$i/; then
-            echo "Error: Can not mount $i cgroup. Probably cgroup support is missing from running kernel. Unable to continue."
-            print_cgroup_instruction
+if [ "$CGROUP_VERSION" -eq 1 ]; then
+    for i in cpuset memory; do
+        mkdir -p $CGROUPBASE/$i
+        if [ ! -d $CGROUPBASE/$i/ ]; then
+            if ! mount -t cgroup -o$i $i $CGROUPBASE/$i/; then
+                echo "Error: Can not mount $i cgroup. Probably cgroup support is missing from running kernel. Unable to continue."
+                print_cgroup_instruction
+            fi
         fi
-    fi
-    mkdir -p $(translate_cgroup_dir $i)
-done
+        mkdir -p $(translate_cgroup_dir $i)
+    done
+fi
 
 if [ ! -f $CGROUPBASE/memory/memory.limit_in_bytes ] || [ ! -f $CGROUPBASE/memory/memory.memsw.limit_in_bytes ]; then
     echo "Error: cgroup support missing memory features in running kernel. Unable to continue."
