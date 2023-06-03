@@ -64,6 +64,7 @@
 #include <limits.h>
 #include <inttypes.h>
 #include <libcgroup.h>
+/* Mental note: https://www.mail-archive.com/libcg-devel@lists.sourceforge.net/msg04715.html */
 #include <sched.h>
 #include <sys/sysinfo.h>
 
