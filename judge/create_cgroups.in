@@ -78,5 +78,7 @@ fi
 
 chown -R $JUDGEHOSTUSER $(translate_cgroup_dir "*")
 
-cat $CGROUPBASE/cpuset/cpuset.cpus > $(translate_cgroup_dir "cpuset")/cpuset.cpus
-cat $CGROUPBASE/cpuset/cpuset.mems > $(translate_cgroup_dir "cpuset")/cpuset.mems
+if [ "$CGROUP_VERSION" -eq 1 ]; then
+    cat $CGROUPBASE/cpuset/cpuset.cpus > $(translate_cgroup_dir "cpuset")/cpuset.cpus
+    cat $CGROUPBASE/cpuset/cpuset.mems > $(translate_cgroup_dir "cpuset")/cpuset.mems
+fi
