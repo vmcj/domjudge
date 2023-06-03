@@ -39,8 +39,8 @@ else
     exit 1
 fi
 
-if [ "$CGROUP_VERSION" -eq 1 ]; then
-    for i in cpuset memory; do
+for i in cpuset memory; do
+    if [ "$CGROUP_VERSION" -eq 1 ]; then
         mkdir -p $CGROUPBASE/$i
         if [ ! -d $CGROUPBASE/$i/ ]; then
             if ! mount -t cgroup -o$i $i $CGROUPBASE/$i/; then
@@ -49,8 +49,15 @@ if [ "$CGROUP_VERSION" -eq 1 ]; then
             fi
         fi
         mkdir -p $(translate_cgroup_dir $i)
-    done
-fi
+    elif [ "$CGROUP_VERSION" -eq 2 ]; then
+        if ! grep $i $CGROUPBASE/cgroup.controllers; then
+            echo "Error: Can not use $i cgroup. Probably cgroup support is missing from running kernel. Unable to continue."
+            print_cgroup_instruction
+        fi
+        echo "+${i}" > $CGROUPBASE/cgroup.subtree_control
+        mkdir -p $(translate_cgroup_dir "")
+    fi
+done
 
 if [ ! -f $CGROUPBASE/memory/memory.limit_in_bytes ] || [ ! -f $CGROUPBASE/memory/memory.memsw.limit_in_bytes ]; then
     echo "Error: cgroup support missing memory features in running kernel. Unable to continue."
