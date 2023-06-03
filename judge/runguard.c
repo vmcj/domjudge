@@ -485,27 +485,27 @@ void check_remaining_procs()
 void output_cgroup_stats(double *cputime)
 {
 	int ret;
-	int64_t max_usage, cpu_time_int;
+	/*int64_t max_usage, cpu_time_int;*/
 	struct cgroup *cg;
-	struct cgroup_controller *cg_controller;
+	/*struct cgroup_controller *cg_controller;*/
 
 	if ( !use_cgroup() ) return;
 
 	if ( (cg = cgroup_new_cgroup(cgroupname))==NULL ) error(0,"cgroup_new_cgroup");
 	if ((ret = cgroup_get_cgroup(cg)) != 0) error(ret,"get cgroup information");
 
-	cg_controller = cgroup_get_controller(cg, "memory");
+	/*cg_controller = cgroup_get_controller(cg, "memory");
 	ret = cgroup_get_value_int64(cg_controller, "memory.memsw.max_usage_in_bytes", &max_usage);
 	if ( ret!=0 ) error(ret,"get cgroup value memory.memsw.max_usage_in_bytes");
 
 	verbose("total memory used: %" PRId64 " kB", max_usage/1024);
-	write_meta("memory-bytes","%" PRId64, max_usage);
+	write_meta("memory-bytes","%" PRId64, max_usage);*/
 
-	cg_controller = cgroup_get_controller(cg, "cpuacct");
+	/*cg_controller = cgroup_get_controller(cg, "cpuacct");
 	ret = cgroup_get_value_int64(cg_controller, "cpuacct.usage", &cpu_time_int);
 	if ( ret!=0 ) error(ret,"get cgroup value cpuacct.usage");
 
-	*cputime = (double) cpu_time_int / 1.e9;
+	*cputime = (double) cpu_time_int / 1.e9;*/
 
 	cgroup_free(&cg);
 }
