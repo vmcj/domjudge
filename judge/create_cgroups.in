@@ -81,4 +81,6 @@ chown -R $JUDGEHOSTUSER $(translate_cgroup_dir "*")
 if [ "$CGROUP_VERSION" -eq 1 ]; then
     cat $CGROUPBASE/cpuset/cpuset.cpus > $(translate_cgroup_dir "cpuset")/cpuset.cpus
     cat $CGROUPBASE/cpuset/cpuset.mems > $(translate_cgroup_dir "cpuset")/cpuset.mems
+elif [ "$CGROUP_VERSION" -eq 2 ]; then
+    # This has changed from containing all cpus to an empty value, see https://docs.kernel.org/admin-guide/cgroup-v2.html#cpuset-interface-files
 fi
