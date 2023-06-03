@@ -145,10 +145,16 @@ if [ -n "$DEBUG" ]; then
 	ENVIRONMENT_VARS="$ENVIRONMENT_VARS -V DEBUG=$DEBUG"
 fi
 
+CGROUP_VERSION=$(stat -fc %T /sys/fs/cgroup/)
+
+if [ "$CGROUP_VERSION" != "cgroup2fs" ]; then
+    unset CGROUP_VERSION
+fi
+
 # First compile to 'source' then rename to 'program' to avoid problems with
 # the compiler writing to different filenames and deleting intermediate files.
 exitcode=0
-$GAINROOT "$RUNGUARD" ${DEBUG:+-v} $CPUSET_OPT -u "$RUNUSER" -g "$RUNGROUP" \
+$GAINROOT "$RUNGUARD" ${CGROUP_VERSION:+-G} ${DEBUG:+-v} $CPUSET_OPT -u "$RUNUSER" -g "$RUNGROUP" \
 	-r "$PWD/.." -d "/compile" \
 	-m $SCRIPTMEMLIMIT -t $SCRIPTTIMELIMIT -c -f $SCRIPTFILELIMIT -s $SCRIPTFILELIMIT \
 	-M "$WORKDIR/compile.meta" $ENVIRONMENT_VARS -- \

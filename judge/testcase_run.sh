@@ -198,11 +198,17 @@ if [ $COMBINED_RUN_COMPARE -eq 1 ]; then
 	RUNARGS="$RUNARGS $TESTOUT compare.meta feedback"
 fi
 
+CGROUP_VERSION=$(stat -fc %T /sys/fs/cgroup/)
+
+if [ "$CGROUP_VERSION" != "cgroup2fs" ]; then
+    unset CGROUP_VERSION
+fi
+
 exitcode=0
 # To suppress false positive of FILELIMIT misspelling of TIMELIMIT:
 # shellcheck disable=SC2153
 runcheck "$RUN_SCRIPT" $RUNARGS \
-	$GAINROOT "$RUNGUARD" ${DEBUG:+-v -V "DEBUG=$DEBUG"} ${TMPDIR:+ -V "TMPDIR=$TMPDIR"} $CPUSET_OPT \
+	$GAINROOT "$RUNGUARD" ${CGROUP_VERSION:+-G} ${DEBUG:+-v -V "DEBUG=$DEBUG"} ${TMPDIR:+ -V "TMPDIR=$TMPDIR"} $CPUSET_OPT \
 	-r "$PWD/.." \
 	--nproc=$PROCLIMIT \
 	--no-core --streamsize=$FILELIMIT \
@@ -228,7 +234,7 @@ if [ $COMBINED_RUN_COMPARE -eq 0 ]; then
 	mkdir feedback
 	chmod a+w feedback
 
-	runcheck $GAINROOT "$RUNGUARD" ${DEBUG:+-v} $CPUSET_OPT -u "$RUNUSER" -g "$RUNGROUP" \
+	runcheck $GAINROOT "$RUNGUARD" ${CGROUP_VERSION:+-G} ${DEBUG:+-v} $CPUSET_OPT -u "$RUNUSER" -g "$RUNGROUP" \
 		-m $SCRIPTMEMLIMIT -t $SCRIPTTIMELIMIT -c \
 		-f $SCRIPTFILELIMIT -s $SCRIPTFILELIMIT -M compare.meta -- \
 		"$COMPARE_SCRIPT" testdata.in testdata.out feedback/ $COMPARE_ARGS < program.out \

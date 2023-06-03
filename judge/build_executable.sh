@@ -74,8 +74,14 @@ chmod a+rwx "$WORKDIR"
 
 logmsg $LOG_INFO "starting build"
 
+CGROUP_VERSION=$(stat -fc %T /sys/fs/cgroup/)
+
+if [ "$CGROUP_VERSION" != "cgroup2fs" ]; then
+    unset CGROUP_VERSION
+fi
+
 exitcode=0
-$GAINROOT "$RUNGUARD" ${DEBUG:+-v} -u "$RUNUSER" -g "$RUNGROUP" \
+$GAINROOT "$RUNGUARD" ${CGROUP_VERSION:+-G} ${DEBUG:+-v} -u "$RUNUSER" -g "$RUNGROUP" \
 	-r "$CHROOTDIR" -d '/build' -- \
 	'./build' > 'build.log' 2>&1 || \
 	exitcode=$?
