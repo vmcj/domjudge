@@ -462,7 +462,14 @@ void check_remaining_procs()
 
     if ( !use_cgroup() ) return;
 
-    snprintf(path, 1023, "/sys/fs/cgroup/cpuacct%scgroup.procs", cgroupname);
+    if (cgroup_version == 1) {
+        snprintf(path, 1023, "/sys/fs/cgroup/cpuacct%scgroup.procs", cgroupname);
+    } else if (cgroup_version == 2) {
+        snprintf(path, 1023, "/sys/fs/cgroup/%scgroup.procs", cgroupname);
+    } else {
+        error(0, "cgroup version not implemented");
+    }
+
     FILE *file = fopen(path, "r");
     if (file == NULL) {
         error(errno, "opening cgroups file `%s'", path);
