@@ -525,8 +525,16 @@ void cgroup_create()
 		error(0,"cgroup_add_controller memory");
 	}
 
-	cgroup_add_value(int64, "memory.limit_in_bytes", memsize);
-	cgroup_add_value(int64, "memory.memsw.limit_in_bytes", memsize);
+	verbose("Using cgroup Version %d", cgroup_version);
+	if (cgroup_version == 1) {
+		cgroup_add_value(int64, "memory.limit_in_bytes", memsize);
+		cgroup_add_value(int64, "memory.memsw.limit_in_bytes", memsize);
+	} else if (cgroup_version == 2) {
+		cgroup_add_value(int64, "memory.max", memsize);
+		cgroup_add_value(int64, "memory.swap.max", memsize);
+	} else {
+		error(0, "cgroup version not implemented");
+	}
 
 	/* Set up cpu restrictions; we pin the task to a specific set of
 	   cpus. We also give it exclusive access to those cores, and set
