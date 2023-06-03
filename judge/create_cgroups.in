@@ -83,4 +83,8 @@ if [ "$CGROUP_VERSION" -eq 1 ]; then
     cat $CGROUPBASE/cpuset/cpuset.mems > $(translate_cgroup_dir "cpuset")/cpuset.mems
 elif [ "$CGROUP_VERSION" -eq 2 ]; then
     # This has changed from containing all cpus to an empty value, see https://docs.kernel.org/admin-guide/cgroup-v2.html#cpuset-interface-files
+    if [ ! -f $(translate_cgroup_dir "")/cpuset.cpus ] || [ ! -f $(translate_cgroup_dir "")/cpuset.mems ]; then
+        echo "cpuset controller not properly enabled for cgroup. Please report this bug to development@domjudge.org."
+        exit 1
+    fi
 fi
