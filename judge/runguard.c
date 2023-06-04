@@ -552,8 +552,11 @@ void cgroup_create()
 		verbose("cpuset undefined");
 	}
 
-	if ( (cg_controller = cgroup_add_controller(cg, "cpuacct"))==NULL ) {
-		error(0,"cgroup_add_controller cpuacct");
+	if (cgroup_version == 1) {
+		if ( (cg_controller = cgroup_add_controller(cg, "cpuacct"))==NULL ) {
+			error(0,"cgroup_add_controller cpuacct");
+		}
+		verbose("added controller cpuacct");
 	}
 
 	/* Perform the actual creation of the cgroup */
@@ -610,7 +613,9 @@ void cgroup_delete()
 	cg = cgroup_new_cgroup(cgroupname);
 	if (!cg) error(0,"cgroup_new_cgroup");
 
-	if ( cgroup_add_controller(cg, "cpuacct")==NULL ) error(0,"cgroup_add_controller cpuacct");
+	if (cgroup_version == 1) {
+		if ( cgroup_add_controller(cg, "cpuacct")==NULL ) error(0,"cgroup_add_controller cpuacct");
+	}
 	if ( cgroup_add_controller(cg, "memory")==NULL ) error(0,"cgroup_add_controller memory");
 
 	if ( cpuset!=NULL && strlen(cpuset)>0 ) {
