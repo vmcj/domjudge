@@ -1219,6 +1219,7 @@ int main(int argc, char **argv)
 	}
 	snprintf(cgroupname, 255, "/domjudge/dj_cgroup_%d_%.16s_%d.%06d/",
 	         getpid(), str, (int)progstarttime.tv_sec, (int)progstarttime.tv_usec);
+	verbose("Using cgroup name: %s", cgroupname);
 
 	cgroup_create();
 
