@@ -458,6 +458,7 @@ int use_cgroup()
 
 void check_remaining_procs()
 {
+	error(0, "Reached check_remaining_procs, this is not cleaned yet.");
     char path[1024];
 
     if ( !use_cgroup() ) return;
@@ -579,6 +580,7 @@ void cgroup_create()
 
 void cgroup_attach()
 {
+	error(0, "Reached cgroup_attach, this is not cleaned yet.");
 	int ret;
 	struct cgroup *cg;
 
@@ -597,6 +599,7 @@ void cgroup_attach()
 
 void cgroup_kill()
 {
+	error(0, "Reached cgroup_kill, this is not cleaned yet.");
 	int ret;
 	void *handle = NULL;
 	pid_t pid;
@@ -614,6 +617,7 @@ void cgroup_kill()
 
 void cgroup_delete()
 {
+	error(0, "Reached cgroup_delete, this is not cleaned yet.");
 	int ret;
 	struct cgroup *cg;
 
