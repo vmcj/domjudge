@@ -542,6 +542,7 @@ void cgroup_create()
 	} else {
 		error(0, "cgroup version not implemented");
 	}
+	verbose("added controller memory");
 
 	/* Set up cpu restrictions; we pin the task to a specific set of
 	   cpus. We also give it exclusive access to those cores, and set
@@ -558,6 +559,7 @@ void cgroup_create()
 	} else {
 		verbose("cpuset undefined");
 	}
+	verbose("added controller cpuset");
 
 	if (cgroup_version == 1) {
 		if ( (cg_controller = cgroup_add_controller(cg, "cpuacct"))==NULL ) {
@@ -565,6 +567,7 @@ void cgroup_create()
 		}
 		verbose("added controller cpuacct");
 	}
+	verbose("added controller cpuacct");
 
 	/* Perform the actual creation of the cgroup */
 	if ( (ret = cgroup_create_cgroup(cg, 1))!=0 ) error(ret,"creating cgroup");
