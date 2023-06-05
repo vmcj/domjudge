@@ -80,11 +80,17 @@ if [ "$CGROUP_VERSION" != "cgroup2fs" ]; then
     unset CGROUP_VERSION
 fi
 
+echo "$GAINROOT \"$RUNGUARD\" ${CGROUP_VERSION:+-G} ${DEBUG:+-v} -u \"$RUNUSER\" -g \"$RUNGROUP\" \
+	-r \"$CHROOTDIR\" -d '/build' -- \
+	'./build'"
+
+echo "cgroup (Start)"
 exitcode=0
 $GAINROOT "$RUNGUARD" ${CGROUP_VERSION:+-G} ${DEBUG:+-v} -u "$RUNUSER" -g "$RUNGROUP" \
 	-r "$CHROOTDIR" -d '/build' -- \
 	'./build' > 'build.log' 2>&1 || \
 	exitcode=$?
+echo "cgroup (Stopped)"
 
 if [ $exitcode -ne 0 ]; then
 	echo "building failed with exitcode $exitcode" >> 'build.log'
