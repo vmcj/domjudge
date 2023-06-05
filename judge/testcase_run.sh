@@ -204,6 +204,18 @@ if [ "$CGROUP_VERSION" != "cgroup2fs" ]; then
     unset CGROUP_VERSION
 fi
 
+echo "runcheck \"$RUN_SCRIPT\" $RUNARGS \
+	$GAINROOT \"$RUNGUARD\" ${CGROUP_VERSION:+-G} ${DEBUG:+-v -V \"DEBUG=$DEBUG\"} ${TMPDIR:+ -V \"TMPDIR=$TMPDIR\"} $CPUSET_OPT \
+	-r \"$PWD/..\" \
+	--nproc=$PROCLIMIT \
+	--no-core --streamsize=$FILELIMIT \
+	--user=\"$RUNUSER\" --group=\"$RUNGROUP\" \
+	--walltime=$TIMELIMIT --cputime=$TIMELIMIT \
+	--memsize=$MEMLIMIT --filesize=$FILELIMIT \
+	--stderr=program.err --outmeta=program.meta -- \
+	\"$PREFIX/$PROGRAM\""
+
+echo "cgroup (Start)"
 exitcode=0
 # To suppress false positive of FILELIMIT misspelling of TIMELIMIT:
 # shellcheck disable=SC2153
@@ -217,6 +229,7 @@ runcheck "$RUN_SCRIPT" $RUNARGS \
 	--memsize=$MEMLIMIT --filesize=$FILELIMIT \
 	--stderr=program.err --outmeta=program.meta -- \
 	"$PREFIX/$PROGRAM" 2>runguard.err
+echo "cgroup (Stopped)"
 
 if [ $COMBINED_RUN_COMPARE -eq 0 ]; then
 	# We first compare the output, so that even if the submission gets a
