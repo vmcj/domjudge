@@ -580,7 +580,6 @@ void cgroup_create()
 
 void cgroup_attach()
 {
-	error(0, "Reached cgroup_attach, this is not cleaned yet.");
 	int ret;
 	struct cgroup *cg;
 
