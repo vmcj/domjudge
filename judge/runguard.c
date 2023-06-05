@@ -567,7 +567,6 @@ void cgroup_create()
 		}
 		verbose("added controller cpuacct");
 	}
-	verbose("added controller cpuacct");
 
 	/* Perform the actual creation of the cgroup */
 	if ( (ret = cgroup_create_cgroup(cg, 1))!=0 ) error(ret,"creating cgroup");
