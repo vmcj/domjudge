@@ -229,6 +229,8 @@ runcheck "$RUN_SCRIPT" $RUNARGS \
 	--memsize=$MEMLIMIT --filesize=$FILELIMIT \
 	--stderr=program.err --outmeta=program.meta -- \
 	"$PREFIX/$PROGRAM" 2>runguard.err
+cat program.*
+cat runguard.err
 echo "cgroup (Stopped)"
 
 if [ $COMBINED_RUN_COMPARE -eq 0 ]; then
@@ -247,11 +249,19 @@ if [ $COMBINED_RUN_COMPARE -eq 0 ]; then
 	mkdir feedback
 	chmod a+w feedback
 
+	echo "runcheck $GAINROOT \"$RUNGUARD\" ${CGROUP_VERSION:+-G} ${DEBUG:+-v} $CPUSET_OPT -u \"$RUNUSER\" -g \"$RUNGROUP\" \
+		-m $SCRIPTMEMLIMIT -t $SCRIPTTIMELIMIT -c \
+		-f $SCRIPTFILELIMIT -s $SCRIPTFILELIMIT -M compare.meta -- \
+		\"$COMPARE_SCRIPT\" testdata.in testdata.out feedback/ $COMPARE_ARGS < program.out"
+
+    echo "cgroup (Start), should use group for Memory+CPUSET"
 	runcheck $GAINROOT "$RUNGUARD" ${CGROUP_VERSION:+-G} ${DEBUG:+-v} $CPUSET_OPT -u "$RUNUSER" -g "$RUNGROUP" \
 		-m $SCRIPTMEMLIMIT -t $SCRIPTTIMELIMIT -c \
 		-f $SCRIPTFILELIMIT -s $SCRIPTFILELIMIT -M compare.meta -- \
 		"$COMPARE_SCRIPT" testdata.in testdata.out feedback/ $COMPARE_ARGS < program.out \
 				  >compare.tmp 2>&1
+    cat compare.*
+    echo "cgroup (Stopped)"
 fi
 
 # Make sure that all feedback files are owned by the current

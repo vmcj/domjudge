@@ -97,6 +97,7 @@ $GAINROOT "$RUNGUARD" ${CGROUP_VERSION:+-G} ${DEBUG:+-v} $CPUSET_OPT -u "$RUNUSE
 	-M "$WORKDIR/version_check.meta" $ENVIRONMENT_VARS -- \
 	"/version_check-script/$(basename $VERSION_CHECK_SCRIPT)" >"$WORKDIR/version_check.tmp" 2>&1 || \
 	exitcode=$?
+cat "$WORKDIR/version_check.tmp"
 echo "cgroup (Stopped)"
 
 # Make sure that all files are owned by the current user/group, so

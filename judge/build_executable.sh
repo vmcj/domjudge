@@ -90,6 +90,7 @@ $GAINROOT "$RUNGUARD" ${CGROUP_VERSION:+-G} ${DEBUG:+-v} -u "$RUNUSER" -g "$RUNG
 	-r "$CHROOTDIR" -d '/build' -- \
 	'./build' > 'build.log' 2>&1 || \
 	exitcode=$?
+cat build.log
 echo "cgroup (Stopped)"
 
 if [ $exitcode -ne 0 ]; then

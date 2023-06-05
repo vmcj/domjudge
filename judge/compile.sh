@@ -167,6 +167,7 @@ $GAINROOT "$RUNGUARD" ${CGROUP_VERSION:+-G} ${DEBUG:+-v} $CPUSET_OPT -u "$RUNUSE
 	-M "$WORKDIR/compile.meta" $ENVIRONMENT_VARS -- \
 	"/compile-script/$(basename "$COMPILE_SCRIPT")" program "$MEMLIMIT" "$@" >"$WORKDIR/compile.tmp" 2>&1 || \
 	exitcode=$?
+cat "$WORKDIR/compile.tmp"
 echo "cgroup (Stopped)"
 
 # Make sure that all files are owned by the current user/group, so
