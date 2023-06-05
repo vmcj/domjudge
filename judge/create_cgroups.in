@@ -64,6 +64,14 @@ for i in cpuset memory; do
     fi
 done
 
+# TODO: Not all of this is needed, this makes this a root(ish) container
+if [ "$CGROUP_VERSION" -eq 2 ]; then
+    mkdir -p $(translate_cgroup_dir "")
+    for tc in cpuset cpu io memory hugetlb pids rdma misc; do
+            echo "+${tc}" > $CGROUPBASE/domjudge/cgroup.subtree_control
+    done
+fi
+
 if [ "$CGROUP_VERSION" -eq 1 ]; then
     if [ ! -f $CGROUPBASE/memory/memory.limit_in_bytes ] || [ ! -f $CGROUPBASE/memory/memory.memsw.limit_in_bytes ]; then
         error_memory_controller_missing
