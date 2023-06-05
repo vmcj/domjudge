@@ -157,7 +157,7 @@ echo "$GAINROOT \"$RUNGUARD\" ${CGROUP_VERSION:+-G} ${DEBUG:+-v} $CPUSET_OPT -u 
 	-M \"$WORKDIR/compile.meta\" $ENVIRONMENT_VARS -- \
 	\"/compile-script/$(basename \"$COMPILE_SCRIPT\")\" program \"$MEMLIMIT\" \"$@\""
 
-echo "cgroup (Start)"
+echo "cgroup (Start), cgroup for memory"
 # First compile to 'source' then rename to 'program' to avoid problems with
 # the compiler writing to different filenames and deleting intermediate files.
 exitcode=0

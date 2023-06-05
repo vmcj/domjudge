@@ -215,7 +215,7 @@ echo "runcheck \"$RUN_SCRIPT\" $RUNARGS \
 	--stderr=program.err --outmeta=program.meta -- \
 	\"$PREFIX/$PROGRAM\""
 
-echo "cgroup (Start)"
+echo "cgroup (Start), should use group for CPU+Memory+CPUtime"
 exitcode=0
 # To suppress false positive of FILELIMIT misspelling of TIMELIMIT:
 # shellcheck disable=SC2153

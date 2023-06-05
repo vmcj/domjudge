@@ -89,7 +89,7 @@ echo "$GAINROOT \"$RUNGUARD\" ${CGROUP_VERSION:+-G} ${DEBUG:+-v} $CPUSET_OPT -u 
 	-M \"$WORKDIR/version_check.meta\" $ENVIRONMENT_VARS -- \
 	\"/version_check-script/$(basename $VERSION_CHECK_SCRIPT)\""
 
-echo "cgroup (Start)"
+echo "cgroup (Start), should use cgroup for memory"
 exitcode=0
 $GAINROOT "$RUNGUARD" ${CGROUP_VERSION:+-G} ${DEBUG:+-v} $CPUSET_OPT -u "$RUNUSER" -g "$RUNGROUP" \
 	-r "$PWD/.." -d "/version_check" \

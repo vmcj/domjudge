@@ -84,7 +84,7 @@ echo "$GAINROOT \"$RUNGUARD\" ${CGROUP_VERSION:+-G} ${DEBUG:+-v} -u \"$RUNUSER\"
 	-r \"$CHROOTDIR\" -d '/build' -- \
 	'./build'"
 
-echo "cgroup (Start)"
+echo "cgroup (Start), no cgroup usage"
 exitcode=0
 $GAINROOT "$RUNGUARD" ${CGROUP_VERSION:+-G} ${DEBUG:+-v} -u "$RUNUSER" -g "$RUNGROUP" \
 	-r "$CHROOTDIR" -d '/build' -- \
