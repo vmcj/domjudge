@@ -590,7 +590,9 @@ void cgroup_attach()
 	if ( (ret = cgroup_get_cgroup(cg))!=0 ) error(ret,"get cgroup information");
 
 	/* Attach task to the cgroup */
+	verbose("Trying to attach");
 	if ( (ret = cgroup_attach_task(cg))!=0 ) error(ret,"attach task to cgroup");
+	verbose("Done attaching");
 
 	cgroup_free(&cg);
 }
