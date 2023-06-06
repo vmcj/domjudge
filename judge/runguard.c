@@ -1071,18 +1071,18 @@ int main(int argc, char **argv)
 			read_optarg_time("walltime",walltimelimit);
 			break;
 		case 'C': /* CPU time option */
-			use_cputime = 1;
+			/*use_cputime = 1;
 			outputtimetype = CPU_TIME_TYPE;
-			read_optarg_time("cputime",cputimelimit);
+			read_optarg_time("cputime",cputimelimit);*/
 			break;
 		case 'm': /* memsize option */
-			memsize = (rlim_t) read_optarg_int("memory limit",1,LONG_MAX);
+			/*memsize = (rlim_t) read_optarg_int("memory limit",1,LONG_MAX);*/
 			/* Convert limit from kB to bytes and check for overflow */
-			if ( memsize!=(memsize*1024)/1024 ) {
+			/*if ( memsize!=(memsize*1024)/1024 ) {
 				memsize = RLIM_INFINITY;
 			} else {
 				memsize *= 1024;
-			}
+			}*/
 			break;
 		case 'f': /* filesize option */
 			filesize = (rlim_t) read_optarg_int("filesize limit",1,LONG_MAX);
@@ -1097,7 +1097,7 @@ int main(int argc, char **argv)
 			nproc = (rlim_t) read_optarg_int("process limit",1,LONG_MAX);
 			break;
 		case 'P': /* cpuset option */
-			cpuset = optarg;
+			/*cpuset = optarg;*/
 			break;
 		case 'c': /* no-core option */
 			no_coredump = 1;
