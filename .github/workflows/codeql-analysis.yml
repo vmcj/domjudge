@@ -65,7 +65,7 @@ jobs:
         DIR=$(pwd)
         mkdir ./installdir
         make configure
-        ./configure --enable-doc-build=no --prefix=$DIR/installdir --enable-domserver --enable-judgehost
+        ./configure --enable-doc-build=no --prefix=$DIR/installdir
 
     - name: Compile domserver
       if: ${{ contains(env.COMPILED, matrix.language) }}
