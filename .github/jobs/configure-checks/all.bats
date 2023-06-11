@@ -4,6 +4,19 @@ load 'assert'
 
 u="domjudge-bats-user"
 
+cmd="apt-get"
+if grep "fedora" /etc/os-release 2>/dev/zero >&2; then
+    cmd="dnf"
+fi
+
+translate () {
+    args="$@"
+    if grep "fedora" /etc/os-release 2>/dev/zero >&2; then
+        args=${args/libcgroup-dev/libcgroup-devel}
+    fi
+    echo "$args"
+}
+
 if [ -z ${test_path+x} ]; then
     test_path="/domjudge"
     # Used in the CI
@@ -27,10 +40,12 @@ run_configure () {
 }
 
 repo-install () {
-    apt-get install $@ -y >/dev/null
+    args=$(translate $@)
+    ${cmd} install $args -y >/dev/null
 }
 repo-remove () {
-    apt-get remove $@ -y >/dev/null; apt-get autoremove -y 2>/dev/null
+    args=translate $@
+    apt-get remove $args -y >/dev/null; apt-get autoremove -y 2>/dev/null
 }
 
 @test "Default empty configure" {
@@ -346,3 +361,29 @@ compile_assertions_finished () {
   assert_line " * documentation.......: /opt/domjudge/doc (disabled)"
 }
 
+@test "Install domserver" {
+  setup
+  run_configure --prefix=/home/$u/domjudge
+  run make domserver
+  assert_line "Substituting configure variables in 'sudoers-domjudge'."
+  run make install-domserver
+  assert_line "composer  dump-autoload -o -a"
+  assert_line "Generating optimized autoload files (authoritative)"
+  assert_line "zip -qjr files/defaultdata/full_debug.zip files/defaultdata/full_debug"
+  assert_line "zip -qjr files/defaultdata/py3.zip files/defaultdata/py3"
+  assert_line "Domserver install complete. Admin web interface password can be found in:"
+  assert_line "/home/$u/domjudge/domserver/etc/initial_admin_password.secret"
+  assert_line "make[1]: Leaving directory '/domjudge'"
+}
+
+@test "Install judgehost" {
+  setup
+  run_configure --prefix=/home/$u/domjudge
+  run make judgehost
+  assert_line "make[1]: Leaving directory '/domjudge'"
+  run make judgehost-install
+  assert_line "/usr/bin/install -c -t /root/domjudge/judgehost/bin dj_make_chroot dj_run_chroot dj_make_chroot_docker dj_judgehost_cleanup"
+  assert_line "/usr/bin/install -c -m 0644 -o root -m 0600 -t /root/domjudge/judgehost/etc \"
+  assert_line "etc/restapi.secret"
+  assert_line "make[1]: Leaving directory '/domjudge'"
+}
