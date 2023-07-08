@@ -11,11 +11,12 @@ install-domserver:
 create-python-from-bash:
 	for fn in ./*/submissions/*/*.sh ; do \
 		new_fn="$${fn}.py23" ; \
-		echo "import os" > $$new_fn ; \
+		echo "import subprocess" > $$new_fn ; \
 		echo "command='''" >> $$new_fn ; \
 		cat $$fn >> $$new_fn ; \
 		echo "'''" >> $$new_fn ; \
-		echo "os.system(command)" >> $$new_fn ; \
+		echo "ex = subprocess.call(command, shell=True)" >> $$new_fn ; \
+		echo "exit(ex)" >> $$new_fn ; \
 	done
 
 .PHONY: install-domserver
