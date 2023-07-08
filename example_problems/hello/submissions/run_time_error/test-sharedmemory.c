@@ -1,9 +1,8 @@
-#include <string.h>
-
 #include <sys/types.h>
 #include <sys/shm.h>
+#include <string.h>
 
-#define SHMSZ (3*1024*1024) /*Ubuntu rejects shared allocations larger than about 2MiB*/
+#define SHMSZ (512*1024*1024) /*Ubuntu rejects shared allocations larger than about 3MiB*/
 
 int main() {
     int shmid;
