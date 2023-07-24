@@ -367,6 +367,7 @@ compile_assertions_finished () {
 @test "Install domserver" {
   setup
   run_configure --prefix=/home/$u/domjudge
+  repo-install composer
   run make domserver
   assert_line "Substituting configure variables in 'sudoers-domjudge'."
   run make install-domserver
