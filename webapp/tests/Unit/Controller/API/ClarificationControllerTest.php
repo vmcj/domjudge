@@ -257,6 +257,7 @@ class ClarificationControllerTest extends BaseTestCase
 
     public function provideAddSuccess(): Generator
     {
+        //$problemId = $this->resolveEntityId(Problem::class, '1');
         yield [
             'demo',
             ['text' => 'This is some text'],
@@ -329,17 +330,99 @@ class ClarificationControllerTest extends BaseTestCase
             null,
             null,
         ];
-        // yield [
-        //     'admin',
-        //     ['text' => 'This is a global clarification on problem 2 replying to clarification 1', 'problem_id' => '2', 'reply_to_id' => '1'],
-        //     false,
-        //     'This is a global clarification on problem 2 replying to clarification 1',
-        //     2,
-        //     1,
-        //     null,
-        //     null,
-        //     null,
-        //     null,
-        // ];
+        /*$clarification = $this->resolveReference(ClarificationFixture::class . ':0');
+        //$clarification['problem_id'] = $this->resolveEntityId(Clarification::class, $clarification['problem_id']);
+        $clarificationId = $clarification->getClarid();
+        yield [
+            'admin',
+            ['text' => 'This is a global clarification on problem 2 replying to clarification 1', 'problem_id' => $problemId, 'reply_to_id' => $clarificationId],
+            false,
+            'This is a global clarification on problem 2 replying to clarification 1',
+            (int)$problemId,
+            (int)$clarificationId,
+            null,
+            null,
+            null,
+            null,
+        ];*/
+    }
+
+    /* string $user,
+    array $dataToSend,
+    bool $idIsExternal,
+    string $expectedBody,
+    ?int $expectedProblemId,
+    ?int $expectedInReplyToId,
+    ?int $expectedSenderId,
+    ?int $expectedRecipientId,
+    ?string $expectedClarificationExternalId, // If known
+    ?string $expectedTime // If known */
+    public function testAddSuccessDebug(): void {
+        $user = 'admin';
+        $dataToSend = ['text' => 'This is a global clarification on problem 2 replying to clarification 1', 'problem_id' => '1', 'reply_to_id' => '2'];
+        $idIsExternal = false;
+        $expectedBody = 'This is a global clarification on problem 2 replying to clarification 1';
+        $expectedProblemId = 1;
+        $expectedInReplyToId = 2;
+        $expectedSenderId = null;
+        $expectedRecipientId = null;
+        $expectedClarificationExternalId = null;
+        $expectedTime = null;
+        if (isset($dataToSend['problem_id'])) {
+            $dataToSend['problem_id'] = $this->resolveEntityId(Problem::class, $dataToSend['problem_id']);
+        }
+        if (isset($dataToSend['reply_to_id'])) {
+            $dataToSend['reply_to_id'] = $this->resolveEntityId(Clarification::class, $dataToSend['reply_to_id']);
+        }
+        var_dump($dataToSend);
+        /*$contestId = $this->getDemoContestId();
+        $apiEndpoint = $this->apiEndpoint;
+        $method = isset($dataToSend['id']) ? 'PUT' : 'POST';
+        $url = "/contests/$contestId/$apiEndpoint";
+        if ($method === 'PUT') {
+            $url .= '/' . $dataToSend['id'];
+        }
+
+        $submittedClarification = $this->verifyApiJsonResponse($method, $url, 200, $user, $dataToSend);
+        static::assertIsArray($submittedClarification);
+        static::assertArrayHasKey('id', $submittedClarification);
+
+        $clarificationId = $submittedClarification['id'];
+
+        // Now load the clarification.
+        $clarificationRepository = static::getContainer()->get(EntityManagerInterface::class)->getRepository(Clarification::class);
+        if ($idIsExternal) {
+            /** @var Clarification $clarification */
+            /*$clarification = $clarificationRepository->findOneBy(['externalid' => $clarificationId]);
+        } else {
+            $clarification = $clarificationRepository->find($clarificationId);
+        }
+
+        static::assertInstanceOf(Clarification::class, $clarification);
+        static::assertEquals($expectedBody, $clarification->getBody(), 'Wrong body');
+        static::assertEquals($expectedProblemId, $clarification->getProblemId(), 'Wrong problem ID');
+        $expectedCategory = $expectedProblemId === null ? 'general' : null;
+        static::assertEquals($expectedCategory, $clarification->getCategory());
+        static::assertEquals('', $clarification->getQueue());
+        static::assertEquals($expectedSenderId, $clarification->getSenderId(), 'Wrong sender ID');
+        static::assertEquals($expectedRecipientId, $clarification->getRecipientId(), 'Wrong recipient ID');
+        static::assertEquals($expectedInReplyToId, $clarification->getInReplyToId(), 'Wrong in reply to ID');
+        if ($expectedClarificationExternalId) {
+            static::assertEquals($expectedClarificationExternalId, $clarification->getExternalid(), 'Wrong external clarification ID');
+        }
+        if ($expectedTime) {
+            static::assertEquals($expectedTime, $clarification->getAbsoluteSubmitTime());
+        }
+
+        // Also load the clarification from the API, to see it now gets returned.
+        $clarificationFromApi = $this->verifyApiJsonResponse('GET', "/contests/$contestId/$apiEndpoint/$clarificationId", 200, 'admin');
+        static::assertEquals($expectedBody, $clarificationFromApi['text'], 'Wrong body');
+        if ($expectedProblemId !== null) {
+            $expectedProblemId = $this->resolveEntityId(Problem::class, (string)$expectedProblemId);
+        }
+        static::assertEquals($expectedProblemId, $clarificationFromApi['problem_id'], 'Wrong problem ID');
+        static::assertEquals($expectedSenderId, $clarificationFromApi['from_team_id'], 'Wrong sender ID');
+        static::assertEquals($expectedRecipientId, $clarificationFromApi['to_team_id'], 'Wrong recipient ID');
+        static::assertEquals($expectedInReplyToId, $clarificationFromApi['reply_to_id'], 'Wrong in reply to ID');*/
     }
 }
