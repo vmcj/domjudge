@@ -44,8 +44,11 @@ repo-install () {
     ${cmd} install $args -y >/dev/null
 }
 repo-remove () {
-    args=translate $@
-    apt-get remove $args -y >/dev/null; apt-get autoremove -y 2>/dev/null
+    args=$(translate $@)
+    ${cmd} remove $args -y >/dev/null
+    if ! grep "fedora" /etc/os-release 2>/dev/zero >&2; then
+        apt-get autoremove -y 2>/dev/null
+    fi
 }
 
 @test "Default empty configure" {
