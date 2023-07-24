@@ -55,7 +55,7 @@ jobs:
       image: ${{ matrix.os }}:${{ matrix.version }}
     steps:
       - name: Install everything for configure and testing
-        run: dnf install pkg-config make bats autoconf automake git libstdc++-static glibc-static util-linux -y
+        run: dnf install pkg-config make bats autoconf automake git libstdc++-static glibc-static util-linux httpd -y
       - uses: actions/checkout@v3
       - name: Build the configure file
         run: make configure
