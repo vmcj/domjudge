@@ -386,8 +386,8 @@ compile_assertions_finished () {
   run make judgehost
   assert_line "make[1]: Leaving directory '/domjudge'"
   run make judgehost-install
-  assert_line "/usr/bin/install -c -t /root/domjudge/judgehost/bin dj_make_chroot dj_run_chroot dj_make_chroot_docker dj_judgehost_cleanup"
-  assert_line "/usr/bin/install -c -m 0644 -o root -m 0600 -t /root/domjudge/judgehost/etc \\"
+  assert_line "/usr/bin/install -c -t /home/$u/domjudge/judgehost/bin dj_make_chroot dj_run_chroot dj_make_chroot_docker dj_judgehost_cleanup"
+  assert_line "/usr/bin/install -c -m 0644 -o root -m 0600 -t /home/$u/domjudge/judgehost/etc \\"
   assert_line "etc/restapi.secret"
   assert_line "make[1]: Leaving directory '${test_path}'"
 }
