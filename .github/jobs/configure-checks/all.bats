@@ -377,7 +377,7 @@ compile_assertions_finished () {
   assert_line "zip -qjr files/defaultdata/py3.zip files/defaultdata/py3"
   assert_line "Domserver install complete. Admin web interface password can be found in:"
   assert_line "/home/$u/domjudge/domserver/etc/initial_admin_password.secret"
-  assert_line "make[1]: Leaving directory '/domjudge'"
+  assert_line "make[1]: Leaving directory '${test_path}'"
 }
 
 @test "Install judgehost" {
@@ -389,5 +389,5 @@ compile_assertions_finished () {
   assert_line "/usr/bin/install -c -t /root/domjudge/judgehost/bin dj_make_chroot dj_run_chroot dj_make_chroot_docker dj_judgehost_cleanup"
   assert_line "/usr/bin/install -c -m 0644 -o root -m 0600 -t /root/domjudge/judgehost/etc \\"
   assert_line "etc/restapi.secret"
-  assert_line "make[1]: Leaving directory '/domjudge'"
+  assert_line "make[1]: Leaving directory '${test_path}'"
 }
