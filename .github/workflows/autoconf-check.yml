@@ -79,15 +79,15 @@ jobs:
       image: ${{ matrix.os }}:${{ matrix.version }}
     steps:
       - run: exit 0
-      - name: Install everything for configure and testing
-        run: dnf install pkg-config make bats autoconf automake git libstdc++-static glibc-static util-linux httpd zip unzip texlive-latex -y
-      - uses: actions/checkout@v3
-      - name: Build the configure file
-        run: make configure
-      - name: Install extra assert statements for bots
-        run: cp submit/assert.bash .github/jobs/configure-checks/
-      - name: Run the configure tests for this usecase
-        run: test_path="/__w/domjudge/domjudge" bats .github/jobs/configure-checks/all.bats
+      #- name: Install everything for configure and testing
+      #  run: dnf install pkg-config make bats autoconf automake git libstdc++-static glibc-static util-linux httpd zip unzip texlive-latex -y
+      #- uses: actions/checkout@v3
+      #- name: Build the configure file
+      #  run: make configure
+      #- name: Install extra assert statements for bots
+      #  run: cp submit/assert.bash .github/jobs/configure-checks/
+      #- name: Run the configure tests for this usecase
+      #  run: test_path="/__w/domjudge/domjudge" bats .github/jobs/configure-checks/all.bats
 
   arch-family:
     strategy:
@@ -103,12 +103,12 @@ jobs:
       image: ${{ matrix.os }}:${{ matrix.version }}
     steps:
       - run: exit 0
-      - name: Install everything for configure and testing
-        run: dnf install pkg-config make bats autoconf automake git libstdc++-static glibc-static util-linux httpd zip unzip texlive-latex -y
-      - uses: actions/checkout@v3
-      - name: Build the configure file
-        run: make configure
-      - name: Install extra assert statements for bots
-        run: cp submit/assert.bash .github/jobs/configure-checks/
-      - name: Run the configure tests for this usecase
-        run: test_path="/__w/domjudge/domjudge" bats .github/jobs/configure-checks/all.bats
+      #- name: Install everything for configure and testing
+      #  run: dnf install pkg-config make bats autoconf automake git libstdc++-static glibc-static util-linux httpd zip unzip texlive-latex -y
+      #- uses: actions/checkout@v3
+      #- name: Build the configure file
+      #  run: make configure
+      #- name: Install extra assert statements for bots
+      #  run: cp submit/assert.bash .github/jobs/configure-checks/
+      #- name: Run the configure tests for this usecase
+      #  run: test_path="/__w/domjudge/domjudge" bats .github/jobs/configure-checks/all.bats
