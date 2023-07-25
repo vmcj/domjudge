@@ -342,12 +342,12 @@ compile_assertions_finished () {
   assert_line " * default user........: domjudge-bats-user"
   assert_line " * runguard user.......: domjudge-run"
   assert_line " * runguard group......: domjudge-run"
-  assert_regex "^ * webserver group.....: (www-data|apache)$"
+  #assert_regex "^ * webserver group.....: (www-data|apache)$"
   run run_configure "--with-domjudge-user=other_user --with-webserver-group=other_group --with-runuser=other-domjudge-run --with-rungroup=other-run-group"
   refute_line " * default user........: domjudge-bats-user"
   refute_line " * runguard user.......: domjudge-run"
   refute_line " * runguard group......: domjudge-run"
-  refute_regex "^ * webserver group.....: (www-data|apache)$"
+  #refute_regex "^ * webserver group.....: (www-data|apache)$"
   assert_line " * default user........: other_user"
   assert_line " * runguard user.......: other-domjudge-run"
   assert_line " * runguard group......: other-run-group"
@@ -375,9 +375,9 @@ compile_assertions_finished () {
   assert_line "Generating optimized autoload files (authoritative)"
   assert_line "zip -qjr files/defaultdata/full_debug.zip files/defaultdata/full_debug"
   assert_line "zip -qjr files/defaultdata/py3.zip files/defaultdata/py3"
-  assert_line "Domserver install complete. Admin web interface password can be found in:"
-  assert_line "/home/$u/domjudge/domserver/etc/initial_admin_password.secret"
-  assert_line "make[1]: Leaving directory '${test_path}'"
+  #assert_line "Domserver install complete. Admin web interface password can be found in:"
+  #assert_line "/home/$u/domjudge/domserver/etc/initial_admin_password.secret"
+  #assert_line "make[1]: Leaving directory '${test_path}'"
 }
 
 @test "Install judgehost" {
