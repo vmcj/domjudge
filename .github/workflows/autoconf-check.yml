@@ -33,6 +33,7 @@ jobs:
     steps:
       - name: Install everything for configure and testing
         run: apt-get update; apt-get install pkg-config make bats autoconf git zip unzip -y; apt-get full-upgrade -y
+      - run: apt-get install autoconf automake bats python3-sphinx python3-sphinx-rtd-theme rst2pdf fontconfig python3-yaml latexmk texlive-latex-recommended texlive-latex-extra tex-gyre -y
       - uses: actions/checkout@v3
       - name: Build the configure file
         run: make configure
