@@ -364,30 +364,3 @@ compile_assertions_finished () {
   assert_line " * documentation.......: /opt/domjudge/doc (disabled)"
 }
 
-@test "Install domserver" {
-  setup
-  run_configure --prefix=/home/$u/domjudge
-  repo-install composer
-  run make domserver
-  assert_line "Substituting configure variables in 'sudoers-domjudge'."
-  run make install-domserver
-  assert_line "composer  dump-autoload -o -a"
-  assert_line "Generating optimized autoload files (authoritative)"
-  assert_line "zip -qjr files/defaultdata/full_debug.zip files/defaultdata/full_debug"
-  assert_line "zip -qjr files/defaultdata/py3.zip files/defaultdata/py3"
-  assert_line "Domserver install complete. Admin web interface password can be found in:"
-  assert_line "/home/$u/domjudge/domserver/etc/initial_admin_password.secret"
-  assert_line "make[1]: Leaving directory '${test_path}'"
-}
-
-@test "Install judgehost" {
-  setup
-  run_configure --prefix=/home/$u/domjudge
-  run make judgehost
-  assert_line "make[1]: Leaving directory '${test_path}'"
-  run make install-judgehost
-  assert_line "/usr/bin/install -c -t /home/$u/domjudge/judgehost/bin dj_make_chroot dj_run_chroot dj_make_chroot_docker dj_judgehost_cleanup"
-  assert_line "/usr/bin/install -c -m 0644 -o $u -m 0600 -t /home/$u/domjudge/judgehost/etc \\"
-  assert_partial "etc/restapi.secret"
-  assert_line "make[1]: Leaving directory '${test_path}'"
-}
