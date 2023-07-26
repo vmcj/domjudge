@@ -54,8 +54,11 @@ jobs:
     container:
       image: ${{ matrix.os }}:${{ matrix.version }}
     steps:
+      - name: Update packages to latest versions, refresh cache
+        run: dnf update -y
       - name: Install everything for configure and testing
-        run: dnf install pkg-config make bats autoconf automake git libstdc++-static glibc-static util-linux httpd -y
+        run: dnf install make autoconf automake bats util-linux httpd -y
+      #pkg-config make bats autoconf automake git libstdc++-static glibc-static util-linux httpd -y
       - uses: actions/checkout@v3
       - name: Build the configure file
         run: make configure

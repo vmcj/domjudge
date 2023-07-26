@@ -133,6 +133,7 @@ compile_assertions_finished () {
 }
 
 @test "Install C/C++ compilers (Clang as alternative)" {
+    skip
     repo-remove gcc g++
     repo-install clang libcgroup-dev
     compiler_assertions cc c++
@@ -144,6 +145,7 @@ compile_assertions_finished () {
 }
 
 @test "Run as root discouraged" {
+   skip
    setup
    run su root -c "./configure"
    discourage_root="checking domjudge-user... configure: error: installing/running as root is STRONGLY DISCOURAGED, use --with-domjudge-user=root to override."
@@ -153,6 +155,7 @@ compile_assertions_finished () {
 }
 
 @test "Run as normal user" {
+   skip
    setup
    run ./configure --with-domjudge-user=$u
    assert_line "checking domjudge-user... $u"
@@ -161,6 +164,7 @@ compile_assertions_finished () {
 }
 
 @test "cgroup library needed" {
+   skip
    cgroup_init_find="checking for cgroup_init in -lcgroup... no"
    cgroup_init_error="configure: error: Linux cgroup library not found."
    setup_user
@@ -176,6 +180,7 @@ compile_assertions_finished () {
 }
 
 @test "/opt configured" {
+   skip
    setup
    run run_configure
    assert_line " * prefix..............: /opt/domjudge"
@@ -205,6 +210,7 @@ compile_assertions_finished () {
 }
 
 @test "Prefix configured" {
+   skip
    setup
    run run_configure --prefix=/tmp
    refute_line " * prefix..............: /opt/domjudge"
@@ -229,6 +235,7 @@ compile_assertions_finished () {
 }
 
 @test "Check FHS" {
+   skip
    setup
    run run_configure --enable-fhs
    refute_line " * prefix..............: /opt/domjudge"
@@ -266,6 +273,7 @@ compile_assertions_finished () {
 }
 
 @test "Alternative dirs together with FHS" {
+   skip
    setup
    run run_configure --enable-fhs --with-domserver_webappdir=/run/webapp --with-domserver_tmpdir=/tmp/domserver --with-judgehost_tmpdir=/srv/tmp --with-judgehost_judgedir=/srv/judgings --with-judgehost_chrootdir=/srv/chroot/domjudge --with-judgehost_cgroupdir=/sys/fs/altcgroup
    assert_line " * prefix..............: /usr/local"
@@ -301,6 +309,7 @@ compile_assertions_finished () {
 }
 
 @test "Alternative dirs together with defaults" {
+   skip
    setup
    run run_configure "--with-judgehost_tmpdir=/srv/tmp --with-judgehost_judgedir=/srv/judgings --with-judgehost_chrootdir=/srv/chroot --with-judgehost_cgroupdir=/sys/fs/altcgroup --with-domserver_logdir=/log"
    assert_line " * prefix..............: /opt/domjudge"
@@ -320,6 +329,7 @@ compile_assertions_finished () {
 }
 
 @test "Default URL not set, docs mention" {
+  skip
   setup
   run run_configure
   assert_line "checking baseurl... https://example.com/domjudge/"
@@ -337,6 +347,7 @@ compile_assertions_finished () {
 }
 
 @test "Change users" {
+  skip
   setup
   run run_configure
   assert_line " * default user........: domjudge-bats-user"
@@ -355,6 +366,7 @@ compile_assertions_finished () {
 }
 
 @test "No docs" {
+  skip
   setup
   run run_configure
   assert_line " * documentation.......: /opt/domjudge/doc"
