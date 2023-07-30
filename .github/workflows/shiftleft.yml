@@ -2,6 +2,8 @@ name: SL Scan
 
 on:
   push:
+    branches:
+      - main
 
 jobs:
   Scan-Build:
