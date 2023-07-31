@@ -83,7 +83,7 @@
 
         </tr>
         </thead>
-        <tbody>
+        <tbody id="submissionTable">
         {%- for submission in submissions %}
             {%- if rejudging is defined %}
                 {%- set link = path('jury_submission', {submitId: submission.submitid, rejudgingid: rejudging.rejudgingid}) %}
