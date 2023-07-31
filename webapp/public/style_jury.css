@@ -197,3 +197,23 @@ table.submissions-table {
 .devmode-icon {
     color: white;
 }
+
+tbody td:not(.testcase-results) {
+    padding: 0;
+    height: 0;
+}
+
+tbody td:not(.testcase-results) a {
+    width: 100%;
+    height: 100%;
+    padding: 0 4px 0 4px;
+}
+
+/* This should be last to make sure the browserhack is applied after the initial properties */
+@-moz-document url-prefix() {
+    .data-table tbody tr td:not(.testcase-results) a, .data-table tbody tr td:not(.testcase-results) a:hover {
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        display: inline-table;
+    }
+}
