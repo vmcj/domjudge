@@ -230,16 +230,19 @@ table.submissions-table {
 
     #submissionTable td {
         /* Setup basic structure to make diffs easy (Chrome) */
+        height: 0;
+        padding: 0;
     }
 
     #submissionTable td a {
         /* Setup basic structure to make diffs easy (Chrome) */
         background-color: black;
+        height: 100%;
     }
 
     #submissionTable td * {
         /* Setup basic structure to make diffs easy (Chrome) */
-    }    
+    }
 }
 
 @-moz-document url-prefix() {
