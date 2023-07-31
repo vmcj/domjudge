@@ -198,6 +198,27 @@ table.submissions-table {
     color: white;
 }
 
+/* Basic coloring to show the clickable areas */
+#submissionTable {
+    background-color: lime;
+}
+
+#submissionTable tr {
+    background-color: red;
+}
+
+#submissionTable td {
+    background-color: blue;
+}
+
+#submissionTable td a {
+    background-color: yellow;
+}
+
+#submissionTable td * {
+    background-color: grey;
+}
+
 @media screen and (-webkit-min-device-pixel-ratio:0) {
     #submissionTable {
         /* Setup basic structure to make diffs easy (Chrome) */
@@ -213,7 +234,7 @@ table.submissions-table {
 
     #submissionTable td a {
         /* Setup basic structure to make diffs easy (Chrome) */
-        background-color: blue;
+        background-color: black;
     }
 
     #submissionTable td * {
@@ -236,7 +257,7 @@ table.submissions-table {
 
     #submissionTable td a {
         /* Setup basic structure to make diffs easy (FF) */
-        background-color: red;
+        background-color: white;
     }
 
     #submissionTable td * {
