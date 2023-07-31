@@ -197,3 +197,49 @@ table.submissions-table {
 .devmode-icon {
     color: white;
 }
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    #submissionTable {
+        /* Setup basic structure to make diffs easy (Chrome) */
+    }
+
+    #submissionTable tr {
+        /* Setup basic structure to make diffs easy (Chrome) */
+    }
+
+    #submissionTable td {
+        /* Setup basic structure to make diffs easy (Chrome) */
+    }
+
+    #submissionTable td a {
+        /* Setup basic structure to make diffs easy (Chrome) */
+        background-color: blue;
+    }
+
+    #submissionTable td * {
+        /* Setup basic structure to make diffs easy (Chrome) */
+    }    
+}
+
+@-moz-document url-prefix() {
+    #submissionTable {
+        /* Setup basic structure to make diffs easy (FF) */
+    }
+
+    #submissionTable tr {
+        /* Setup basic structure to make diffs easy (FF) */
+    }
+
+    #submissionTable td {
+        /* Setup basic structure to make diffs easy (FF) */
+    }
+
+    #submissionTable td a {
+        /* Setup basic structure to make diffs easy (FF) */
+        background-color: red;
+    }
+
+    #submissionTable td * {
+        /* Setup basic structure to make diffs easy (FF) */
+    }
+}
