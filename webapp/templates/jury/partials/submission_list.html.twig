@@ -121,7 +121,7 @@
                 <td rowspan="{{ rowSpan }}" class="{{ tdExtraClass }}">
                     <a href="{{ link }}">{{ submission.submittime | printtime(null, submission.contest) }}</a>
                 </td>
-                <td rowspan="{{ rowSpan }}" class="{{ tdExtraClass }}" style="text-align: right;">
+                <td rowspan="{{ rowSpan }}" class="{{ tdExtraClass }} entityButton">
                     <a href="{{ link }}">
                         {{ submission.team | entityIdBadge('t') }}
                     </a>
