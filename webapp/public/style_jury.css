@@ -198,36 +198,7 @@ table.submissions-table {
     color: white;
 }
 
-/* Basic coloring to show the clickable areas */
-#submissionTable {
-    background-color: lime;
-}
-
-#submissionTable tr {
-    background-color: red;
-}
-
-#submissionTable td {
-    background-color: blue;
-}
-
-#submissionTable td a {
-    background-color: yellow;
-}
-
-#submissionTable td * {
-    background-color: grey;
-}
-
 @media screen and (-webkit-min-device-pixel-ratio:0) {
-    #submissionTable {
-        /* Setup basic structure to make diffs easy (Chrome) */
-    }
-
-    #submissionTable tr {
-        /* Setup basic structure to make diffs easy (Chrome) */
-    }
-
     #submissionTable td {
         /* Setup basic structure to make diffs easy (Chrome) */
         height: 0;
@@ -236,40 +207,21 @@ table.submissions-table {
 
     #submissionTable td a {
         /* Setup basic structure to make diffs easy (Chrome) */
-        background-color: black;
         height: 100%;
-    }
-
-    #submissionTable td * {
-        /* Setup basic structure to make diffs easy (Chrome) */
     }
 }
 
 @-moz-document url-prefix() {
-    #submissionTable {
-        /* Setup basic structure to make diffs easy (FF) */
-    }
-
-    #submissionTable tr {
-        /* Setup basic structure to make diffs easy (FF) */
-    }
-
     #submissionTable td {
         /* Setup basic structure to make diffs easy (FF) */
-        border: 1px solid red;
         height: 100%;
         padding: 0;
     }
 
     #submissionTable td a {
         /* Setup basic structure to make diffs easy (FF) */
-        background-color: yellow;
         display: table;
         width: 100%;
         height: 100%;
-    }
-
-    #submissionTable td * {
-        /* Setup basic structure to make diffs easy (FF) */
     }
 }
