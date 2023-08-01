@@ -3,6 +3,7 @@
 namespace App\Tests\Unit\Controller\API;
 
 use App\DataFixtures\Test\DemoNonPublicContestFixture;
+use App\DataFixturex\Test\ExtendDemoSessionTimeFixture;
 use App\DataFixtures\Test\RemoveTeamFromDemoUserFixture;
 use App\DataFixtures\Test\SampleEventsFixture;
 use App\Entity\Contest;
@@ -10,9 +11,9 @@ use Generator;
 
 class ScoreboardControllerTest extends BaseTestCase
 {
-    protected static array $fixtures = [ExtendDemoPracticeSessionTimeFixture::class, SampleEventsFixture::class];
-    protected $apiEndpoint = 'scoreboard';
-    protected $expectedObjects = [
+    protected static array $fixtures = [ExtendDemoSessionTimeFixture::class, SampleEventsFixture::class];
+    protected ?string $apiEndpoint = 'scoreboard';
+    protected array $expectedObjects = [
         '1' => [
             "problem_id"   => "1",
             "from_team_id" => "2",
