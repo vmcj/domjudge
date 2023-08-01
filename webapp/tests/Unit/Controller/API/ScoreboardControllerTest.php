@@ -3,7 +3,7 @@
 namespace App\Tests\Unit\Controller\API;
 
 use App\DataFixtures\Test\DemoNonPublicContestFixture;
-use App\DataFixturex\Test\ExtendDemoSessionTimeFixture;
+use App\DataFixtures\Test\ExtendDemoSessionTimeFixture;
 use App\DataFixtures\Test\RemoveTeamFromDemoUserFixture;
 use App\DataFixtures\Test\SampleEventsFixture;
 use App\Entity\Contest;
