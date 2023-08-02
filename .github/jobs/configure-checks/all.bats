@@ -26,16 +26,23 @@ esac
 
 translate () {
     args="$@"
-    if [ "$distro_id" = "fedora" ] || [ "$distro_id" = "opensuse-leap" ]; then
-        args=${args/libcgroup-dev/libcgroup-devel}
-    fi
-    if [ "$distro_id" = "arch" ]; then
-        args=${args/libcgroup-dev/linux-headers}
-        args=${args/g++/}
-    fi
-    if [ "$distro_id" = "opensuse-leap" ]; then
-        args=${args/g++/gcc-c++}
-    fi
+    case $distro_id in
+        "fedora")
+            args=${args/libcgroup-dev/libcgroup-devel}
+            ;;
+        opensuse*)
+            args=${args/libcgroup-dev/libcgroup-devel}
+            args=${args/g++/gcc-c++}
+            ;;
+        "arch")
+            args=${args/libcgroup-dev/linux-headers}
+            args=${args/g++/}
+            ;;
+        "alpine")
+            ;;
+        *)
+            ;;
+    esac
     echo "$args"
 }
 
@@ -100,8 +107,6 @@ repo-remove () {
         ${cmd} autoremove 2>/dev/null
     fi
 }
-
-setup_user
 
 @test "Default empty configure" {
     skip
