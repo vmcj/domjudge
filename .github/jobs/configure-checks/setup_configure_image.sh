@@ -2,11 +2,11 @@
 
 set -eux
 
-distro_id=$(grep "^ID=" /etc/os-release)
+distro_id=$(grep "^ID=" /etc/os-release | cut -c4- | tr -d '"')
 
 # Install everything for configure and testing
 case $distro_id in
-    "ID=fedora")
+    "fedora")
         dnf install pkg-config make bats autoconf automake util-linux -y ;;
     *)
         apt-get update; apt-get full-upgrade -y

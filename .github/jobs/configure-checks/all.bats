@@ -4,16 +4,16 @@ load 'assert'
 
 u="domjudge-bats-user"
 
-distro_id=$(grep "^ID=" /etc/os-release)
+distro_id=$(grep "^ID=" /etc/os-release | cut -c4- | tr -d '"')
 
 cmd="apt-get"
-if [ "$distro_id" = "ID=fedora" ]; then
+if [ "$distro_id" = "fedora" ]; then
     cmd=dnf
 fi
 
 translate () {
     args="$@"
-    if [ "$distro_id" = "ID=fedora" ]; then
+    if [ "$distro_id" = "fedora" ]; then
         args=${args/libcgroup-dev/libcgroup-devel}
     fi
     echo "$args"
@@ -34,7 +34,7 @@ setup() {
     for shared_file in config.log confdefs.h conftest.err; do
         chmod a+rw $shared_file || true
     done
-    if [ "$distro_id" = "ID=fedora" ]; then
+    if [ "$distro_id" = "fedora" ]; then
         repo-install httpd
     fi
     repo-install gcc g++ libcgroup-dev
@@ -51,7 +51,7 @@ repo-install () {
 repo-remove () {
     args=$(translate $@)
     ${cmd} remove $args -y #>/dev/null
-    if [ "$distro_id" != "ID=fedora" ]; then
+    if [ "$distro_id" != "fedora" ]; then
         apt-get autoremove -y 2>/dev/null
     fi
 }
@@ -138,7 +138,7 @@ compile_assertions_finished () {
 }
 
 @test "Install C/C++ compilers (Clang as alternative)" {
-    if [ "$distro_id" = "ID=fedora" ]; then
+    if [ "$distro_id" = "fedora" ]; then
         # Fedora has gcc as dependency for clang
         skip
     fi
@@ -162,7 +162,7 @@ compile_assertions_finished () {
 }
 
 @test "Check for missing webserver group" {
-    if [ "$distro_id" != "ID=fedora" ]; then
+    if [ "$distro_id" != "fedora" ]; then
         # Debian/Ubuntu start with a www-data group
         skip
     fi
@@ -176,7 +176,7 @@ compile_assertions_finished () {
 }
 
 @test "Check for newly added webserver group (Apache)" {
-    if [ "$distro_id" != "ID=fedora" ]; then
+    if [ "$distro_id" != "fedora" ]; then
         # Debian/Ubuntu start with a www-data group
         skip
     fi
@@ -192,7 +192,7 @@ compile_assertions_finished () {
 }
 
 @test "Check for newly added webserver group (Nginx)" {
-    if [ "$distro_id" != "ID=fedora" ]; then
+    if [ "$distro_id" != "fedora" ]; then
         # Debian/Ubuntu start with a www-data group
         skip
     fi
