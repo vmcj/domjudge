@@ -45,6 +45,23 @@ jobs:
       - name: Install git so we get the .github directory
         run: apk add git
       - uses: actions/checkout@v3
+      - name: Create user
+        run: |
+          set -x
+          distro_id=$(grep "^ID=" /etc/os-release | cut -c4- | tr -d '"')
+          u="domjudge-bats-user"
+          setup_user() {
+            case $distro_id in
+                "alpine")
+                    id -u $u || (adduser -D $u || true )>/dev/null ;;
+                *)
+                    id -u $u || (useradd $u ; groupadd $u || true )
+                    #>/dev/null
+                    ;;
+            esac
+            chown -R $u:$u ./
+          }
+          setup_user
       - name: Setup image and run bats tests
         run: .github/jobs/configure-checks/setup_configure_image.sh
 
