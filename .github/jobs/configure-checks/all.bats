@@ -2,6 +2,8 @@
 
 load 'assert'
 
+set -euo pipefail
+
 u="domjudge-bats-user"
 
 distro_id=$(grep "^ID=" /etc/os-release | cut -c4- | tr -d '"')
