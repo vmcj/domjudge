@@ -97,6 +97,8 @@ repo-remove () {
     fi
 }
 
+setup_user
+
 @test "Default empty configure" {
     # cleanup from earlier runs
     repo-remove gcc g++ clang
