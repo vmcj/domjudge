@@ -34,6 +34,7 @@ translate () {
         opensuse*)
             args=${args/libcgroup-dev/libcgroup-devel}
             args=${args/g++/gcc-c++}
+            args=${args/clang/clang15}
             ;;
         "arch")
             args=${args/libcgroup-dev/linux-headers}
@@ -177,6 +178,10 @@ compile_assertions_finished () {
 
 @test "Install GNU C++ only" {
     # This does work due to dependencies
+    if [ "$distro_id" = "opensuse-leap" ]; then
+        # The `gcc` packaged here is actually capable of processing C++
+        skip
+    fi
     repo-remove clang gcc
     repo-install g++ libcgroup-dev
     compiler_assertions gcc g++
@@ -194,8 +199,8 @@ compile_assertions_finished () {
 }
 
 @test "Install C/C++ compilers (Clang as alternative)" {
-    if [ "$distro_id" = "fedora" ] || [ "$distro_id" = "alpine" ]; then
-        # These distros has gcc as dependency for clang
+    if [ "$distro_id" = "fedora" ] || [ "$distro_id" = "alpine" ] || [ "$distro_id" = "opensuse-leap" ]; then
+        # These distros have gcc as dependency for clang
         skip
     fi
     repo-remove gcc g++
@@ -244,8 +249,13 @@ compile_assertions_finished () {
     done
     repo-install apache2
     run ./configure --with-domjudge-user=$u
-    assert_line "checking webserver-group... apache (detected)"
-    assert_line " * webserver group.....: apache"
+    expected_group=apache
+    if [ "$distro_id" = "opensuse-leap" ]; then
+        # The installer creates an user for nginx, but not for the apache package
+        expected_group=wwwrun
+    fi
+    assert_line "checking webserver-group... $expected_group (detected)"
+    assert_line " * webserver group.....: $expected_group"
 }
 
 @test "Check for newly added webserver group (Nginx)" {
