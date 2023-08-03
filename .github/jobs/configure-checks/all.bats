@@ -38,6 +38,7 @@ translate () {
             ;;
         "arch")
             args=${args/libcgroup-dev/linux-headers}
+            args=${args/apache2/apache}
             args=${args/g++/}
             ;;
         "alpine")
@@ -164,6 +165,10 @@ compile_assertions_finished () {
 }
 
 @test "Install GNU C only" {
+    if [ "$distro_id" = "arch" ]; then
+        # Arch does not have the cgroup library files
+        skip
+    fi
     setup_user
     repo-remove clang g++
     repo-install gcc libcgroup-dev
@@ -178,7 +183,7 @@ compile_assertions_finished () {
 
 @test "Install GNU C++ only" {
     # This does work due to dependencies
-    if [ "$distro_id" = "opensuse-leap" ]; then
+    if [ "$distro_id" = "opensuse-leap" ] || [ "$distro_id" = "arch" ]; then
         # The `gcc` packaged here is actually capable of processing C++
         skip
     fi
@@ -201,6 +206,10 @@ compile_assertions_finished () {
 @test "Install C/C++ compilers (Clang as alternative)" {
     if [ "$distro_id" = "fedora" ] || [ "$distro_id" = "alpine" ] || [ "$distro_id" = "opensuse-leap" ]; then
         # These distros have gcc as dependency for clang
+        skip
+    fi
+    if [ "$distro_id" = "arch" ]; then
+        # Arch does not have the cgroup library files
         skip
     fi
     repo-remove gcc g++
@@ -242,6 +251,10 @@ compile_assertions_finished () {
             # All start with a www-data group
             skip
     esac
+    if [ "$distro_id" = "arch" ]; then
+        # Arch does not have the cgroup library files
+        skip
+    fi
     repo-remove apache2 nginx
     for www_group in nginx apache; do
         userdel ${www_group} || true
@@ -264,6 +277,10 @@ compile_assertions_finished () {
             # All start with a www-data group
             skip
     esac
+    if [ "$distro_id" = "arch" ]; then
+        # Arch does not have the cgroup library files
+        skip
+    fi
     repo-remove apache2 nginx
     for www_group in nginx apache; do
         userdel ${www_group} || true
@@ -292,13 +309,19 @@ compile_assertions_finished () {
     run run_configure
     assert_line "$cgroup_init_find"
     assert_line "$cgroup_init_error"
-    repo-install libcgroup-dev
-    run run_configure
-    refute_line "$cgroup_init_find"
-    refute_line "$cgroup_init_error"
+    if [ "$distro_id" != "arch" ]; then
+        repo-install libcgroup-dev
+        run run_configure
+        refute_line "$cgroup_init_find"
+        refute_line "$cgroup_init_error"
+    fi
 }
 
 @test "/opt configured" {
+    if [ "$distro_id" = "arch" ]; then
+        # Arch does not have the cgroup library files
+        skip
+    fi
     setup
     run run_configure
     assert_line " * prefix..............: /opt/domjudge"
@@ -328,6 +351,10 @@ compile_assertions_finished () {
 }
 
 @test "Prefix configured" {
+    if [ "$distro_id" = "arch" ]; then
+        # Arch does not have the cgroup library files
+        skip
+    fi
     setup
     run run_configure --prefix=/tmp
     refute_line " * prefix..............: /opt/domjudge"
@@ -352,6 +379,10 @@ compile_assertions_finished () {
 }
 
 @test "Check FHS" {
+    if [ "$distro_id" = "arch" ]; then
+        # Arch does not have the cgroup library files
+        skip
+    fi
     setup
     run run_configure --enable-fhs
     refute_line " * prefix..............: /opt/domjudge"
@@ -389,6 +420,10 @@ compile_assertions_finished () {
 }
 
 @test "Alternative dirs together with FHS" {
+    if [ "$distro_id" = "arch" ]; then
+        # Arch does not have the cgroup library files
+        skip
+    fi
     setup
     run run_configure --enable-fhs --with-domserver_webappdir=/run/webapp --with-domserver_tmpdir=/tmp/domserver --with-judgehost_tmpdir=/srv/tmp --with-judgehost_judgedir=/srv/judgings --with-judgehost_chrootdir=/srv/chroot/domjudge --with-judgehost_cgroupdir=/sys/fs/altcgroup
     assert_line " * prefix..............: /usr/local"
@@ -424,6 +459,10 @@ compile_assertions_finished () {
 }
 
 @test "Alternative dirs together with defaults" {
+    if [ "$distro_id" = "arch" ]; then
+        # Arch does not have the cgroup library files
+        skip
+    fi
     setup
     run run_configure "--with-judgehost_tmpdir=/srv/tmp --with-judgehost_judgedir=/srv/judgings --with-judgehost_chrootdir=/srv/chroot --with-judgehost_cgroupdir=/sys/fs/altcgroup --with-domserver_logdir=/log"
     assert_line " * prefix..............: /opt/domjudge"
@@ -443,6 +482,10 @@ compile_assertions_finished () {
 }
 
 @test "Default URL not set, docs mention" {
+    if [ "$distro_id" = "arch" ]; then
+        # Arch does not have the cgroup library files
+        skip
+    fi
     setup
     run run_configure
     assert_line "checking baseurl... https://example.com/domjudge/"
@@ -460,6 +503,10 @@ compile_assertions_finished () {
 }
 
 @test "Change users" {
+    if [ "$distro_id" = "arch" ]; then
+        # Arch does not have the cgroup library files
+        skip
+    fi
     setup
     run run_configure
     assert_line " * default user........: domjudge-bats-user"
@@ -480,6 +527,10 @@ compile_assertions_finished () {
 }
 
 @test "No docs" {
+    if [ "$distro_id" = "arch" ]; then
+        # Arch does not have the cgroup library files
+        skip
+    fi
     setup
     run run_configure
     assert_line " * documentation.......: /opt/domjudge/doc"
