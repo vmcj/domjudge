@@ -8,10 +8,21 @@ u="domjudge-bats-user"
 
 distro_id=$(grep "^ID=" /etc/os-release | cut -c4- | tr -d '"')
 
-cmd="apt-get"
-if [ "$distro_id" = "fedora" ]; then
-    cmd=dnf
-fi
+cmd="/bin/false"
+case $distro_id in
+    "fedora")
+        cmd="dnf -y" ;;
+    opensuse*)
+        cmd="zypper -n" ;;
+    "arch")
+        cmd="pacman --noconfirm" ;;
+    "alpine")
+        cmd="apk" ;;
+    "gentoo")
+        cmd="emerge" ;;
+    *)
+        cmd="apt-get -y" ;;
+esac
 
 translate () {
     args="$@"
@@ -27,7 +38,11 @@ if [ -z ${test_path+x} ]; then
 fi
 
 setup_user() {
-    id -u $u || (useradd $u ; groupadd $u || true )>/dev/null
+    if [ "$distro_id" = "alpine" ]; then
+        id -u $u || (adduser -D $u || true )>/dev/null
+    else
+        id -u $u || (useradd $u ; groupadd $u || true )
+    fi
     chown -R $u:$u ./
 }
 
@@ -48,13 +63,34 @@ run_configure () {
 
 repo-install () {
     args=$(translate $@)
-    ${cmd} install $args -y >/dev/null
+    case $distro_id in
+        "alpine")
+            $cmd add $args ;;
+        "arch")
+            $cmd -Syu $args ;;
+        "gentoo")
+            $cmd $args ;;
+        *)
+            ${cmd} install $args >/dev/null
+    esac
 }
+
 repo-remove () {
     args=$(translate $@)
-    ${cmd} remove $args -y #>/dev/null
-    if [ "$distro_id" != "fedora" ]; then
-        apt-get autoremove -y 2>/dev/null
+    case $distro_id in
+        "alpine")
+            $cmd del $args ;;
+        "arch")
+            for pack in $args; do
+                $cmd -Rs $pack || true
+            done ;;
+        "gentoo")
+            $cmd --depclean $args ;;
+        *)
+            ${cmd} remove $args || true ;;
+    esac
+    if [ "$distro_id" = "debian" ] || [ "$distro_id" = "ubuntu" ]; then
+        ${cmd} autoremove 2>/dev/null
     fi
 }
 
