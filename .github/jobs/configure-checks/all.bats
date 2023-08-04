@@ -170,27 +170,27 @@ compile_assertions_finished () {
     assert_line " * LDFLAGS.............:  -fPIE -pie -Wl,-z,relro -Wl,-z,now"
 }
 
-#@test "Install GNU C only" {
-#    if [ "$distro_id" = "arch" ]; then
-#        # Arch does not have the cgroup library files
-#        skip
-#    fi
-#    if [ "$distro_id" = "opensuse-leap" ]; then
-#        # Arch does not have the cgroup library files
-#        skip
-#    fi
-#    setup_user
-#    repo-remove clang g++
-#    repo-install gcc libcgroup-dev
-#    compiler_assertions gcc ''
-#    assert_line "checking for gcc... gcc"
-#    assert_line "checking whether gcc accepts -g... yes"
-#    if [ "$distro_id" != "opensuse-leap" ]; then
-#        # The `gcc` packaged here is actually capable of preprocessing C++
-#        assert_line "configure: error: C++ preprocessor \"/lib/cpp\" fails sanity check"
-#    fi
-#}
-#
+@test "Install GNU C only" {
+    if [ "$distro_id" = "arch" ]; then
+        # Arch does not have the cgroup library files
+        skip
+    fi
+    if [ "$distro_id" = "opensuse-leap" ]; then
+        # Arch does not have the cgroup library files
+        skip
+    fi
+    setup_user
+    repo-remove clang g++
+    repo-install gcc libcgroup-dev
+    compiler_assertions gcc ''
+    assert_line "checking for gcc... gcc"
+    assert_line "checking whether gcc accepts -g... yes"
+    if [ "$distro_id" != "opensuse-leap" ]; then
+        # The `gcc` packaged here is actually capable of preprocessing C++
+        assert_line "configure: error: C++ preprocessor \"/lib/cpp\" fails sanity check"
+    fi
+}
+
 #@test "Install GNU C++ only" {
 #    # This does work due to dependencies
 #    if [ "$distro_id" = "opensuse-leap" ] || [ "$distro_id" = "arch" ]; then
