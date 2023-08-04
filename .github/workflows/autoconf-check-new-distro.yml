@@ -1,0 +1,62 @@
+name: Check autoconf (New distros)
+on:
+  push:
+
+jobs:
+  suse-family:
+    strategy:
+      matrix:
+        version: [latest]
+        os: [opensuse/leap]
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ matrix.os }}:${{ matrix.version }}
+    steps:
+      - name: Install git so we get the .github directory
+        run: zypper install -y git
+      - uses: actions/checkout@v3
+      - name: Setup image and run bats tests
+        run: .github/jobs/configure-checks/setup_configure_image.sh
+
+  arch-family:
+    strategy:
+      matrix:
+        version: [latest]
+        os: [archlinux]
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ matrix.os }}:${{ matrix.version }}
+    steps:
+      - name: Install git so we get the .github directory
+        run: pacman --noconfirm -Syu git
+      - uses: actions/checkout@v3
+      - name: Setup image and run bats tests
+        run: .github/jobs/configure-checks/setup_configure_image.sh
+
+  alpine-family:
+    strategy:
+      matrix:
+        version: [latest]
+        os: [alpine]
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ matrix.os }}:${{ matrix.version }}
+    steps:
+      - name: Install git so we get the .github directory
+        run: apk add git
+      - uses: actions/checkout@v3
+      - name: Setup image and run bats tests
+        run: .github/jobs/configure-checks/setup_configure_image.sh
+
+  # This is very slow, its kept as demonstration for now.
+  #gentoo-family:
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    - name: Install git so we get the .github directory
+  #      run: sudo apt-get update; sudo apt-get install -y git
+  #    - uses: actions/checkout@v3
+  #    - name: Setup image and run bats tests
+  #      run: |
+  #        set -x
+  #        docker create -v /var/db/repos/gentoo --name myportagesnapshot gentoo/portage:latest /bin/true
+  #        docker run --privileged --interactive --volumes-from myportagesnapshot -v $(pwd):/domjudge gentoo/stage3:latest /domjudge/.github/jobs/configure-checks/setup_configure_image.sh
