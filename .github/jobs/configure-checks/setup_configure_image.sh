@@ -13,7 +13,12 @@ case $distro_id in
     "alpine")
         apk add bats autoconf automake make pkgconf;;
     "arch")
-        pacman --noconfirm -Syu bash-bats autoconf automake make ;;
+        # Based on: https://www.tecmint.com/install-yay-aur-helper-in-arch-linux-and-manjaro/
+        pacman --noconfirm -Syu --needed base-devel bash-bats autoconf automake make git
+        useradd -m packageuser; chown packageuser:packageuser /opt
+        echo "packageuser ALL = (ALL) NOPASSWD: ALL" > /etc/sudoers.d/packageuser
+        su packageuser -c "cd /opt; git clone https://aur.archlinux.org/yay-git.git; \
+        cd yay-git; makepkg --noconfirm -si" ;;
     "gentoo")
         emerge bats autoconf automake 2>/dev/zero 1>/dev/zero
         cd /domjudge ;;

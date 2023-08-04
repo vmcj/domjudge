@@ -15,7 +15,7 @@ case $distro_id in
     opensuse*)
         cmd="zypper -n" ;;
     "arch")
-        cmd="pacman --noconfirm" ;;
+        cmd="yay --noconfirm" ;;
     "alpine")
         cmd="apk" ;;
     "gentoo")
@@ -37,7 +37,7 @@ translate () {
             args=${args/clang/clang15}
             ;;
         "arch")
-            args=${args/libcgroup-dev/linux-headers}
+            args=${args/libcgroup-dev/libcgroup}
             args=${args/apache2/apache}
             args=${args/g++/}
             ;;
@@ -171,14 +171,6 @@ compile_assertions_finished () {
 }
 
 @test "Install GNU C only" {
-    if [ "$distro_id" = "arch" ]; then
-        # Arch does not have the cgroup library files
-        skip
-    fi
-    if [ "$distro_id" = "opensuse-leap" ]; then
-        # Arch does not have the cgroup library files
-        skip
-    fi
     setup_user
     repo-remove clang g++
     repo-install gcc libcgroup-dev
