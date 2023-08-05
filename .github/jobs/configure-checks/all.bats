@@ -15,7 +15,7 @@ case $distro_id in
     opensuse*)
         cmd="zypper -n" ;;
     "arch")
-        cmd="yay --noconfirm" ;;
+        cmd="sudo -u packageuser yay --noconfirm" ;;
     "alpine")
         cmd="apk" ;;
     "gentoo")
