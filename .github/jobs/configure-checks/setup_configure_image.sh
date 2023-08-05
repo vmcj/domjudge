@@ -19,12 +19,8 @@ case $distro_id in
         echo "packageuser ALL = (ALL) NOPASSWD: ALL" > /etc/sudoers.d/packageuser
         su packageuser -c "cd /opt; git clone https://aur.archlinux.org/yay-git.git; \
         cd yay-git; makepkg --noconfirm -si"
-        sudo -u packageuser yay --noconfirm -Rs base-devel || true
-        sudo -u packageuser yay --noconfirm -Rs gcc || true
-        sudo -u packageuser yay --noconfirm -Syu gcc || true
-        sudo -u packageuser yay --noconfirm -Rs gcc || true
-        sudo -u packageuser yay --noconfirm -Syu gcc || true
         sudo -u packageuser yay --noconfirm -Syu libcgroup
+        sudo -u packageuser yay --noconfirm -Rs base-devel || true
         ;;
     "gentoo")
         emerge bats autoconf automake 2>/dev/zero 1>/dev/zero

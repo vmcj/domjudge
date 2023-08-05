@@ -87,7 +87,7 @@ repo-install () {
         "alpine")
             $cmd add $args ;;
         "arch")
-            $cmd -Syu $args ;;
+            $cmd -Syu $args 2>/dev/zero 1>/dev/zero;;
         "gentoo")
             $cmd $args ;;
         *)
@@ -102,7 +102,7 @@ repo-remove () {
             $cmd del $args ;;
         "arch")
             for pack in $args; do
-                $cmd -Rs $pack || true
+                ($cmd -Rs $pack 2>/dev/zero || true) 1>/dev/zero
             done ;;
         "gentoo")
             $cmd --depclean $args ;;
@@ -177,30 +177,30 @@ compile_assertions_finished () {
     compiler_assertions gcc ''
     assert_line "checking for gcc... gcc"
     assert_line "checking whether gcc accepts -g... yes"
-    if [ "$distro_id" != "opensuse-leap" ]; then
+    if [ "$distro_id" != "opensuse-leap" ] || [ "$distro_id" != "arch" ]; then
         # The `gcc` packaged here is actually capable of preprocessing C++
         assert_line "configure: error: C++ preprocessor \"/lib/cpp\" fails sanity check"
     fi
 }
 
-#@test "Install GNU C++ only" {
-#    # This does work due to dependencies
-#    if [ "$distro_id" = "opensuse-leap" ] || [ "$distro_id" = "arch" ]; then
-#        # The `gcc` packaged here is actually capable of processing C++
-#        skip
-#    fi
-#    if [ "$distro_id" = "alpine" ]; then
-#        # Due to reordering we now find gcc first
-#        skip
-#    fi
-#    repo-remove clang gcc
-#    repo-install g++ libcgroup-dev
-#    compiler_assertions gcc g++
-#    assert_line "checking for gcc... gcc"
-#    assert_line "checking for g++... g++"
-#    compile_assertions_finished
-#}
-#
+@test "Install GNU C++ only" {
+    # This does work due to dependencies
+    #if [ "$distro_id" = "opensuse-leap" ] || [ "$distro_id" = "arch" ]; then
+    #    # The `gcc` packaged here is actually capable of processing C++
+    #    skip
+    #fi
+    #if [ "$distro_id" = "alpine" ]; then
+    #    # Due to reordering we now find gcc first
+    #    skip
+    #fi
+    repo-remove clang gcc
+    repo-install g++ libcgroup-dev
+    compiler_assertions gcc g++
+    assert_line "checking for gcc... gcc"
+    assert_line "checking for g++... g++"
+    compile_assertions_finished
+}
+
 #@test "Install GNU C/C++ compilers" {
 #    # The test above already does this
 #    # repo-remove clang
