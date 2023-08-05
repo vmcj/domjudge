@@ -9,7 +9,7 @@ case $distro_id in
     "fedora")
         dnf install pkg-config make bats autoconf automake util-linux -y ;;
     opensuse-*)
-        zypper install -y bats autoconf automake make shadow ;;
+        zypper install -y bats autoconf automake make apache ;;
     "alpine")
         apk add bats autoconf automake make pkgconf;;
     "arch")
