@@ -172,8 +172,8 @@ compile_assertions_finished () {
 
 @test "Install GNU C only" {
     setup_user
-    repo-remove clang g++
-    repo-install gcc libcgroup-dev
+    run repo-remove clang g++
+    run repo-install gcc libcgroup-dev
     compiler_assertions gcc ''
     assert_line "checking for gcc... gcc"
     assert_line "checking whether gcc accepts -g... yes"
