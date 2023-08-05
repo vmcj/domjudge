@@ -18,7 +18,13 @@ case $distro_id in
         useradd -m packageuser; chown packageuser:packageuser /opt
         echo "packageuser ALL = (ALL) NOPASSWD: ALL" > /etc/sudoers.d/packageuser
         su packageuser -c "cd /opt; git clone https://aur.archlinux.org/yay-git.git; \
-        cd yay-git; makepkg --noconfirm -si" ;;
+        cd yay-git; makepkg --noconfirm -si"
+        yay --noconfirm -Rs gcc || true
+        yay --noconfirm -Syu gcc || true
+        yay --noconfirm -Rs gcc || true
+        yay --noconfirm -Syu gcc || true
+        yay --noconfirm -Syu libcgroup
+        ;;
     "gentoo")
         emerge bats autoconf automake 2>/dev/zero 1>/dev/zero
         cd /domjudge ;;
