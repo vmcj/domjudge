@@ -44,9 +44,6 @@ done
 DEF_CXFLAGS="-g -O2"
 DEF_LDFLAGS=""
 
-# Checks for clang/gcc. We also do this later but the next step will otherwise not find clang
-AC_PROG_CC([gcc cc cl.exe clang])
-
 AX_APPEND_COMPILE_FLAGS(-Wall,               DEF_CXFLAGS)
 AX_APPEND_COMPILE_FLAGS(-fstack-protector,   DEF_CXFLAGS)
 AX_APPEND_COMPILE_FLAGS(-fPIE,               DEF_CXFLAGS)
@@ -253,8 +250,8 @@ fi
 AC_MSG_RESULT($BASEURL)
 
 # Checks for programs.
-AC_PROG_CXX([clang gcc])
-AC_PROG_CC([clang gcc])
+AC_PROG_CXX
+AC_PROG_CC
 AC_PROG_CXXCPP
 AC_PROG_CPP
 AC_PROG_INSTALL
