@@ -87,7 +87,7 @@ repo-install () {
         "alpine")
             $cmd add $args ;;
         "arch")
-            $cmd -Syu $args 2>/dev/zero 1>/dev/zero;;
+            $cmd -Syu $args 2>>/tmp/bats_out 1>>/tmp/bats_out;;
         "gentoo")
             $cmd $args ;;
         *)
@@ -102,7 +102,7 @@ repo-remove () {
             $cmd del $args ;;
         "arch")
             for pack in $args; do
-                ($cmd -Rs $pack 2>/dev/zero || true) 1>/dev/zero
+                ($cmd -Rs $pack || true) 2>>/tmp/bats_out 1>>/tmp/bats_out
             done ;;
         "gentoo")
             $cmd --depclean $args ;;
@@ -193,8 +193,8 @@ compile_assertions_finished () {
     #    # Due to reordering we now find gcc first
     #    skip
     #fi
-    repo-remove clang gcc
-    repo-install g++ libcgroup-dev
+    run repo-remove clang gcc
+    run repo-install g++ libcgroup-dev
     compiler_assertions gcc g++
     assert_line "checking for gcc... gcc"
     assert_line "checking for g++... g++"
