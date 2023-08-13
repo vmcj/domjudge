@@ -26,6 +26,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity(fields: 'externalid')]
 class Language extends BaseApiEntity
 {
+    final public const COMPILER_DEFAULT_VERSION = '{compiler_command} --version';
+    final public const RUNNER_DEFAULT_VERSION = '{runner_command} --version';
+
     #[ORM\Id]
     #[ORM\Column(length: 32, options: ['comment' => 'Language ID (string)'])]
     #[Assert\NotBlank]
@@ -287,9 +290,11 @@ class Language extends BaseApiEntity
             }
         }
         if (!empty($this->getCompilerVersionCommand())) {
-            $ret['version_command'] = $this->getCompilerVersionCommand();
-            if (!empty($this->getCompilerVersion())) {
-                $ret['version'] = $this->getCompilerVersion();
+            if (!empty($this->getCompilerCommand()) || ($this->getCompilerVersionCommand() != self::COMPILER_DEFAULT_VERSION)) {
+                $ret['version_command'] = $this->getCompilerVersionCommand();
+                if (!empty($this->getCompilerVersion())) {
+                    $ret['version'] = $this->getCompilerVersion();
+                }
             }
         }
         return $ret;
@@ -311,9 +316,11 @@ class Language extends BaseApiEntity
             }
         }
         if (!empty($this->getRunnerVersionCommand())) {
-            $ret['version_command'] = $this->getRunnerVersionCommand();
-            if (!empty($this->getRunnerVersion())) {
-                $ret['version'] = $this->getRunnerVersion();
+            if (!empty($this->getRunnerCommand()) || ($this->getRunnerVersionCommand() != self::RUNNER_DEFAULT_VERSION)) {
+                $ret['version_command'] = $this->getRunnerVersionCommand();
+                if (!empty($this->getRunnerVersion())) {
+                    $ret['version'] = $this->getRunnerVersion();
+                }
             }
         }
         return $ret;

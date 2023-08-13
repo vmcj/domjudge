@@ -99,12 +99,12 @@ class LanguageType extends AbstractExternalIdEntityType
         $builder->add('compilerVersionCommand', TextType::class, [
             'label' => 'Compiler version command',
             'required' => false,
-            'data' => $options['data']->getCompilerVersionCommand() ?: '{compiler_command} --version'
+            'data' => $options['data']->getCompilerVersionCommand() ?: Language::COMPILER_DEFAULT_VERSION
         ]);
         $builder->add('runnerVersionCommand', TextType::class, [
             'label' => 'Runner version command',
             'required' => false,
-            'data' => $options['data']->getRunnerVersionCommand() ?: '{runner_command} --version'
+            'data' => $options['data']->getRunnerVersionCommand() ?: Language::RUNNER_DEFAULT_VERSION
         ]);
         $builder->add('save', SubmitType::class);
 
