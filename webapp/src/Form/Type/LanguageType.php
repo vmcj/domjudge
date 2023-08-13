@@ -80,13 +80,31 @@ class LanguageType extends AbstractExternalIdEntityType
                 'No' => false,
             ],
         ]);
+        $builder->add('compilerCommand', TextType::class, [
+            'label' => 'Compiler command',
+            'required' => false,
+        ]);
+        $builder->add('compilerCommandArgs', TextType::class, [
+            'label' => 'Compiler command arguments',
+            'required' => false,
+        ]);
+        $builder->add('runnerCommand', TextType::class, [
+            'label' => 'Runner command',
+            'required' => false,
+        ]);
+        $builder->add('runnerCommandArgs', TextType::class, [
+            'label' => 'Runner command arguments',
+            'required' => false,
+        ]);
         $builder->add('compilerVersionCommand', TextType::class, [
             'label' => 'Compiler version command',
             'required' => false,
+            'data' => $options['data']->getCompilerVersionCommand() ?: '{compiler_command} --version'
         ]);
         $builder->add('runnerVersionCommand', TextType::class, [
             'label' => 'Runner version command',
             'required' => false,
+            'data' => $options['data']->getRunnerVersionCommand() ?: '{runner_command} --version'
         ]);
         $builder->add('save', SubmitType::class);
 
