@@ -26,8 +26,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity(fields: 'externalid')]
 class Language extends BaseApiEntity
 {
+    final public const COMPILER_COMMAND         = '{compiler_command}';
+    final public const RUNNER_COMMAND           = '{runner_command}';
     final public const COMPILER_DEFAULT_VERSION = '{compiler_command} --version';
-    final public const RUNNER_DEFAULT_VERSION = '{runner_command} --version';
+    final public const RUNNER_DEFAULT_VERSION   = '{runner_command} --version';
 
     #[ORM\Id]
     #[ORM\Column(length: 32, options: ['comment' => 'Language ID (string)'])]
@@ -493,6 +495,16 @@ class Language extends BaseApiEntity
         /* In the past the compile/run script had the run/compile command
            hardcoded in the script. To keep the old annotations we reuse that logic
            but inject the command + arguments by replacing a templated string. */
-        return (bool)$this->getCompileExecutable();
+
+        $executable = $this->getCompileExecutable();
+        if ($executable) {
+            foreach($executable->getImmutableExecutable()->getFiles() as $file) {
+                $fileContent = $file->getFileContent();
+                if (!(str_contains($fileContent, self::COMPILER_COMMAND) || str_contains($fileContent, self::RUNNER_COMMAND))) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
