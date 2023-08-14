@@ -488,4 +488,11 @@ class Language extends BaseApiEntity
             default => $this->getLangid(),
         };
     }
+
+    public function detectLegacyNonCLICSRunnerCommandUsed(): bool {
+        /* In the past the compile/run script had the run/compile command
+           hardcoded in the script. To keep the old annotations we reuse that logic
+           but inject the command + arguments by replacing a templated string. */
+        return (bool)$this->getCompileExecutable();
+    }
 }

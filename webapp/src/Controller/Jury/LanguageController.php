@@ -155,6 +155,9 @@ class LanguageController extends BaseController
             $this->em->persist($language);
             $this->saveEntity($this->em, $this->eventLogService, $this->dj, $language,
                               $language->getLangid(), true);
+            if ($language->detectLegacyNonCLICSRunnerCommandUsed()) {
+                $this->addFlash('warning', 'Language executable is using hardcoded compiler/runner command + arguments.');
+            }
             return $this->redirectToRoute('jury_language', ['langId' => $language->getLangid()]);
         }
 
@@ -264,6 +267,9 @@ class LanguageController extends BaseController
                               $language->getLangid(), false);
             if ($language->getAllowJudge()) {
                 $this->dj->unblockJudgeTasksForLanguage($langId);
+            }
+            if ($language->detectLegacyNonCLICSRunnerCommandUsed()) {
+                $this->addFlash('warning', 'Language executable is using hardcoded compiler/runner command + arguments.');
             }
             return $this->redirectToRoute('jury_language', ['langId' => $language->getLangid()]);
         }
