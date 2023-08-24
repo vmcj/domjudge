@@ -203,10 +203,34 @@ tbody td:not(.testcase-results) {
     height: 0;
 }
 
-tbody td:not(.testcase-results) a {
-    width: 100%;
-    height: 100%;
-    padding: 0 4px 0 4px;
+@supports (text-size-adjust:none) {
+    .table-full-clickable-cell tbody td:not(.testcase-results) {
+        padding: 0;
+        height: 0;
+    }
+
+    .table-full-clickable-cell tbody td:not(.testcase-results) a {
+        width: 100%;
+        height: 100%;
+        padding: 1px .25rem;
+        /*display: block;*/
+    }
+
+    .table-full-clickable-cell tbody td:not(.testcase-results) a.btn-sm {
+        padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+    }
+
+    table.table-full-clickable-cell thead.thead-light tr th.table-button-head-right {
+        padding-left: 0;
+    }
+
+    table.table-full-clickable-cell thead.thead-light tr th.table-button-head-left {
+        padding-right: 0.5rem;
+    }
+
+    .table-full-clickable-cell tbody td:not(.testcase-results) a {
+        background-color: blueviolet;
+    }
 }
 
 /* This should be last to make sure the browserhack is applied after the initial properties */
