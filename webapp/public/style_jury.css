@@ -228,22 +228,26 @@ table.table-full-clickable-cell tr .table-button-head-right-right{
 
 @-moz-document url-prefix() {
     .table-full-clickable-cell tbody td:not(.testcase-results) {
-        /*padding: 0;*/
         height: 100%;
+        min-height: 100%;
     }
 
-    .table-full-clickable-cell tbody tr td:not(.testcase-results) a, .data-table tbody tr td:not(.testcase-results) a:hover {
-        /*border-left: 4px solid transparent;
-        border-right: 4px solid transparent;*/
-        /*display: inline-table;*/
-        /*width: 100%;
+    .table-full-clickable-cell tbody tr td:not(.testcase-results) a:not(.btn-sm), .table-full-clickable-cell tbody tr td:not(.testcase-results) a:hover:not(.btn-sm) {
         height: 100%;
+        width: 100%;
+        /* inline-table -> Might work */
+        /* list-item -> Might work */
+        /* none -> changes a lot, but nothing is shown */
+        /* table -> all padding is lost */
+        /* table-caption -> height is lost (same as inline-table?)*/
+        /* table-footer-group -> width+height is lost */
+        display: table;
         border: 1px solid transparent;
         border-left: .25rem solid transparent;
-        border-right: .25rem solid transparent;*/
+        border-right: .25rem solid transparent;
     }
 
     .table-full-clickable-cell tbody td:not(.testcase-results) a {
-        background-color: limegreen;
+        /*background-color: limegreen;*/
     }
 }
