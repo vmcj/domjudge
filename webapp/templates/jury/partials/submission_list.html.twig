@@ -317,7 +317,7 @@
             {%- endif %}
             {%- if showTestcases is defined and showTestcases %}
 
-                <th scope="col" class="not-sortable not-searchable">test results</th>
+                <th scope="col" class="not-sortable not-searchable table-button-head-right-right">test results</th>
             {%- endif %}
 
         </tr>
@@ -458,7 +458,7 @@
                 {%- endif %}
                 {%- if showTestcases is defined and showTestcases %}
 
-                    <td class="testcase-results{{ tdExtraClass }}">
+                    <td class="testcase-results{{ tdExtraClass }} table-button-head-right-right">
                         {{- submission | testcaseResults -}}
                     </td>
                 {%- endif %}

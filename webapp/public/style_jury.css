@@ -203,21 +203,47 @@ table.submissions-table {
     height: 0;
 }
 
+.table-full-clickable-cell tbody td:not(.testcase-results) a {
+    width: 100%;
+    height: 100%;
+    padding: 1px .25rem;
+}
+
+.table-full-clickable-cell tbody td:not(.testcase-results) a.btn-sm {
+    padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+}
+
+/*table.table-full-clickable-cell thead.thead-light tr th.table-button-head-right {
+    padding-left: 0;
+}
+
+table.table-full-clickable-cell thead.thead-light tr th.table-button-head-left {
+    padding-right: 0.5rem;
+}
+
+.table-full-clickable-cell tbody td:not(.testcase-results) a {
+    background-color: blueviolet;
+}*/
+
 @supports (text-size-adjust:none) {
     .table-full-clickable-cell tbody td:not(.testcase-results) {
         padding: 0;
         height: 0;
     }
 
-    .table-full-clickable-cell tbody td:not(.testcase-results) a {
+    .table-full-clickable-cell tbody td:not(.testcase-results2) a {
         width: 100%;
         height: 100%;
         padding: 1px .25rem;
-        /*display: block;*/
+        display: block; /* This is needed to make cells with .showlink fully clickable */
     }
 
-    .table-full-clickable-cell tbody td:not(.testcase-results) a.btn-sm {
-        padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+    .table-full-clickable-cell tbody td:not(.testcase-results2) a.btn-sm {
+        padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+    }
+
+    .table-full-clickable-cell tbody td {
+        border: 1px solid dashed;
     }
 
     table.table-full-clickable-cell thead.thead-light tr th.table-button-head-right {
@@ -228,6 +254,10 @@ table.submissions-table {
         padding-right: 0.5rem;
     }
 
+    table.table-full-clickable-cell tr .table-button-head-right-right{
+        padding-left: 0.5rem;
+    }
+
     .table-full-clickable-cell tbody td:not(.testcase-results) a {
         background-color: blueviolet;
     }
@@ -235,11 +265,6 @@ table.submissions-table {
 
 /* This should be last to make sure the browserhack is applied after the initial properties */
 @-moz-document url-prefix() {
-    /*.table-full-clickable-cell tbody td:not(.testcase-results) {
-        padding: inherit;
-        height: inherit;
-    }*/
-
     .table-full-clickable-cell tbody td:not(.testcase-results) {
         /*padding: 0;*/
         height: 100%;
@@ -247,13 +272,13 @@ table.submissions-table {
 
     .table-full-clickable-cell tbody tr td:not(.testcase-results) a, .data-table tbody tr td:not(.testcase-results) a:hover {
         /*border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
-        display: inline-table;
-        width: 100%;
-        height: 100%;*/
+        border-right: 4px solid transparent;*/
+        /*display: inline-table;*/
+        /*width: 100%;
+        height: 100%;
         border: 1px solid transparent;
         border-left: .25rem solid transparent;
-        border-right: .25rem solid transparent;
+        border-right: .25rem solid transparent;*/
     }
 
     .table-full-clickable-cell tbody td:not(.testcase-results) a {
