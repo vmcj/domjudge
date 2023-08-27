@@ -203,6 +203,10 @@ table.submissions-table {
     border-spacing: 0px 0px;
 }
 
+.table-full-clickable-cell tbody td:not(.testcase-results) {
+    padding: 0;
+}
+
 .table-full-clickable-cell tbody tr td:not(.testcase-results) a:not(.btn-sm), .table-full-clickable-cell tbody tr td:not(.testcase-results) a:hover:not(.btn-sm) {
     display: table;
 }
@@ -218,6 +222,7 @@ table.submissions-table {
     padding: 0.25rem 0.5rem 0.25rem 0.5rem;
 }
 
+/* This is to re-align the `claim` button on the submission list overview */
 table.table-full-clickable-cell thead.thead-light tr th.table-button-head-right {
     padding-left: 0;
 }
@@ -229,14 +234,9 @@ table.table-full-clickable-cell thead.thead-light tr th.table-button-head-left {
 table.table-full-clickable-cell tr .table-button-head-right-right{
     padding-left: 0.5rem;
 }
-
-.table-full-clickable-cell tbody td:not(.testcase-results) {
-    padding: 0;
-}
-
+/* This is to re-align the `claim` button on the submission list overview */
 
 /*
-
 .table-full-clickable-cell tbody td:not(.testcase-results) {
     padding: 0;
     height: 0;
