@@ -198,9 +198,13 @@ table.submissions-table {
     color: white;
 }
 
-.table-full-clickable-cell tbody td:not(.testcase-results) {
-    padding: 0;
-    height: 0;
+.table-full-clickable-cell {
+    border-collapse: separate; /* Because we need to set display:table for <a> we need to override this again */
+    border-spacing: 0px 0px;
+}
+
+.table-full-clickable-cell tbody tr td:not(.testcase-results) a:not(.btn-sm), .table-full-clickable-cell tbody tr td:not(.testcase-results) a:hover:not(.btn-sm) {
+    display: table;
 }
 
 .table-full-clickable-cell tbody td:not(.testcase-results) a {
@@ -226,43 +230,49 @@ table.table-full-clickable-cell tr .table-button-head-right-right{
     padding-left: 0.5rem;
 }
 
+.table-full-clickable-cell tbody td:not(.testcase-results) {
+    padding: 0;
+}
+
+
+/*
+
+.table-full-clickable-cell tbody td:not(.testcase-results) {
+    padding: 0;
+    height: 0;
+}
+
+.table-full-clickable-cell tbody td:not(.testcase-results) a {
+    width: 100%;
+    height: 100%;
+    padding: 1px .25rem;
+    display: block; /* This is needed to make cells with .showlink fully clickable */
+/*}
+
+.table-full-clickable-cell tbody td:not(.testcase-results) a.btn-sm {
+    padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+}
+
+table.table-full-clickable-cell thead.thead-light tr th.table-button-head-right {
+    padding-left: 0;
+}
+
+table.table-full-clickable-cell thead.thead-light tr th.table-button-head-left {
+    padding-right: 0.5rem;
+}
+
+table.table-full-clickable-cell tr .table-button-head-right-right{
+    padding-left: 0.5rem;
+}
+
 @-moz-document url-prefix() {
     .table-full-clickable-cell {
-        /*border-collapse: separate;
-        border-spacing: 0px 0px;
-        clear: both;
-        margin: 0;
-        max-width: none;
-        box-sizing: border-box;*/
-    }
-
-    .table-full-clickable-cell tbody td:not(.testcase-results) {
-        height: 100%;
-        /*margin: 0;
-        box-sizing: content-box;*/
+        border-collapse: separate; /* Because we need to set display:table for <a> we need to override this again */
+        /*border-spacing: 0px 0px;
     }
 
     .table-full-clickable-cell tbody tr td:not(.testcase-results) a:not(.btn-sm), .table-full-clickable-cell tbody tr td:not(.testcase-results) a:hover:not(.btn-sm) {
-        height: 100%;
-        width: 100%;
-        margin: 0;
-        /* inline-table -> Might work */
-        /* list-item -> Might work */
-        /* none -> changes a lot, but nothing is shown */
-        /* table -> all padding is lost */
-        /* table-caption -> height is lost (same as inline-table?)*/
-        /* table-footer-group -> width+height is lost */
         display: table;
-        /*border: 1px solid transparent;
-        border-left: .25rem solid transparent;
-        border-right: .25rem solid transparent;*/
-        /*padding: 0;*/ /* On submissions page we can't use the padding, but in /contests it does work? */
-    }
-
-    .table-full-clickable-cell tbody td:not(.testcase-results) a {
-        background-color: limegreen;
-    }
-    .table-full-clickable-cell tbody td:not(.testcase-results) {
-        background-color: lightblue;
     }
 }
+*/

@@ -43,7 +43,7 @@
         {% endif %}
     </div>
 
-    <table class="data-table table table-hover table-full-clickable-cell table{% if showExternalResult and showExternalTestcases %}-3{% endif %}-striped table-sm submissions-table dataTable">
+    <table class="data-table table table-hover table{% if showExternalResult and showExternalTestcases %}-3{% endif %}-striped table-sm submissions-table table-full-clickable-cell">
         <thead class="thead-light">
         <tr>
             {% if showExternalResult and showExternalTestcases %}
@@ -282,7 +282,6 @@
 
         </tbody>
     </table>
-    </div></div></div></div>
     <table class="data-table table table-hover table{% if showExternalResult and showExternalTestcases %}-3{% endif %}-striped table-sm submissions-table">
         <thead class="thead-light">
         <tr>
