@@ -228,19 +228,24 @@ table.table-full-clickable-cell tr .table-button-head-right-right{
 
 @-moz-document url-prefix() {
     .table-full-clickable-cell {
-        border-collapse: separate;
+        /*border-collapse: separate;
         border-spacing: 0px 0px;
         clear: both;
+        margin: 0;
+        max-width: none;
+        box-sizing: border-box;*/
     }
 
     .table-full-clickable-cell tbody td:not(.testcase-results) {
         height: 100%;
-        min-height: 100%;
+        /*margin: 0;
+        box-sizing: content-box;*/
     }
 
     .table-full-clickable-cell tbody tr td:not(.testcase-results) a:not(.btn-sm), .table-full-clickable-cell tbody tr td:not(.testcase-results) a:hover:not(.btn-sm) {
         height: 100%;
         width: 100%;
+        margin: 0;
         /* inline-table -> Might work */
         /* list-item -> Might work */
         /* none -> changes a lot, but nothing is shown */
@@ -256,5 +261,8 @@ table.table-full-clickable-cell tr .table-button-head-right-right{
 
     .table-full-clickable-cell tbody td:not(.testcase-results) a {
         background-color: limegreen;
+    }
+    .table-full-clickable-cell tbody td:not(.testcase-results) {
+        background-color: lightblue;
     }
 }
