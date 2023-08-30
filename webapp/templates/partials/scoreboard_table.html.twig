@@ -394,6 +394,8 @@
 
         .cl{{ colorClass }} {
             background-color: {{ color }};
+            box-shadow: -1px 0 0 0 silver inset,
+                        0 -1px 0 0 black inset;
         }
 
         {% set cMin = color|hexColorToRGBA(0) %}

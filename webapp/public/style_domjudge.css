@@ -652,11 +652,9 @@ blockquote {
     position: sticky;
     bottom: 0;
     box-shadow: -1px 0 0 0 silver inset,
-                0 2px 0 0 black,
-                0 -2px 0 0 black;
-    /* We get another line between the teamscore */
-    /*border: none;*/
+                0 1px 0 0 black;
     background: var(--background-color);
+    /* We get another line between the teamscore */
 }
 
 tbody.scoreboard-sortorder-body {
