@@ -647,3 +647,19 @@ blockquote {
     margin-right: 2em;
     font-weight: normal;
 }
+
+.summaryline td {
+    position: sticky;
+    bottom: 0;
+    box-shadow: -1px 0 0 0 silver inset,
+                0 2px 0 0 black,
+                0 -2px 0 0 black;
+    /* We get another line between the teamscore */
+    /*border: none;*/
+    background: var(--background-color);
+}
+
+tbody.scoreboard-sortorder-body {
+    position: relative;
+    z-index: 100;
+}
