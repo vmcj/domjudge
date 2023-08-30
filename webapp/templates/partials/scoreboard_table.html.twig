@@ -92,7 +92,7 @@
                 {% endif %}
                 <th title="problem {{ problem.problem.name }}" scope="col">
                     <a {% if link %}href="{{ link }}"{% endif %} target="{{ target }}">
-                        {{  problem | problemBadge }}
+                        {{  problem | problemBadge }}<small>+</small>
                         {% if showPoints %}
                             <span class='problempoints'>
                                 [{% if problem.points == 1 %}1 point{% else %}{{ problem.points }} points{% endif %}]

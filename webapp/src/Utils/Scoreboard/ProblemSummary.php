@@ -16,6 +16,9 @@ class ProblemSummary
     /** @var float[] */
     public array $bestTimes = [];
 
+    /** @var float[] */
+    public array $lastSolvedTimes = [];
+
     /** @var int[] */
     public array $bestRuntimes = [];
 
@@ -71,5 +74,21 @@ class ProblemSummary
         if ($runtime < $this->getBestRuntime($sortorder)) {
             $this->bestRuntimes[$sortorder] = $runtime;
         }
+    }
+
+    /**
+     * Get the last attempt time in minutes for the given sortorder.
+     */
+    public function getLastSolvedTimeInMinutes(int $sortorder): ?int
+    {
+        if (isset($this->lastSolvedTimes[$sortorder])) {
+            return ((int)($this->lastSolvedTimes[$sortorder] / 60));
+        }
+        return null;
+    }
+
+    public function updateLastSolvedTime(int $sortorder, string|float $solvedTime): void
+    {
+        $this->lastSolvedTimes[$sortorder] = $solvedTime;
     }
 }

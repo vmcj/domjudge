@@ -1,6 +1,6 @@
 {% if limitToTeamIds is null %}
     {% if showTeamSubmissions or jury %}
-        <tr style="border-top: 2px solid black;">
+        <tr style="border-top: 2px solid black;" class="summaryline">
             {% set summaryColspan = 3 %}
             {% if showAffiliationLogos %}
                 {% set summaryColspan = summaryColspan + 1 %}
@@ -21,7 +21,7 @@
             {% endif %}
             {% for problem in scoreboard.problems %}
                 {% set summary = scoreboard.summary.problem(problem.probid) %}
-                <td style="text-align: left;">
+                <td style="text-align: left; vertical-align: top;">
                     {% set link = null %}
                     {% if jury %}
                         {% set link = path('jury_problem', {'probId': problem.probid}) %}
@@ -53,6 +53,18 @@
                                 n/a
                             {% endif %}
                         </span>
+                        {% if summary.bestTimeInMinutes(sortOrder) is not null %}
+                            <br/>
+
+                            <i class="fas fa-flag-checkered fa-fw"></i>
+                            <span style="font-size:90%;" title="last attempted">
+                                {% if summary.lastSolvedTimeInMinutes(sortOrder) is not null %}
+                                    {{ summary.lastSolvedTimeInMinutes(sortOrder) }}min
+                                {% else %}
+                                    n/a
+                                {% endif %}
+                            </span>
+                        {% endif %}
                     </a>
                 </td>
             {% endfor %}

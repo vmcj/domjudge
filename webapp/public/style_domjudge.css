@@ -254,7 +254,26 @@ img.affiliation-logo {
     background: var(--background-color);
     position: sticky;
     top: 0;
+    z-index: 2;
+}
+
+.summaryline {
+    font-variant: small-caps;
+    border-bottom: 2px solid black;
+    white-space: nowrap;
+}
+.summaryline td {
+    position: sticky;
+    bottom: 0;
+    height: 100px;
+    top: 90px;
     z-index: 1;
+    text-align: center;
+    box-shadow: -1px 0 0 0 silver inset,
+                0 2px 0 0 black,
+                0 -2px 0 0 black;
+    border: none;
+    background: var(--background-color);
 }
 
 .problempoints {

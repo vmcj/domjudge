@@ -134,6 +134,7 @@ class Scoreboard
      */
     protected function calculateScoreboard(): void
     {
+        dump("Triggered after submit.");
         // Calculate matrix and update scores.
         $this->matrix = [];
         foreach ($this->scoreCache as $scoreRow) {
@@ -236,6 +237,7 @@ class Scoreboard
                     $problemMatrixItem->numSubmissionsPending ?? 0,
                     $problemMatrixItem->isCorrect ? 1 : 0
                 );
+                $problemSummary->updateLastSolvedTime($sortOrder, $problemMatrixItem->time);
                 if ($problemMatrixItem->isFirst) {
                     $problemSummary->updateBestTime($sortOrder, $problemMatrixItem->time);
                 }
