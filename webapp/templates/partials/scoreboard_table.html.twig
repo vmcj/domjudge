@@ -96,7 +96,7 @@
         {% endif %}
     </tr>
     </thead>
-    <tbody>
+    <tbody style="z-index: 100;">
     {% set previousSortOrder = -1 %}
     {% set previousTeam = null %}
     {% set backgroundColors = {"#FFFFFF": 1} %}
@@ -107,6 +107,8 @@
             {% if previousSortOrder != -1 %}
                 {# Output summary of previous sort order #}
                 {% include 'partials/scoreboard_summary.html.twig' with {sortOrder: previousSortOrder} %}
+                </tbody>
+                <tbody style="z-index: {{ 100-score.team.category.sortorder }};">
             {% endif %}
             {% set classes = classes | merge(['sortorderswitch']) %}
             {% set previousSortOrder = score.team.category.sortorder %}
