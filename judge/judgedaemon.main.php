@@ -405,28 +405,38 @@ function fetch_executable_internal(
                 if ($execlang === false) {
                     return [null, "executable must either provide an executable file named 'build' or a C/C++/Java or Python file.", null];
                 }
-                switch ($execlang) {
-                    case 'c':
-                        $buildscript .= "gcc -Wall -O2 -std=gnu11 $source -o run -lm\n";
-                        break;
-                    case 'cpp':
-                        $buildscript .= "g++ -Wall -O2 -std=gnu++17 $source -o run\n";
-                        break;
-                    case 'java':
-                        $buildscript .= "javac -cp . -d . $source\n";
-                        $buildscript .= "echo '#!/bin/sh' > run\n";
-                        // no main class detection here
-                        $buildscript .= "echo 'COMPARE_DIR=\$(dirname \"\$0\")' >> run\n";
-                        $mainClass = basename($unescapedSource, '.java');
-                        $buildscript .= "echo 'java -cp \"\$COMPARE_DIR\" $mainClass \"\\\$@\"' >> run\n";
-                        $buildscript .= "chmod +x run\n";
-                        break;
-                    case 'py':
-                        $buildscript .= "echo '#!/bin/sh' > run\n";
-                        $buildscript .= "echo 'COMPARE_DIR=\$(dirname \"\$0\")' >> run\n";
-                        $buildscript .= "echo 'python3 \$COMPARE_DIR/$source' \"\\\$@\" >> run\n";
-                        $buildscript .= "chmod +x run\n";
-                        break;
+                $buildscript = null;
+                var_dump($execlang);
+                $language_spec = dj_json_decode(request('languages/' . $execlang, 'GET'));
+                if (isset($language_spec['compiler']['command'])) {
+                    $buildscript = $language_spec['compiler']['command'];
+                    if (isset(($language_spec['compiler']['args']))) {
+                        $buildscript .= $language_spec['compiler']['args'];
+                    }
+                } else {
+                    switch ($execlang) {
+                        case 'c':
+                            $buildscript .= "gcc -Wall -O2 -std=gnu11 $source -o run -lm\n";
+                            break;
+                        case 'cpp':
+                            $buildscript .= "g++ -Wall -O2 -std=gnu++17 $source -o run\n";
+                            break;
+                        case 'java':
+                            $buildscript .= "javac -cp . -d . $source\n";
+                            $buildscript .= "echo '#!/bin/sh' > run\n";
+                            // no main class detection here
+                            $buildscript .= "echo 'COMPARE_DIR=\$(dirname \"\$0\")' >> run\n";
+                            $mainClass = basename($unescapedSource, '.java');
+                            $buildscript .= "echo 'java -cp \"\$COMPARE_DIR\" $mainClass \"\\\$@\"' >> run\n";
+                            $buildscript .= "chmod +x run\n";
+                            break;
+                        case 'py':
+                            $buildscript .= "echo '#!/bin/sh' > run\n";
+                            $buildscript .= "echo 'COMPARE_DIR=\$(dirname \"\$0\")' >> run\n";
+                            $buildscript .= "echo 'python3 \$COMPARE_DIR/$source' \"\\\$@\" >> run\n";
+                            $buildscript .= "chmod +x run\n";
+                            break;
+                    }
                 }
                 if (file_put_contents($execbuildpath, $buildscript) === false) {
                     error("Could not write file 'build' in $execbuilddir");
