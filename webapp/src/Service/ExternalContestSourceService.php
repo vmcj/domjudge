@@ -1491,6 +1491,18 @@ class ExternalContestSourceService
                 message: $message,
                 forceImportInvalid: !$submissionDownloadSucceeded
             );
+            // Clean up the ZIP.
+            if (isset($zip)) {
+                $zip->close();
+            }
+            if ($shouldUnlink) {
+                unlink($zipFile);
+            }
+
+            // Clean up the temporary submission files.
+            foreach ($filesToSubmit as $file) {
+                unlink($file->getRealPath());
+            }
             if (!$submission) {
                 $this->addOrUpdateWarning($eventId, $entityType, $data['id'], ExternalSourceWarning::TYPE_SUBMISSION_ERROR, [
                     'message' => 'Cannot add submission: ' . $message,
@@ -1508,18 +1520,6 @@ class ExternalContestSourceService
                 return;
             }
 
-            // Clean up the ZIP.
-            if (isset($zip)) {
-                $zip->close();
-            }
-            if ($shouldUnlink) {
-                unlink($zipFile);
-            }
-
-            // Clean up the temporary submission files.
-            foreach ($filesToSubmit as $file) {
-                unlink($file->getRealPath());
-            }
         }
 
         if ($submissionDownloadSucceeded) {
