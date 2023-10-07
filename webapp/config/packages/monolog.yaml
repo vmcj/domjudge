@@ -9,6 +9,7 @@ monolog:
             type: stream
             path: "%kernel.logs_dir%/event-feed-importer.log"
             channels: ["event-feed-importer"]
+            formatter: monolog.formatter.session_request
 
 when@dev:
     monolog:
