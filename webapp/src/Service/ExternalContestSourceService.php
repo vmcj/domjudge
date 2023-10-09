@@ -1317,7 +1317,6 @@ class ExternalContestSourceService
         }
 
         $submissionDownloadSucceeded = true;
-        $shouldUnlink = false;
 
         // If the submission is found, we can only update the valid status.
         // If any of the other fields are different, this is an error.
@@ -1399,6 +1398,7 @@ class ExternalContestSourceService
                 if (file_exists($zipUrl)) {
                     // Yes, use it directly
                     $zipFile      = $zipUrl;
+                    $shouldUnlink = false;
                 } else {
                     // No, download the ZIP file.
                     $shouldUnlink = true;
