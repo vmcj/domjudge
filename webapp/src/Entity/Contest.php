@@ -294,6 +294,9 @@ class Contest extends BaseApiEntity implements AssetEntityInterface
     #[Serializer\Exclude]
     private bool $clearBanner = false;
 
+    #[Serializer\Exclude]
+    private bool $clearFullStatement = false;
+
     #[ORM\Column(
         options: ['comment' => 'Is this contest open to all teams?', 'default' => 1]
     )]
@@ -1349,21 +1352,33 @@ class Contest extends BaseApiEntity implements AssetEntityInterface
         return $this->clearBanner;
     }
 
+    public function isClearFullStatement(): bool
+    {
+        return $this->clearFullStatement;
+    }
+
     public function setClearBanner(bool $clearBanner): Contest
     {
         $this->clearBanner = $clearBanner;
         return $this;
     }
 
+    public function setClearFullStatement(bool $clearFullStatement): Contest
+    {
+        $this->clearFullStatement = $clearFullStatement;
+        return $this;
+    }
+
     public function getAssetProperties(): array
     {
-        return ['banner'];
+        return ['banner', 'full_statement'];
     }
 
     public function getAssetFile(string $property): ?UploadedFile
     {
         return match ($property) {
             'banner' => $this->getBannerFile(),
+            'full_statement' => $this->getFullStatementFile(),
             default => null,
         };
     }
@@ -1372,6 +1387,7 @@ class Contest extends BaseApiEntity implements AssetEntityInterface
     {
         return match ($property) {
             'banner' => $this->isClearBanner(),
+            'full_statement' => $this->isFullStatementFile(),
             default => null,
         };
     }

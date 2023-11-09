@@ -163,6 +163,27 @@ class ContestController extends AbstractRestController
         return parent::performSingleAction($request, $cid);
     }
 
+    private function helperGetAuxiliaryFile(string $filetype): Response
+    {
+        /** @var Contest|null $contest */
+        $contest = $this->getQueryBuilder($request)
+            ->andWhere(sprintf('%s = :id', $this->getIdField()))
+            ->setParameter('id', $cid)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if ($contest === null) {
+            throw new NotFoundHttpException(sprintf('Object with ID \'%s\' not found', $cid));
+        }
+
+        $file = $this->dj->assetPath($cid, $filetype, true);
+
+        if ($file && file_exists($file)) {
+            return static::sendBinaryFileResponse($request, $file);
+        }
+        throw new NotFoundHttpException('Contest ' . $filetype . ' not found');
+    }
+
     /**
      * Get the banner for the given contest.
      */
@@ -179,23 +200,35 @@ class ContestController extends AbstractRestController
     #[OA\Parameter(ref: '#/components/parameters/cid')]
     public function bannerAction(Request $request, string $cid): Response
     {
-        /** @var Contest|null $contest */
-        $contest = $this->getQueryBuilder($request)
-            ->andWhere(sprintf('%s = :id', $this->getIdField()))
-            ->setParameter('id', $cid)
-            ->getQuery()
-            ->getOneOrNullResult();
+        return $this->helperGetAuxiliaryFile('banner');
+    }
 
-        if ($contest === null) {
-            throw new NotFoundHttpException(sprintf('Object with ID \'%s\' not found', $cid));
-        }
+    /**
+     * Get the contest statement for the given contest.
+     */
+    #[Rest\Get('/{cid}/contest_statement', name: 'contest_statement')]
+    #[OA\Response(
+        response: 200,
+        description: 'Returns the given contest statement in PDF format',
+        content: new OA\MediaType(mediaType: 'application/pdf'),
+    )]
+    #[OA\Parameter(ref: '#/components/parameters/cid')]
+    public function fullStatementAction(Request $request, string $cid): Response
+    {
+        return $this->helperGetAuxiliaryFile('statement');
+    }
 
-        $banner = $this->dj->assetPath($cid, 'contest', true);
+    private function helperDeleteAuxiliaryFile(string $deleteFunctionName): Response
+    {
+        /** @var Contest $contest */
+        $contest = $this->getContestAndCheckIfLocked($request, $cid);
+        $contest->{$uploadFunctionName}(true);
 
-        if ($banner && file_exists($banner)) {
-            return static::sendBinaryFileResponse($request, $banner);
-        }
-        throw new NotFoundHttpException('Contest banner not found');
+        $this->assetUpdater->updateAssets($contest);
+        $this->eventLogService->log('contests', $contest->getCid(), EventLogService::ACTION_UPDATE,
+            $contest->getCid());
+
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -207,9 +240,38 @@ class ContestController extends AbstractRestController
     #[OA\Parameter(ref: '#/components/parameters/cid')]
     public function deleteBannerAction(Request $request, string $cid): Response
     {
-        /** @var Contest $contest */
+        return helperDeleteAuxiliaryFile('setClearBanner');
+    }
+
+    /**
+     * Delete the statment for the given contest.
+     */
+    #[IsGranted('ROLE_ADMIN')]
+    #[Rest\Delete('/{cid}/full_contest', name: 'delete_contest_statement')]
+    #[OA\Response(response: 204, description: 'Deleting contest statement succeeded')]
+    #[OA\Parameter(ref: '#/components/parameters/cid')]
+    public function deleteFullStatementAction(Request $request, string $cid): Response
+    {
+        return helperDeleteAuxiliaryFile('setClearFullStatement');
+    }
+
+    private function helperUploadAuxiliaryFile(string $filetype, string $uploadFunctionName, ?string $friendlyNameFileType=null): Response
+    {
         $contest = $this->getContestAndCheckIfLocked($request, $cid);
-        $contest->setClearBanner(true);
+
+        /** @var UploadedFile|null $file */
+        $file = $request->files->get($filetype);
+        if (!$file) {
+            return new JsonResponse(['title' => 'Validation failed',
+                                     'errors' => ['Please supply a ' . $friendlyNameFileType ?? $filetype]
+                                    ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $contest->{$uploadFunctionName}($file);
+
+        if ($errorResponse = $this->responseForErrors($validator->validate($contest), true)) {
+            return $errorResponse;
+        }
 
         $this->assetUpdater->updateAssets($contest);
         $this->eventLogService->log('contests', $contest->getCid(), EventLogService::ACTION_UPDATE,
@@ -245,25 +307,37 @@ class ContestController extends AbstractRestController
     #[OA\Parameter(ref: '#/components/parameters/cid')]
     public function setBannerAction(Request $request, string $cid, ValidatorInterface $validator): Response
     {
-        $contest = $this->getContestAndCheckIfLocked($request, $cid);
+        return $this->helperUploadAuxiliaryFile('banner', 'setBannerFile');
+    }
 
-        /** @var UploadedFile|null $banner */
-        $banner = $request->files->get('banner');
-        if (!$banner) {
-            return new JsonResponse(['title' => 'Validation failed', 'errors' => ['Please supply a banner']], Response::HTTP_BAD_REQUEST);
-        }
-
-        $contest->setBannerFile($banner);
-
-        if ($errorResponse = $this->responseForErrors($validator->validate($contest), true)) {
-            return $errorResponse;
-        }
-
-        $this->assetUpdater->updateAssets($contest);
-        $this->eventLogService->log('contests', $contest->getCid(), EventLogService::ACTION_UPDATE,
-            $contest->getCid());
-
-        return new Response('', Response::HTTP_NO_CONTENT);
+    /**
+     * Set the full problems statement text for the given contest.
+     */
+    #[IsGranted('ROLE_ADMIN')]
+    #[Rest\Post("/{cid}/fullstatement", name: 'post_contest_full_statement')]
+    #[Rest\Put("/{cid}/fullstatement", name: 'put_contest_full_statement')]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\MediaType(
+            mediaType: 'multipart/form-data',
+            schema: new OA\Schema(
+                required: ['full_statement'],
+                properties: [
+                    new OA\Property(
+                        property: 'full_statement',
+                        description: 'The contest statement to use.',
+                        type: 'string',
+                        format: 'binary'
+                    ),
+                ]
+            )
+        )
+    )]
+    #[OA\Response(response: 204, description: 'Setting full problems statement succeeded')]
+    #[OA\Parameter(ref: '#/components/parameters/cid')]
+    public function setContestStatementAction(Request $request, string $cid, ValidatorInterface $validator): Response
+    {
+        return $this->helperUploadAuxiliaryFile('conteststatement', 'setContestStatementFile', 'full contest statement');
     }
 
     /**
