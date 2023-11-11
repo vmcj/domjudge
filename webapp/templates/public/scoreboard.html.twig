@@ -14,7 +14,7 @@
     {% if bannerImage is not defined or not bannerImage %}
         {% set bannerImage = globalBannerAssetPath() %}
     {% endif %}
-    {% if bannerImage %}
+    {% if bannerImage and not compact %}
         <img class="banner" src="{{ asset(bannerImage) }}" alt="Banner">
     {% endif %}
 
