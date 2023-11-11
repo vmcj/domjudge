@@ -12,7 +12,7 @@
     <p class="nodata">No active contest</p>
 {% else %}
     {% if current_contest.warningMessage %}
-        <div class="alert alert-danger" role="alert">
+        <div class="alert alert-danger" role="alert" style="position: sticky; left: 0;">
             {{ current_contest.warningMessage }}
         </div>
     {% endif %}
