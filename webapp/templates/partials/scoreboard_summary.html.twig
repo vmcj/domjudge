@@ -40,6 +40,7 @@
                             </span>
                         <br/>
 
+                        {% if not compact %}
                         <i class="fas fa-clock fa-fw"></i>
                         <span style="font-size:90%;" title="first solved">
                             {% if summary.bestTimeInMinutes(sortOrder) is not null %}
@@ -48,6 +49,7 @@
                                 n/a
                             {% endif %}
                         </span>
+                        {% endif %}
                     </a>
                 </td>
             {% endfor %}
