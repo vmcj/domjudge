@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -20,7 +21,11 @@ class ScoreboardController extends AbstractController
     }
 
     #[Route(path: '', name: 'jury_scoreboard')]
-    public function scoreboardAction(Request $request): Response
+    public function scoreboardAction(
+        Request $request,
+        #[MapQueryParameter]
+        bool $compact = false
+    ): Response
     {
         $response   = new Response();
         $refreshUrl = $this->generateUrl('jury_scoreboard');
@@ -28,6 +33,7 @@ class ScoreboardController extends AbstractController
         $data       = $this->scoreboardService->getScoreboardTwigData(
             $request, $response, $refreshUrl, $this->isGranted('ROLE_JURY'), false, false, $contest
         );
+        $data['compact'] = $compact;
 
         if ($request->isXmlHttpRequest()) {
             $data['current_contest'] = $contest;

@@ -45,6 +45,8 @@ class PublicController extends BaseController
         ?string $contestId = null,
         #[MapQueryParameter]
         ?bool $static = false,
+        #[MapQueryParameter]
+        bool $compact = false
     ): Response {
         $response   = new Response();
         $refreshUrl = $this->generateUrl('public_index');
@@ -72,6 +74,7 @@ class PublicController extends BaseController
         }
 
         $data['current_contest'] = $contest;
+        $data['compact'] = $compact;
 
         if ($request->isXmlHttpRequest()) {
             return $this->render('partials/scoreboard.html.twig', $data, $response);

@@ -12,6 +12,7 @@ use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[IsGranted('ROLE_TEAM')]
@@ -30,8 +31,11 @@ class ScoreboardController extends BaseController
     ) {}
 
     #[Route(path: '/scoreboard', name: 'team_scoreboard')]
-    public function scoreboardAction(Request $request): Response
-    {
+    public function scoreboardAction(
+        Request $request,
+        #[MapQueryParameter]
+        bool $compact = false
+    ): Response {
         $user       = $this->dj->getUser();
         $response   = new Response();
         $contest    = $this->dj->getCurrentContest($user->getTeam()->getTeamid());
@@ -40,6 +44,7 @@ class ScoreboardController extends BaseController
             $request, $response, $refreshUrl, false, false, false, $contest
         );
         $data['myTeamId'] = $user->getTeam()->getTeamid();
+        $data['compact'] = $compact;
 
         if ($request->isXmlHttpRequest()) {
             $data['current_contest'] = $contest;

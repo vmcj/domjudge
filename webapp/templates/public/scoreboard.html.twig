@@ -19,7 +19,7 @@
     {% endif %}
 
     <div data-ajax-refresh-target data-ajax-refresh-after="initializeScoreboard" class="mt-3">
-        {% include 'partials/scoreboard.html.twig' with {jury: false, public: true} %}
+        {% include 'partials/scoreboard.html.twig' with {jury: false, public: true, compact: compact} %}
     </div>
 {% endblock %}
 
