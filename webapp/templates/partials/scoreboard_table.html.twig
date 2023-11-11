@@ -138,7 +138,7 @@
                 {% set previousTeam = score.team %}
             </td>
             <td class="scoreaf">
-                {% if showFlags %}
+                {% if showFlags and not compact %}
                     {% if score.team.affiliation %}
                         {% set link = null %}
                         {% if jury %}
@@ -150,7 +150,7 @@
                     {% endif %}
                 {% endif %}
             </td>
-            {% if showAffiliationLogos %}
+            {% if showAffiliationLogos and not compact %}
                 <td class="scoreaf">
                     {% if score.team.affiliation %}
                         {% set link = null %}
@@ -205,9 +205,13 @@
                             {{ score.team.category.name }}
                         </span>
                         {% endif %}
-                        {{ score.team.effectiveName }}
+                        {% if compact %}
+                            {{ score.team.effectiveName }}
+                        {% else %}
+                            {{ score.team.effectiveName }}
+                        {% endif %}
                     </span>
-                    {% if showAffiliations %}
+                    {% if showAffiliations and not compact %}
                         <span class="univ forceWidth">
                             {% if score.team.affiliation %}
                                 {{ score.team.affiliation.name }}
@@ -278,12 +282,24 @@
                         {% if numSubmissions != '0' %}
                             <a {% if link %}href="{{ link }}"{% endif %}>
                                 <div class="{{ scoreCssClass }}">
-                                    {% if matrixItem.isCorrect %}{{ time }}{% else %}&nbsp;{% endif %}
+                                    {% if matrixItem.isCorrect %}
+                                        {% if not compact %}{{ time }}{% endif %}
+                                    {% else %}&nbsp;{% endif %}
                                     <span>
                                         {% if numSubmissions is same as(1) %}
-                                            1 try
+                                            {% if compact %}
+                                                +
+                                            {% else %}
+                                                1 try
+                                            {% endif %}
                                         {% else %}
-                                            {{ numSubmissions }} tries
+                                            {% if compact %}
+                                                {% if matrixItem.isCorrect %}
+                                                    +{{ numSubmissions - 1 }}
+                                                {% endif %}
+                                            {% else %}
+                                                {{ numSubmissions }} tries
+                                            {% endif %}
                                         {% endif %}
                                     </span>
                                 </div>
