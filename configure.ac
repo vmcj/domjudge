@@ -100,6 +100,7 @@ else
 	AC_MSG_RESULT([$DOMJUDGE_USER])
 fi
 
+if test "x$ENABLE_DOMSERVER" = xyes; then
 AC_MSG_CHECKING([webserver-group])
 AC_ARG_WITH([webserver-group], [AS_HELP_STRING([--with-webserver-group=GROUP],
 [Webserver group for password files (default: try to detect).])], [], [])
@@ -122,6 +123,7 @@ if test "x$with_webserver_group" = x; then
 else
 	AC_SUBST(WEBSERVER_GROUP,$with_webserver_group)
 	AC_MSG_RESULT([$WEBSERVER_GROUP])
+fi
 fi
 
 # }}}
