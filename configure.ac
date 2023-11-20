@@ -169,6 +169,7 @@ AC_CHECK_LIB(cgroup, cgroup_init, AC_SUBST(LIBCGROUP,[-lcgroup]), AC_MSG_ERROR([
 
 # These are defaults that can still be overridden below!
 if test "x$FHS_ENABLED" = xyes ; then
+	if test "x$ENABLE_DOMSERVER" = xyes; then
 	AC_SUBST(domserver_root,          '')
 	AC_SUBST(domserver_bindir,        $bindir)
 	AC_SUBST(domserver_etcdir,        $sysconfdir/${PACKAGE_TARNAME})
@@ -180,6 +181,7 @@ if test "x$FHS_ENABLED" = xyes ; then
 	AC_SUBST(domserver_rundir,        $localstatedir/run/${PACKAGE_TARNAME})
 	AC_SUBST(domserver_tmpdir,        /tmp)
 	AC_SUBST(domserver_exampleprobdir,$datadir/${PACKAGE_TARNAME}/example_problems)
+	fi
 
 	AC_SUBST(judgehost_root,          '')
 	AC_SUBST(judgehost_bindir,        $bindir)
@@ -209,11 +211,14 @@ AC_DEFUN([AX_PATH], [
 
 AX_WITH_COMMENT(2,[  ])
 AX_WITH_COMMENT(3,[Fine tuning of installation root paths when FHS is disabled (the default):])
+if test "x$ENABLE_DOMSERVER" = xyes; then
 AX_PATH(domserver_root,         [$prefix/domserver])
+fi
 AX_PATH(judgehost_root,         [$prefix/judgehost])
 AX_PATH(domjudge_docdir,        [$prefix/doc])
 AX_WITH_COMMENT(4,[    ])
 AX_WITH_COMMENT(5,[More fine tuning of all installation (sub)directories:])
+if test "x$ENABLE_DOMSERVER" = xyes; then
 AX_PATH(domserver_bindir,       [$domserver_root/bin])
 AX_PATH(domserver_etcdir,       [$domserver_root/etc])
 AX_PATH(domserver_webappdir,    [$domserver_root/webapp])
@@ -224,6 +229,7 @@ AX_PATH(domserver_logdir,       [$domserver_root/log])
 AX_PATH(domserver_rundir,       [$domserver_root/run])
 AX_PATH(domserver_tmpdir,       [$domserver_root/tmp])
 AX_PATH(domserver_exampleprobdir, [$domserver_root/example_problems])
+fi
 AX_WITH_COMMENT(6,[     ])
 AX_PATH(judgehost_bindir,       [$judgehost_root/bin])
 AX_PATH(judgehost_etcdir,       [$judgehost_root/etc])
