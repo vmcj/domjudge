@@ -101,29 +101,29 @@ else
 fi
 
 if test "x$ENABLE_DOMSERVER" = xyes; then
-AC_MSG_CHECKING([webserver-group])
-AC_ARG_WITH([webserver-group], [AS_HELP_STRING([--with-webserver-group=GROUP],
-[Webserver group for password files (default: try to detect).])], [], [])
-
-if test "x$with_webserver_group" = x; then
-	# Try a number of group names and choose first one found
-	found=0
-	for g in www-data apache httpd nginx ; do
-		if getent group $g >/dev/null 2>&1 ; then
-		   found=1
-		   break
+	AC_MSG_CHECKING([webserver-group])
+	AC_ARG_WITH([webserver-group], [AS_HELP_STRING([--with-webserver-group=GROUP],
+	[Webserver group for password files (default: try to detect).])], [], [])
+	
+	if test "x$with_webserver_group" = x; then
+		# Try a number of group names and choose first one found
+		found=0
+		for g in www-data apache httpd nginx ; do
+			if getent group $g >/dev/null 2>&1 ; then
+			   found=1
+			   break
+			fi
+		done
+		if test $found -ne 0 ; then
+			AC_SUBST(WEBSERVER_GROUP,"$g")
+			AC_MSG_RESULT([$WEBSERVER_GROUP (detected)])
+		else
+			AC_MSG_ERROR([webserver group could not be detected, use --with-webserver-group=GROUP])
 		fi
-	done
-	if test $found -ne 0 ; then
-		AC_SUBST(WEBSERVER_GROUP,"$g")
-		AC_MSG_RESULT([$WEBSERVER_GROUP (detected)])
 	else
-		AC_MSG_ERROR([webserver group could not be detected, use --with-webserver-group=GROUP])
+		AC_SUBST(WEBSERVER_GROUP,$with_webserver_group)
+		AC_MSG_RESULT([$WEBSERVER_GROUP])
 	fi
-else
-	AC_SUBST(WEBSERVER_GROUP,$with_webserver_group)
-	AC_MSG_RESULT([$WEBSERVER_GROUP])
-fi
 fi
 
 # }}}
