@@ -186,6 +186,7 @@ if test "x$FHS_ENABLED" = xyes ; then
 	AC_SUBST(domserver_exampleprobdir,$datadir/${PACKAGE_TARNAME}/example_problems)
 	fi
 
+	if test "x$ENABLE_JUDGEHOST" = xyes; then
 	AC_SUBST(judgehost_root,          '')
 	AC_SUBST(judgehost_bindir,        $bindir)
 	AC_SUBST(judgehost_etcdir,        $sysconfdir/${PACKAGE_TARNAME})
@@ -197,6 +198,7 @@ if test "x$FHS_ENABLED" = xyes ; then
 	AC_SUBST(judgehost_judgedir,      $localstatedir/lib/${PACKAGE_TARNAME}/judgings)
 	AC_SUBST(judgehost_chrootdir,     /chroot/${PACKAGE_TARNAME})
 	AC_SUBST(judgehost_cgroupdir,     /sys/fs/cgroup)
+	fi
 
 	AC_SUBST(domjudge_docdir,         $docdir)
 fi
@@ -217,7 +219,9 @@ AX_WITH_COMMENT(3,[Fine tuning of installation root paths when FHS is disabled (
 if test "x$ENABLE_DOMSERVER" = xyes; then
 AX_PATH(domserver_root,         [$prefix/domserver])
 fi
+if test "x$ENABLE_JUDGEHOST" = xyes; then
 AX_PATH(judgehost_root,         [$prefix/judgehost])
+fi
 AX_PATH(domjudge_docdir,        [$prefix/doc])
 AX_WITH_COMMENT(4,[    ])
 AX_WITH_COMMENT(5,[More fine tuning of all installation (sub)directories:])
@@ -233,6 +237,7 @@ AX_PATH(domserver_rundir,       [$domserver_root/run])
 AX_PATH(domserver_tmpdir,       [$domserver_root/tmp])
 AX_PATH(domserver_exampleprobdir, [$domserver_root/example_problems])
 fi
+if test "x$ENABLE_JUDGEHOST" = xyes; then
 AX_WITH_COMMENT(6,[     ])
 AX_PATH(judgehost_bindir,       [$judgehost_root/bin])
 AX_PATH(judgehost_etcdir,       [$judgehost_root/etc])
@@ -244,8 +249,8 @@ AX_PATH(judgehost_tmpdir,       [$judgehost_root/tmp])
 AX_PATH(judgehost_judgedir,     [$judgehost_root/judgings])
 AX_PATH(judgehost_chrootdir,    [/chroot/${PACKAGE_TARNAME}])
 AX_PATH(judgehost_cgroupdir,    [/sys/fs/cgroup])
+fi
 AX_WITH_COMMENT(7,[      ])
-
 # }}}
 
 # {{{ Directory for systemd unit files
