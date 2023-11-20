@@ -350,7 +350,9 @@ echo ""
 echo " * default user........: $DOMJUDGE_USER"
 echo " * runguard user.......: $RUNUSER"
 echo " * runguard group......: $RUNGROUP"
+if test "x$ENABLE_DOMSERVER" = xyes; then
 echo " * webserver group.....: $WEBSERVER_GROUP"
+fi
 echo ""
 echo " * website base URL....: $BASEURL"
 echo ""
@@ -360,6 +362,7 @@ if test "x$DOC_BUILD_ENABLED" != xyes ; then
 else
    echo ""
 fi
+if test "x$ENABLE_DOMSERVER" = xyes; then
 echo ""
 echo " * domserver...........: AX_VAR_EXPAND($domserver_root)"
 echo "    - bin..............: AX_VAR_EXPAND($domserver_bindir)"
@@ -372,6 +375,7 @@ echo "    - sql..............: AX_VAR_EXPAND($domserver_sqldir)"
 echo "    - tmp..............: AX_VAR_EXPAND($domserver_tmpdir)"
 echo "    - webapp...........: AX_VAR_EXPAND($domserver_webappdir)"
 echo "    - example_problems.: AX_VAR_EXPAND($domserver_exampleprobdir)"
+fi
 echo ""
 echo " * judgehost...........: AX_VAR_EXPAND($judgehost_root)"
 echo "    - bin..............: AX_VAR_EXPAND($judgehost_bindir)"
