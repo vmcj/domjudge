@@ -131,6 +131,7 @@ fi
 # }}}
 
 # {{{ runguard
+if test "x$ENABLE_JUDGEHOST" = xyes; then
 AC_MSG_CHECKING([runuser])
 AC_ARG_WITH([runuser], [AS_HELP_STRING([--with-runuser=USER],
 [Prefix for unprivileged user(s) under which to run submissions (default: domjudge-run).])], [], [])
@@ -165,6 +166,7 @@ fi
 # Check for using Linux cgroups for memory control
 AC_CHECK_LIB(cgroup, cgroup_init, AC_SUBST(LIBCGROUP,[-lcgroup]), AC_MSG_ERROR([Linux cgroup library not found.]))
 
+fi
 # }}}
 
 # {{{ FHS directory structure
