@@ -54,30 +54,30 @@ else
 fi
 
 if test "x$ENABLE_JUDGEHOST" = xyes; then
-# Set default {C,CXX,LD}FLAGS. This might screw up portability, but
-# adds important security. Only set these flags when none are supplied
-# by the user.
-for flag in CFLAGS CXXFLAGS LDFLAGS ; do
-	AC_MSG_CHECKING([whether configure should try to set $flag])
-	if test x`eval echo '${'$flag'+set}'` = xset ; then res=no ; else res=yes ; fi
-	eval enable_${flag}_setting=$res
-	AC_MSG_RESULT($res)
-done
-
-DEF_CXFLAGS="-g -O2"
-DEF_LDFLAGS=""
-
-AX_APPEND_COMPILE_FLAGS(-Wall,               DEF_CXFLAGS)
-AX_APPEND_COMPILE_FLAGS(-fstack-protector,   DEF_CXFLAGS)
-AX_APPEND_COMPILE_FLAGS(-fPIE,               DEF_CXFLAGS)
-AX_APPEND_COMPILE_FLAGS(-D_FORTIFY_SOURCE=2, DEF_CXFLAGS)
-AX_APPEND_LINK_FLAGS([-fPIE -pie],   DEF_LDFLAGS)
-AX_APPEND_LINK_FLAGS([-Wl,-z,relro], DEF_LDFLAGS)
-AX_APPEND_LINK_FLAGS([-Wl,-z,now],   DEF_LDFLAGS)
-
-test "x$enable_CFLAGS_setting"   = xyes && AC_SUBST(CFLAGS,   $DEF_CXFLAGS)
-test "x$enable_CXXFLAGS_setting" = xyes && AC_SUBST(CXXFLAGS, $DEF_CXFLAGS)
-test "x$enable_LDFLAGS_setting"  = xyes && AC_SUBST(LDFLAGS,  $DEF_LDFLAGS)
+	# Set default {C,CXX,LD}FLAGS. This might screw up portability, but
+	# adds important security. Only set these flags when none are supplied
+	# by the user.
+	for flag in CFLAGS CXXFLAGS LDFLAGS ; do
+		AC_MSG_CHECKING([whether configure should try to set $flag])
+		if test x`eval echo '${'$flag'+set}'` = xset ; then res=no ; else res=yes ; fi
+		eval enable_${flag}_setting=$res
+		AC_MSG_RESULT($res)
+	done
+	
+	DEF_CXFLAGS="-g -O2"
+	DEF_LDFLAGS=""
+	
+	AX_APPEND_COMPILE_FLAGS(-Wall,               DEF_CXFLAGS)
+	AX_APPEND_COMPILE_FLAGS(-fstack-protector,   DEF_CXFLAGS)
+	AX_APPEND_COMPILE_FLAGS(-fPIE,               DEF_CXFLAGS)
+	AX_APPEND_COMPILE_FLAGS(-D_FORTIFY_SOURCE=2, DEF_CXFLAGS)
+	AX_APPEND_LINK_FLAGS([-fPIE -pie],   DEF_LDFLAGS)
+	AX_APPEND_LINK_FLAGS([-Wl,-z,relro], DEF_LDFLAGS)
+	AX_APPEND_LINK_FLAGS([-Wl,-z,now],   DEF_LDFLAGS)
+	
+	test "x$enable_CFLAGS_setting"   = xyes && AC_SUBST(CFLAGS,   $DEF_CXFLAGS)
+	test "x$enable_CXXFLAGS_setting" = xyes && AC_SUBST(CXXFLAGS, $DEF_CXFLAGS)
+	test "x$enable_LDFLAGS_setting"  = xyes && AC_SUBST(LDFLAGS,  $DEF_LDFLAGS)
 fi
 
 # {{{ File ownership for e.g. password files.
