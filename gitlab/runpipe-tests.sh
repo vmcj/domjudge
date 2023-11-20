@@ -5,7 +5,7 @@
 section_start compile "Compile runpipe"
 # Configure and make the runpipe binaries.
 make configure
-./configure --enable-judgehost --enable-domserver --with-baseurl='http://localhost/domjudge/' --with-domjudge-user=domjudge --with-judgehost_chrootdir=${DIR}/chroot/domjudge |& tee "$GITLABARTIFACTS/configure.log"
+./configure --with-baseurl='http://localhost/domjudge/' --with-domjudge-user=domjudge --with-judgehost_chrootdir=${DIR}/chroot/domjudge |& tee "$GITLABARTIFACTS/configure.log"
 make judgehost |& tee "$GITLABARTIFACTS/make.log"
 section_end compile
 
