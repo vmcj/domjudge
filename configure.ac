@@ -31,6 +31,28 @@ AC_SUBST(DOMJUDGE_VERSION, $PACKAGE_VERSION)
 AC_DEFINE_UNQUOTED(DOMJUDGE_VERSION, "$PACKAGE_VERSION",
 [DOMjudge version number (alias for PACKAGE_VERSION)])
 
+AC_SUBST(ENABLE_DOMSERVER,yes)
+AC_ARG_ENABLE([domserver],AS_HELP_STRING([--enable-domserver],
+[configure and build the domserver (default: yes).]),
+[if test "x$enableval" = xno ; then AC_SUBST(ENABLE_DOMSERVER,no) fi])
+
+if test "x$ENABLE_DOMSERVER" = xyes; then
+	echo "Installing domserver"
+else
+	echo "Skipping domserver"
+fi
+
+AC_SUBST(ENABLE_JUDGEHOST,yes)
+AC_ARG_ENABLE([judgehost],AS_HELP_STRING([--enable-judgehost],
+[configure and build the judgehost (default: yes).]),
+[if test "x$enableval" = xno ; then AC_SUBST(ENABLE_JUDGEHOST,no) fi])
+
+if test "x$ENABLE_JUDGEHOST" = xyes; then
+	echo "Installing judgehost"
+else
+	echo "Skipping judgehost"
+fi
+
 # Set default {C,CXX,LD}FLAGS. This might screw up portability, but
 # adds important security. Only set these flags when none are supplied
 # by the user.
