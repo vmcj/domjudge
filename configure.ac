@@ -53,6 +53,7 @@ else
 	echo "Skipping judgehost"
 fi
 
+if test "x$ENABLE_JUDGEHOST" = xyes; then
 # Set default {C,CXX,LD}FLAGS. This might screw up portability, but
 # adds important security. Only set these flags when none are supplied
 # by the user.
@@ -77,6 +78,7 @@ AX_APPEND_LINK_FLAGS([-Wl,-z,now],   DEF_LDFLAGS)
 test "x$enable_CFLAGS_setting"   = xyes && AC_SUBST(CFLAGS,   $DEF_CXFLAGS)
 test "x$enable_CXXFLAGS_setting" = xyes && AC_SUBST(CXXFLAGS, $DEF_CXFLAGS)
 test "x$enable_LDFLAGS_setting"  = xyes && AC_SUBST(LDFLAGS,  $DEF_LDFLAGS)
+fi
 
 # {{{ File ownership for e.g. password files.
 
