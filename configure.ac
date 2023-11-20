@@ -360,14 +360,18 @@ echo ""
 echo "Summary:"
 echo " * project.............: $PACKAGE_NAME $PACKAGE_VERSION"
 echo " * prefix..............: $prefix"
+if test "x$ENABLE_JUDGEHOST" = xyes; then
 echo " * CPPFLAGS............: $CPPFLAGS"
 echo " * CFLAGS..............: $CFLAGS"
 echo " * CXXFLAGS............: $CXXFLAGS"
 echo " * LDFLAGS.............: $LDFLAGS"
+fi
 echo ""
 echo " * default user........: $DOMJUDGE_USER"
+if test "x$ENABLE_JUDGEHOST" = xyes; then
 echo " * runguard user.......: $RUNUSER"
 echo " * runguard group......: $RUNGROUP"
+fi
 if test "x$ENABLE_DOMSERVER" = xyes; then
 echo " * webserver group.....: $WEBSERVER_GROUP"
 fi
@@ -394,6 +398,7 @@ echo "    - tmp..............: AX_VAR_EXPAND($domserver_tmpdir)"
 echo "    - webapp...........: AX_VAR_EXPAND($domserver_webappdir)"
 echo "    - example_problems.: AX_VAR_EXPAND($domserver_exampleprobdir)"
 fi
+if test "x$ENABLE_JUDGEHOST" = xyes; then
 echo ""
 echo " * judgehost...........: AX_VAR_EXPAND($judgehost_root)"
 echo "    - bin..............: AX_VAR_EXPAND($judgehost_bindir)"
@@ -406,6 +411,7 @@ echo "    - tmp..............: AX_VAR_EXPAND($judgehost_tmpdir)"
 echo "    - judge............: AX_VAR_EXPAND($judgehost_judgedir)"
 echo "    - chroot...........: AX_VAR_EXPAND($judgehost_chrootdir)"
 echo "    - cgroup...........: AX_VAR_EXPAND($judgehost_cgroupdir)"
+fi
 echo ""
 echo " * systemd unit files..: AX_VAR_EXPAND($systemd_unitdir)"
 echo ""
