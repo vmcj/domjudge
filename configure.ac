@@ -288,10 +288,12 @@ fi
 AC_MSG_RESULT($BASEURL)
 
 # Checks for programs.
+if test "x$ENABLE_JUDGEHOST" = xyes; then
 AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_CXXCPP
 AC_PROG_CPP
+fi
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
@@ -317,6 +319,7 @@ AC_DEFINE_UNQUOTED(_POSIX_C_SOURCE, 200809L, [Include POSIX.1-2008 base specific
 AC_DEFINE_UNQUOTED(_XOPEN_SOURCE, 500,       [Include SUSv2 (UNIX 98) extensions])
 
 # Checks for header files.
+if test "x$ENABLE_JUDGEHOST" = xyes; then
 AC_HEADER_STDBOOL
 AC_CHECK_HEADERS([fcntl.h stdlib.h string.h sys/param.h sys/time.h syslog.h termios.h unistd.h magic.h libcgroup.h])
 
@@ -336,6 +339,7 @@ AC_FUNC_STRTOD
 AC_REPLACE_FUNCS([atexit dup2 getcwd gettimeofday memset mkdir realpath setenv \
                   socket strchr strdup strerror strncasecmp strrchr strstr strtol],
                  [],[AC_MSG_ERROR([required C function is missing.])])
+fi
 
 AC_CHECK_PROG(PHP_CHECK,php,yes)
 AS_IF([test x"$PHP_CHECK" != x"yes"],
