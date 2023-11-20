@@ -132,40 +132,39 @@ fi
 
 # {{{ runguard
 if test "x$ENABLE_JUDGEHOST" = xyes; then
-AC_MSG_CHECKING([runuser])
-AC_ARG_WITH([runuser], [AS_HELP_STRING([--with-runuser=USER],
-[Prefix for unprivileged user(s) under which to run submissions (default: domjudge-run).])], [], [])
+	AC_MSG_CHECKING([runuser])
+	AC_ARG_WITH([runuser], [AS_HELP_STRING([--with-runuser=USER],
+	[Prefix for unprivileged user(s) under which to run submissions (default: domjudge-run).])], [], [])
 
-if test "x$with_runuser" = x; then
-	AC_SUBST(RUNUSER,"domjudge-run")
-	AC_MSG_RESULT($RUNUSER (default))
-else
-	AC_SUBST(RUNUSER,$with_runuser)
-	AC_MSG_RESULT($RUNUSER)
-fi
+	if test "x$with_runuser" = x; then
+		AC_SUBST(RUNUSER,"domjudge-run")
+		AC_MSG_RESULT($RUNUSER (default))
+	else
+		AC_SUBST(RUNUSER,$with_runuser)
+		AC_MSG_RESULT($RUNUSER)
+	fi
 
-if test "x${DOMJUDGE_USER#"$RUNUSER"}" != "x$DOMJUDGE_USER" ; then
-	AC_MSG_ERROR([domjudge_user '$DOMJUDGE_USER' cannot match runuser '$RUNUSER'.])
-fi
-if test "x$RUNUSER" = "xroot" ; then
-	AC_MSG_ERROR([runuser cannot be root.])
-fi
+	if test "x${DOMJUDGE_USER#"$RUNUSER"}" != "x$DOMJUDGE_USER" ; then
+		AC_MSG_ERROR([domjudge_user '$DOMJUDGE_USER' cannot match runuser '$RUNUSER'.])
+	fi
+	if test "x$RUNUSER" = "xroot" ; then
+		AC_MSG_ERROR([runuser cannot be root.])
+	fi
 
-AC_MSG_CHECKING([rungroup])
-AC_ARG_WITH([rungroup], [AS_HELP_STRING([--with-rungroup=GROUP],
-[Unprivileged group under which to run submissions (default: same as runuser).])], [], [])
+	AC_MSG_CHECKING([rungroup])
+	AC_ARG_WITH([rungroup], [AS_HELP_STRING([--with-rungroup=GROUP],
+	[Unprivileged group under which to run submissions (default: same as runuser).])], [], [])
 
-if test "x$with_rungroup" = x; then
-	AC_SUBST(RUNGROUP,"$RUNUSER")
-	AC_MSG_RESULT($RUNGROUP (default))
-else
-	AC_SUBST(RUNGROUP,$with_rungroup)
-	AC_MSG_RESULT($RUNGROUP)
-fi
+	if test "x$with_rungroup" = x; then
+		AC_SUBST(RUNGROUP,"$RUNUSER")
+		AC_MSG_RESULT($RUNGROUP (default))
+	else
+		AC_SUBST(RUNGROUP,$with_rungroup)
+		AC_MSG_RESULT($RUNGROUP)
+	fi
 
-# Check for using Linux cgroups for memory control
-AC_CHECK_LIB(cgroup, cgroup_init, AC_SUBST(LIBCGROUP,[-lcgroup]), AC_MSG_ERROR([Linux cgroup library not found.]))
-
+	# Check for using Linux cgroups for memory control
+	AC_CHECK_LIB(cgroup, cgroup_init, AC_SUBST(LIBCGROUP,[-lcgroup]), AC_MSG_ERROR([Linux cgroup library not found.]))
 fi
 # }}}
 
