@@ -19,5 +19,8 @@ make configure
 # Install extra assert statements for bots
 cp submit/assert.bash .github/jobs/configure-checks/
 
+# Get runner
+whoami
+
 # Run the configure tests for this usecase
 test_path="/__w/domjudge/domjudge" bats .github/jobs/configure-checks/all.bats
