@@ -23,7 +23,7 @@ jobs:
                php-cli php-intl php-mbstring php-mysql \
                php-curl php-json php-xml php-zip
           sudo apt install -y autoconf automake
-          make dist
+          make composer; make composer-dependencies
           composer install --no-dev --no-scripts
           composer dump-autoload -o -a
           composer install --no-dev
