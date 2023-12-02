@@ -16,6 +16,12 @@ jobs:
         with:
           fetch-depth: 0
       - run: git --version
+      - run: |
+          set -x
+          find ./ -name load_db_secrets.php
+          pwd
+          ls
+          set +x
       - name: Install dependencies (1/3)
         run: |
           set -x
@@ -32,12 +38,6 @@ jobs:
           composer install --no-dev
       - name: Install dependencies (Done)
         run: |
-          set +x
-      - run: |
-          set -x
-          find ./ -name load_db_secrets.php
-          pwd
-          ls
           set +x
       - name: 'Qodana Scan (PHP)'
         uses: JetBrains/qodana-action@v2023.2
