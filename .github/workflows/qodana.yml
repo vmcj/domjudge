@@ -23,7 +23,7 @@ jobs:
                php-cli php-intl php-mbstring php-mysql \
                php-curl php-json php-xml php-zip
           composer install --no-dev --no-scripts
-          composer dump-autoload -o
+          composer dump-autoload -o -a
           composer install --no-dev
           set +x
       - name: 'Qodana Scan (PHP)'
