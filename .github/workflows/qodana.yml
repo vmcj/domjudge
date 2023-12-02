@@ -35,7 +35,7 @@ jobs:
       - name: Install dependencies (3/3)
         run: |
           set -x
-          composer install --no-dev
+          composer install --no-dev --no-scripts --no-plugins
       - name: Install dependencies (Done)
         run: |
           set +x
