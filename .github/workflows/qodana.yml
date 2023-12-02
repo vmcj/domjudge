@@ -22,6 +22,8 @@ jobs:
           sudo apt install -y composer php php-fpm php-gd \
                php-cli php-intl php-mbstring php-mysql \
                php-curl php-json php-xml php-zip
+          sudo apt install -y autoconf automake
+          make dist
           composer install --no-dev --no-scripts
           composer dump-autoload -o -a
           composer install --no-dev
