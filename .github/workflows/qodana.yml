@@ -15,9 +15,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Show that we don't have an autoload.php
+        run: find ./ -name autoload.php
       - name: Install dependencies
         run: |
           set -x
+          find ./ -name autoload.php
           sudo apt update
           sudo apt install -y composer php php-fpm php-gd \
                php-cli php-intl php-mbstring php-mysql \
@@ -27,8 +30,12 @@ jobs:
           make composer-dependencies
           composer install --no-dev --no-scripts
           composer dump-autoload -o -a
-          composer install --no-dev
+          #composer install --no-dev
           set +x
+      - name: Show that we have an autoload.php
+        run: find ./ -name autoload.php
+      - name: Reinstall with the new autoload.php
+        run: composer install --no-dev --no-scripts
       - name: 'Qodana Scan (PHP)'
         uses: JetBrains/qodana-action@v2023.2
         env:
