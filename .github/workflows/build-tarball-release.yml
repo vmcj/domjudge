@@ -1,0 +1,59 @@
+name: 'Build example tarball'
+
+on:
+  push:
+    branches: main
+
+jobs:
+  create-unofficial-tarball:
+    if: github.repository == 'domjudge/domjudge'
+    name: Build example tarball (Unofficial)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download our release script
+        run: wget https://raw.githubusercontent.com/DOMjudge/domjudge-scripts/main/make_release.sh
+      
+      - name: Release a fake version
+        id: version
+        run: |
+          DOMJUDGE_VERSION="$(cat README* | head -n 10 | grep ' version ' | sed 's/.*version //')"
+          NEW_VERSION=${DOMJUDGE_VERSION//DEV}
+          cp README.md{,.stashed}; cp ChangeLog{,.stashed}
+          for file in README.md ChangeLog; do
+            sed -i "s/${DOMJUDGE_VERSION}/${NEW_VERSION}/g" $file
+          done
+          echo "DOMJUDGE_VERSION=${DOMJUDGE_VERSION}" >> $GITHUB_ENV
+          sh ./make_release.sh $DOMJUDGE_VERSION
+          mv domjudge-{$NEW_VERSION,$DOMJUDGE_VERSION}.tar.gz
+
+      - name: Install our new version dependencies
+        run: |
+          apt update
+          apt install -y acl zip unzip mariadb-server apache2 php php-fpm php-gd php-cli php-intl php-mbstring \
+                         php-mysql php-curl php-json php-xml php-zip composer ntp \
+                         make pkg-config sudo debootstrap libcgroup-dev php-cli php-curl php-json php-xml \
+                         php-zip lsof procps
+          
+      - name: Unpack the tarball again
+        run: tar zxvf domjudge-${{ env.DOMJUDGE_VERSION }}.tar.gz
+
+      - name: Configure and install in default setting
+        run: |
+          ./configure
+          make build
+          make clean
+          make all
+          make clean
+          make docs
+          make clean
+
+      - name: "See the new_release_howto.txt (L28/domjudge-scripts) for the next step."
+        run: true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: unofficial-tarball-${{ env.DOMJUDGE_VERSION }}
+          path: domjudge-${{ env.DOMJUDGE_VERSION }}.tar.gz
+
