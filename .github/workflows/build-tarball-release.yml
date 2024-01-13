@@ -2,7 +2,8 @@ name: 'Build example tarball'
 
 on:
   push:
-    branches: main
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   create-unofficial-tarball:
@@ -12,21 +13,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download our release script
+      - name: Download release script
         run: wget https://raw.githubusercontent.com/DOMjudge/domjudge-scripts/main/make_release.sh
-      
-      - name: Release a fake version
-        id: version
+
+      - name: Create release tarball
         run: |
-          DOMJUDGE_VERSION="$(cat README* | head -n 10 | grep ' version ' | sed 's/.*version //')"
-          NEW_VERSION=${DOMJUDGE_VERSION//DEV}
-          cp README.md{,.stashed}; cp ChangeLog{,.stashed}
-          for file in README.md ChangeLog; do
-            sed -i "s/${DOMJUDGE_VERSION}/${NEW_VERSION}/g" $file
-          done
-          echo "DOMJUDGE_VERSION=${DOMJUDGE_VERSION}" >> $GITHUB_ENV
-          sh ./make_release.sh $DOMJUDGE_VERSION
-          mv domjudge-{$NEW_VERSION,$DOMJUDGE_VERSION}.tar.gz
+          sh ./make_release.sh ${{ github.ref_name }}
 
       - name: Install our new version dependencies
         run: |
@@ -37,7 +29,7 @@ jobs:
                          php-zip lsof procps
           
       - name: Unpack the tarball again
-        run: tar zxvf domjudge-${{ env.DOMJUDGE_VERSION }}.tar.gz
+        run: tar zxvf domjudge-${{ github.ref_name }}.tar.gz
 
       - name: Configure and install in default setting
         run: |
@@ -54,6 +46,6 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: unofficial-tarball-${{ env.DOMJUDGE_VERSION }}
-          path: domjudge-${{ env.DOMJUDGE_VERSION }}.tar.gz
+          name: unofficial-tarball-${{ github.ref_name }}
+          path: domjudge-${{ github.ref_name }}.tar.gz
 
