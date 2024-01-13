@@ -19,11 +19,6 @@ jobs:
       - name: Download release script
         run: wget https://raw.githubusercontent.com/DOMjudge/domjudge-scripts/main/make_release.sh
 
-      - name: Create release tarball
-        run: |
-          #sh ./make_release.sh ${{ github.ref_name }}
-          sh ./make_release.sh 8.2.2
-
       - name: Bring apt in a good state
         run: apt update
 
@@ -32,6 +27,11 @@ jobs:
           apt install -y autoconf automake bats \
                          python3-sphinx python3-sphinx-rtd-theme rst2pdf fontconfig python3-yaml \
                          latexmk texlive-latex-recommended texlive-latex-extra tex-gyre
+
+      - name: Create release tarball
+        run: |
+          #sh ./make_release.sh ${{ github.ref_name }}
+          sh ./make_release.sh 8.2.2
 
       - name: Install our new version dependencies
         run: |
