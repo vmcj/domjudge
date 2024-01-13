@@ -3,11 +3,13 @@ name: 'Build example tarball'
 on:
   push:
     tags:
+      - "EX"
       - '[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   create-unofficial-tarball:
-    if: github.repository == 'domjudge/domjudge'
+    #if: github.repository == 'domjudge/domjudge'
+    #if: github.repository == 'vmcj/domjudge'
     name: Build example tarball (Unofficial)
     runs-on: ubuntu-latest
     steps:
