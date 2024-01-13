@@ -20,13 +20,13 @@ jobs:
         run: wget https://raw.githubusercontent.com/DOMjudge/domjudge-scripts/main/make_release.sh
 
       - name: Bring apt in a good state
-        run: apt update
+        run: sudo apt update
 
       - name: Install development needed packages
         run: |
-          apt install -y autoconf automake bats \
-                         python3-sphinx python3-sphinx-rtd-theme rst2pdf fontconfig python3-yaml \
-                         latexmk texlive-latex-recommended texlive-latex-extra tex-gyre
+          sudo apt install -y autoconf automake bats \
+                              python3-sphinx python3-sphinx-rtd-theme rst2pdf fontconfig python3-yaml \
+                              latexmk texlive-latex-recommended texlive-latex-extra tex-gyre
 
       - name: Create release tarball
         run: |
@@ -35,10 +35,10 @@ jobs:
 
       - name: Install our new version dependencies
         run: |
-          apt install -y acl zip unzip mariadb-server apache2 php php-fpm php-gd php-cli php-intl php-mbstring \
-                         php-mysql php-curl php-json php-xml php-zip composer ntp \
-                         make pkg-config sudo debootstrap libcgroup-dev php-cli php-curl php-json php-xml \
-                         php-zip lsof procps
+          sudo apt install -y acl zip unzip mariadb-server apache2 php php-fpm php-gd php-cli php-intl php-mbstring \
+                              php-mysql php-curl php-json php-xml php-zip composer ntp \
+                              make pkg-config sudo debootstrap libcgroup-dev php-cli php-curl php-json php-xml \
+                              php-zip lsof procps
           
       - name: Unpack the tarball again
         #run: tar zxvf domjudge-${{ github.ref_name }}.tar.gz
