@@ -22,7 +22,7 @@ jobs:
       - name: Create release tarball
         run: |
           #sh ./make_release.sh ${{ github.ref_name }}
-          sh ./make_release.sh 8.2.3
+          sh ./make_release.sh 8.2.2
 
       - name: Install our new version dependencies
         run: |
@@ -34,7 +34,7 @@ jobs:
           
       - name: Unpack the tarball again
         #run: tar zxvf domjudge-${{ github.ref_name }}.tar.gz
-        run: tar zxvf domjudge-8.2.3.tar.gz
+        run: tar zxvf domjudge-8.2.2.tar.gz
 
       - name: Configure and install in default setting
         run: |
