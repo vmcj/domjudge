@@ -46,6 +46,9 @@ jobs:
 
       - name: Configure and install in default setting
         run: |
+          ls
+          pwd
+          cd domjudge-8.2.2.tar.gz
           ./configure
           make build
           make clean
