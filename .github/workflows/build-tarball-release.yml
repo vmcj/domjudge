@@ -52,8 +52,30 @@ jobs:
         run: |
           for directory in build all docs domserver judgehost; do
             cd /tmp/${directory}/domjudge-8.2.2
+            ./configure
+            make ${directory}
+            if [ "$directory" != "docs" ] && [ "$directory" != "judgehost" ]; then
+              sudo make install-domserver
+            fi
+            if [ "$directory" != "docs" ] && [ "$directory" != "domserver" ]; then
+              sudo make install-judgehost
+            fi
+            if [ "$directory" = "docs" ] || [ "$directory" = "all" ]; then
+              sudo make install-docs
+            fi
+            make clean
+            make distclean
+          done
+
+      - name: Configure and install in default setting
+        run: |
+          error () {
             pwd
-            ls
+            ls -atrl public/bundles/nelmioapidoc
+          }
+          trap error EXIT
+          for directory in build all docs domserver judgehost; do
+            cd /tmp/${directory}/domjudge-8.2.2
             ./configure
             make ${directory}
             if [ "$directory" != "docs" ] && [ "$directory" != "judgehost" ]; then
