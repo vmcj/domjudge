@@ -73,8 +73,9 @@ jobs:
             pwd
             ls -atrl public/bundles/nelmioapidoc
           }
-          trap error EXIT
-          for directory in build all docs domserver judgehost; do
+          trap error ERR
+          set -euo pipefail
+          for directory in domserver; do
             cd /tmp/${directory}/domjudge-8.2.2
             ./configure
             make ${directory}
