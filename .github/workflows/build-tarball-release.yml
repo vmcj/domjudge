@@ -52,6 +52,8 @@ jobs:
         run: |
           for directory in build all docs domserver judgehost; do
             cd /tmp/${directory}/domjudge-8.2.2
+            pwd
+            ls
             ./configure
             make ${directory}
             if [ "$directory" != "docs" ] && [ "$directory" != "judgehost" ]; then
