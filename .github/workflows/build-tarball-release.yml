@@ -44,7 +44,7 @@ jobs:
         #run: tar zxvf domjudge-${{ github.ref_name }}.tar.gz
         run: |
           for directory in build all docs domserver judgehost; do
-            mkdir /tmp/${directory}/domjudge-8.2.2
+            mkdir /tmp/${directory}
             tar zxvf domjudge-8.2.2.tar.gz --directory /tmp/${directory}
           done
 
