@@ -9,7 +9,7 @@ include $(TOPDIR)/Makefile.global
 # Subdirectories to recurse into for REC_TARGETS
 SUBDIRS = config
 
-domserver: composer-dump-autoload
+domserver: composer-dump-autoload public/bundles/nelmioapidoc
 
 # Install PHP dependencies
 composer-dependencies:
@@ -46,7 +46,6 @@ composer-dump-autoload-dev:
 public/bundles/nelmioapidoc:
 # We can not use bin/console here, as when using a fakeroot,
 # the include paths are broken. We just copy in the data we need
-	-rm -rf $@
 	mkdir -p $@
 	cp -a vendor/nelmio/api-doc-bundle/public/* $@
 
@@ -79,6 +78,11 @@ maintainer-conf: .env.local
 
 maintainer-install: composer-dump-autoload-dev
 
+maintainer-install-l:
+# This must be done first to install with the rest.
+	-rm -rf public/bundles/nelmioapidoc
+	$(MAKE) public/bundles/nelmioapidoc
+
 maintainer-clean-l:
 	-for d in cache log ; do \
 		for t in dev prod ; do \
@@ -86,4 +90,4 @@ maintainer-clean-l:
 		done ; \
 	done
 
-.PHONY: composer-dump-autoload-dev
+.PHONY: composer-dump-autoload composer-dump-autoload-dev

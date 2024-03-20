@@ -12,8 +12,7 @@ case $distro_id in
         apt-get update; apt-get full-upgrade -y
         apt-get install pkg-config make bats autoconf -y
         apt-get install composer php php-cli php-curl php-fpm php-gd \
-                        php-intl php-json php-mbstring php-mysql php-xml php-zip -y
-	;;
+                        php-intl php-json php-mbstring php-mysql php-xml php-zip -y ;;
 esac
 
 # Build the configure file
