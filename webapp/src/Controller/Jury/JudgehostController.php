@@ -4,6 +4,7 @@ namespace App\Controller\Jury;
 
 use App\Controller\BaseController;
 use App\Doctrine\DBAL\Types\JudgeTaskType;
+use App\Entity\Executable;
 use App\Entity\Judgehost;
 use App\Entity\JudgeTask;
 use App\Entity\Judging;
@@ -283,6 +284,40 @@ class JudgehostController extends BaseController
         $this->em->flush();
         $this->dj->auditlog('judgehost', $judgehost->getJudgehostid(), 'marked enabled');
         return $this->redirectToLocalReferrer($router, $request, $this->generateUrl('jury_judgehosts'));
+    }
+
+    #[Route(path: '/{judgehostid}/shelltask', name: 'jury_judgehost_shelltask')]
+    public function requestShellTask(RouterInterface $router, Request $request, int $judgehostid): RedirectResponse
+    {
+        $defaultShellTaskExecutable = $this->em
+            ->getRepository(Executable::class)
+            ->findOneBy(['type' => 'shelltask']);
+        dump($defaultShellTaskExecutable);
+        $judgehost = $this->em
+            ->getRepository(Judgehost::class)
+            ->findOneBy(['judgehostid' => $judgehostid]);
+        dump($judgehost);
+        $judgeTask = new JudgeTask();
+        $judgeTask
+            ->setType(JudgeTaskType::SHELL_TASK)
+            ->setJudgehost($judgehost)
+            ->setPriority(JudgeTask::PRIORITY_HIGH);
+            //->setJobId($jid->getJudgingid())
+            //->setUuid($jid->getUuid())
+            //->setRunScriptId($executable->getImmutableExecId())
+            //->setRunConfig($this->dj->jsonEncode(['hash' => $executable->getHash()]));
+        $this->em->persist($judgeTask);
+        /*$executable = $defaultFullDebugExecutable->getImmutableExecutable();
+        foreach ($jid->getJudgehosts() as $hostname) {
+            $judgehost = $this->em
+                ->getRepository(Judgehost::class)
+                ->findOneBy(['hostname' => $hostname]);
+            
+        }*/
+        $this->em->flush();
+        return $this->redirectToLocalReferrer($router, $request, $this->generateUrl('jury_judgehost', [
+            'judgehostid' => $judgehostid
+        ]));
     }
 
     #[IsGranted('ROLE_ADMIN')]
