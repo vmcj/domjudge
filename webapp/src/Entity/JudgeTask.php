@@ -1,7 +1,6 @@
 <?php declare(strict_types=1);
 namespace App\Entity;
 
-use App\Doctrine\DBAL\Types\JudgeTaskType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -43,10 +42,11 @@ class JudgeTask
     private ?Judgehost $judgehost = null;
 
     #[ORM\Column(
-        type: 'judge_task_type',
+        type: 'string',
+        enumType: JudgeTaskType::class,
         options: ['comment' => 'Type of the judge task.', 'default' => 'judging_run']
     )]
-    private string $type = JudgeTaskType::JUDGING_RUN;
+    private JudgeTaskType $type = JudgeTaskType::JUDGING_RUN;
 
     #[ORM\Column(options: ['comment' => 'Priority; negative means higher priority', 'unsigned' => false])]
     private int $priority;
