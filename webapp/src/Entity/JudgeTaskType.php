@@ -4,11 +4,11 @@ namespace App\Entity;
 
 enum JudgeTaskType: string
 {
-    case CONFIG_CHECK = 'config_check';
-    case DEBUG_INFO = 'debug_info';
-    case GENERIC_TASK = 'generic_task';
-    case JUDGING_RUN = 'judging_run';
-    case PREFETCH = 'prefetch';
+    case ConfigCheck = 'config_check';
+    case DebugInfo = 'debug_info';
+    case GenericTask = 'generic_task';
+    case JudgingRun = 'judging_run';
+    case Prefetch = 'prefetch';
 
     public static function getColumnDefinition(): string
     {
