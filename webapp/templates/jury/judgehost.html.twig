@@ -56,6 +56,7 @@
                 {% set class = 'success' %}
             {%- endif -%}
             {{ button(url, action, class, icon) }}
+            {{ button(path('jury_judgehost_shelltask', {'judgehostid': judgehost.judgehostid}), 'Run shell script', 'success', 'server', true) }}
             {{ button(path('jury_judgehost_delete', {'judgehostid': judgehost.judgehostid}), 'Delete judgehost', 'danger', 'trash-alt', true) }}
         {% endif %}
         {% include 'jury/partials/rejudge_form.html.twig' with {table: 'judgehost', id: judgehost.judgehostid, buttonClass: 'btn-primary'} %}

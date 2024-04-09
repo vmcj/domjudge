@@ -69,7 +69,7 @@ class ExecutableController extends BaseController
 
         $propertyAccessor  = PropertyAccess::createPropertyAccessor();
         $configScripts = [];
-        foreach (['compare', 'run', 'full_debug'] as $config_script) {
+        foreach (['compare', 'run', 'full_debug', 'shell_task'] as $config_script) {
             try {
                 $configScripts[] = (string)$this->config->get('default_' . $config_script);
             } catch (PHPInvalidArgumentException $e) {

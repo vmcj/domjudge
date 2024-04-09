@@ -17,6 +17,7 @@ class ExecutableUploadType extends AbstractType
                 'compare' => 'compare',
                 'compile' => 'compile',
                 'run' => 'run',
+                'shell_task' => 'shell_task',
             ],
         ]);
         $builder->add('archives', FileType::class, [
