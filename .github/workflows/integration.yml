@@ -1,0 +1,79 @@
+name: Check cgroup version
+on:
+  push:
+
+jobs:
+  integration:
+    env:
+      DB_DATABASE: domjudge
+      DB_USER: user
+      DB_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: root
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get CGroup version
+        run: |
+          cat /proc/cmdline
+          grep cgroup /proc/filesystems
+      - name: Install needed packages
+        run: |
+          sudo apt update
+          sudo apt install -y libcgroup-dev make acl zip unzip mariadb-server apache2 \
+                              php php-fpm php-gd php-cli php-intl php-mbstring php-mysql \
+                              php-curl php-json php-xml php-zip composer ntp \
+                              make pkg-config sudo debootstrap libcgroup-dev \
+                              php-cli php-curl php-json php-xml php-zip lsof procps \
+                              autoconf automake bats \
+                              python3-sphinx python3-sphinx-rtd-theme rst2pdf fontconfig python3-yaml \
+                              latexmk texlive-latex-recommended texlive-latex-extra tex-gyre
+      - name: Setup the default configure file
+        run: make configure
+      - name: Install the needed composer dependencies
+        run: make dist
+      - name: Configure a default install
+        run: ./configure --disable-doc-build --with-baseurl='http://localhost/domjudge/'
+      #  run: make inplace-conf CONFIGURE_FLAGS="--disable-doc-build --with-baseurl='http://localhost/domjudge/'"
+      - name: Show MySQL workings
+        run: |
+          sudo service mysql start
+          echo "show databases" | sudo mysql
+          echo "SELECT CURRENT_USER();" | sudo mysql mysql
+          echo "SELECT USER();" | sudo mysql mysql
+      - name: Prepare domserver files
+        run: |
+          make domserver
+          sudo make install-domserver
+      - name: Install the database itself
+        run: |
+          #sudo /opt/domjudge/domserver/bin/dj_setup_database -uroot -proot bare-install || true
+          #sudo /opt/domjudge/domserver/bin/dj_setup_database bare-install || true
+          sudo /opt/domjudge/domserver/bin/dj_setup_database -s bare-install
+          echo "SELECT * FROM userrole;" | sudo mysql domjudge
+          echo "SELECT * FROM user;" | sudo mysql domjudge
+          echo "SELECT * FROM role;" | sudo mysql domjudge
+          echo "INSERT INTO userrole (userid, roleid) VALUES (1, 3);" | sudo mysql domjudge
+          echo "UPDATE user SET teamid = 1 WHERE userid = 1;" | sudo mysql domjudge
+          #sudo /opt/domjudge/domserver/bin/dj_setup_database -uuser -ppassword bare-install || true
+      - name: Finish the webserver
+        run: |
+          sudo ln -s /opt/domjudge/domserver/etc/apache.conf /etc/apache2/conf-available/domjudge.conf
+          sudo ln -s /opt/domjudge/domserver/etc/domjudge-fpm.conf /etc/php/8.1/fpm/pool.d/domjudge.conf
+          sudo a2enmod proxy_fcgi setenvif rewrite
+          sudo a2enconf php8.1-fpm domjudge
+          sudo service php8.1-fpm restart
+          sudo service apache2 restart
+      - name: Prepare judgehost files
+        run: |
+          make judgehost
+          sudo make install-judgehost
+          sudo /opt/domjudge/judgehost/bin/create_cgroups
+      - name: Create a chroot
+        run: sudo /opt/domjudge/judgehost/bin/dj_make_chroot
+      - name: Create the judgehost user
+        run: sudo useradd -d /nonexistent -U -M -s /bin/false domjudge-run
+      - name: Install the examples
+        run: |
+          sudo /opt/domjudge/domserver/bin/dj_setup_database -s install-examples
+      - name: Run the judgedaemon
+        run: /opt/domjudge/judgehost/bin/judgedaemon
