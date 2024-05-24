@@ -30,10 +30,6 @@ for i in cpuset memory; do
     mkdir -p $CGROUPBASE/$i/domjudge
 done
 
-if [ ! -f $CGROUPBASE/memory/memory.limit_in_bytes ] || [ ! -f $CGROUPBASE/memory/memory.memsw.limit_in_bytes ]; then
-    cgroup_error_and_usage "Error: cgroup support missing memory features in running kernel. Unable to continue."
-fi
-
 chown -R $JUDGEHOSTUSER $CGROUPBASE/*/domjudge
 
 cat $CGROUPBASE/cpuset/cpuset.cpus > $CGROUPBASE/cpuset/domjudge/cpuset.cpus
