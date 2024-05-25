@@ -41,6 +41,7 @@ for arg in $@; do
         make judgehost
         make install-judgehost
         set -x
+        mount | grep proc | cut -d ' ' -f3
         for i in `mount | grep proc | cut -d ' ' -f3`; do
             mount -o remount rw $i
         done
