@@ -32,12 +32,12 @@ esac
         --enable-domserver-build=no
 fi
 for arg in $@; do
-    if [ "$arg" -eq "domserver" ]; then
+    if [ "$arg" = "domserver" ]; then
         make dist
         make domserver
         sudo make install-domserver
     fi
-    if [ "$arg" -eq "judgehost" ]; then
+    if [ "$arg" = "judgehost" ]; then
         make judgehost
         sudo make install-judgehost
     fi
