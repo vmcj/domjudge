@@ -40,12 +40,13 @@ for arg in $@; do
     if [ "$arg" = "judgehost" ]; then
         make judgehost
         make install-judgehost
+	whoami
         set -x
         mounts=$(mount | grep proc)
         echo $mounts
         mount_list=$(echo $mounts | cut -d ' ' -f3)
         for i in `mount | grep proc | cut -d ' ' -f3`; do
-            mount -o remount rw $i || dmesg
+            mount -o remount rw $i || dmesg || whoami
         done
         set +x
         /opt/domjudge/judgehost/bin/dj_make_chroot
