@@ -25,7 +25,10 @@ if [ "${all_commands#*"domserver"}" != "$all_commands" ] || [ "${all_commands#*"
             apt-get install gcc g++ -y ;;
 esac
 
-    ./configure --with-baseurl='http://localhost/domjudge/' --with-judgehost_chrootdir=/chroot/domjudge
+    ./configure \
+        --with-baseurl='http://localhost/domjudge/' \
+        --with-judgehost_chrootdir=/chroot/domjudge \
+        --with-domjudge-user=root
 fi
 for arg in $@; do
     if [ "$arg" -eq "domserver" ]; then
