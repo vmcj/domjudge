@@ -35,11 +35,11 @@ for arg in $@; do
     if [ "$arg" = "domserver" ]; then
         make dist
         make domserver
-        sudo make install-domserver
+        make install-domserver
     fi
     if [ "$arg" = "judgehost" ]; then
         make judgehost
-        sudo make install-judgehost
+        make install-judgehost
     fi
 done
 
