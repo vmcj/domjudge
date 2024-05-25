@@ -18,6 +18,13 @@ make configure
 
 all_commands="$*"
 if [ "${all_commands#*"domserver"}" != "$all_commands" ] || [ "${all_commands#*"judgehost"}" != "$all_commands" ]; then
+    case $distro_id in
+        "ID=fedora")
+            dnf install gcc g++ -y ;;
+        *)
+            apt-get install gcc g++ -y ;;
+esac
+
     ./configure --with-baseurl='http://localhost/domjudge/' --with-judgehost_chrootdir=/chroot/domjudge
 fi
 for arg in $@; do
