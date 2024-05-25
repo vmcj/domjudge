@@ -20,9 +20,9 @@ all_commands="$*"
 if [ "${all_commands#*"domserver"}" != "$all_commands" ] || [ "${all_commands#*"judgehost"}" != "$all_commands" ]; then
     case $distro_id in
         "ID=fedora")
-            dnf install gcc g++ -y ;;
+            dnf install gcc g++ debootstrap libcgroup-devel -y ;;
         *)
-            apt-get install gcc g++ -y ;;
+            apt-get install gcc g++ debootstrap libcgroup-dev -y ;;
 esac
 
     ./configure \
