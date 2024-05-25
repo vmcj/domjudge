@@ -28,7 +28,8 @@ esac
     ./configure \
         --with-baseurl='http://localhost/domjudge/' \
         --with-judgehost_chrootdir=/chroot/domjudge \
-        --with-domjudge-user=root
+        --with-domjudge-user=root \
+        --enable-domserver-build=no
 fi
 for arg in $@; do
     if [ "$arg" -eq "domserver" ]; then
