@@ -17,7 +17,7 @@ esac
 make configure
 
 # Install extra assert statements for bots
-cp submit/assert.bash .github/jobs/configure-checks/
+cp submit/assert.bash .github/jobs/"$1"-checks/
 
 # Run the configure tests for this usecase
-test_path="/__w/domjudge/domjudge" bats .github/jobs/configure-checks/all.bats
+test_path="/__w/domjudge/domjudge" bats .github/jobs/"$1"-checks/all.bats

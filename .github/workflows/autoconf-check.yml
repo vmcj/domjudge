@@ -35,4 +35,4 @@ jobs:
         run: apt-get update; apt-get install -y git
       - uses: actions/checkout@v4
       - name: Setup image and run bats tests
-        run: .github/jobs/configure-checks/setup_configure_image.sh
+        run: .github/jobs/configure-checks/setup_configure_image.sh "configure"
