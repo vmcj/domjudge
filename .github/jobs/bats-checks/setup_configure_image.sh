@@ -16,6 +16,17 @@ esac
 # Build the configure file
 make configure
 
+# Remove the old chroot when it exists
+rm -rf /chroot/domjudge
+
+for arg in $@; do
+    if [ "$arg" -eq "judgehost" ]; then
+        ./configure --with-baseurl='http://localhost/domjudge/' --with-judgehost_chrootdir=/chroot/domjudge
+        make judgehost
+        sudo make install-judgehost
+    fi
+done
+
 # Install extra assert statements for bots
 cp submit/assert.bash .github/jobs/"$1"-checks/
 
