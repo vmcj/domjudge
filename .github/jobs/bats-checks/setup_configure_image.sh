@@ -42,7 +42,7 @@ for arg in $@; do
         make install-judgehost
         set -x
         mounts=$(mount | grep proc)
-        echo $mount
+        echo $mounts
         mount_list=$(echo $mounts | cut -d ' ' -f3)
         for i in `mount | grep proc | cut -d ' ' -f3`; do
             mount -o remount rw $i || dmesg
