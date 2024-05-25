@@ -22,7 +22,7 @@ if [ "${all_commands#*"domserver"}" != "$all_commands" ] || [ "${all_commands#*"
         "ID=fedora")
             dnf install gcc g++ debootstrap libcgroup-devel glibc-static libstdc++-static lsb_release -y ;;
         *)
-            apt-get install gcc g++ debootstrap libcgroup-dev -y ;;
+            apt-get install gcc g++ debootstrap libcgroup-dev lsb-release -y ;;
 esac
 
     ./configure \
