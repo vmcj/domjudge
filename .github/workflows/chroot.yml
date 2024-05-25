@@ -14,22 +14,28 @@ jobs:
     strategy:
       matrix:
         ARCH:
+          - amd64
           - arm64
           - armhf
           - i386
-        version: [jammy, focal, rolling]
+        version: [noble]
         os: [ubuntu]
         releaseBranch:
           - ${{ contains(github.ref, 'main') }}
         exclude:
           - releaseBranch: false
         include:
-          - DEFAULT: ""
-          - ARCH: amd64
+          - os: debian
+            version: stable
+          - os: debian
+            version: testing
+            ARCH: amd64
     runs-on: ubuntu-latest
     env:
       DEBIAN_FRONTEND: noninteractive
       TZ: Etc/UTC
+    container:
+      image: ${{ matrix.os }}:${{ matrix.version }}
     steps:
       - name: Install git so we get the .github directory
         run: apt-get update; apt-get install -y git
