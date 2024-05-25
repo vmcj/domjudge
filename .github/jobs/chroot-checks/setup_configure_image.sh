@@ -1,0 +1,1 @@
+../bats-checks/setup_configure_image.sh
