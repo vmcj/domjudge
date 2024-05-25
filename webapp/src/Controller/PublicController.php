@@ -254,4 +254,17 @@ class PublicController extends BaseController
 
         return $response($probId, $contest, $contestProblem);
     }
+
+    /**
+     * Provided generated CSS where we normally use inline CSS. This is needed as we can't add more CCS
+     * from within a partial twig template. For now only the scoreboard renderer needs this.
+     */
+    #[Route(path: '/dynamic', name: 'public_generated_css')]
+    public function dynamicCSS(): Response
+    {
+        $data = $this->scoreboardService->getDynamicCSS();
+        $response = $this->render('public/scoreboard.css.twig', $data);
+        $response->headers->set('Content-Type', 'text/css');
+        return $response;
+    }
 }

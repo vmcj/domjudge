@@ -947,6 +947,27 @@ class ScoreboardService
     }
 
     /**
+     * Get the scoreboard Twig data for a given contest.
+     *
+     * @return array{}
+     */
+    public function getDynamicCSS(): array
+    {
+        $data['backgroundColors'][] = "#FFFFFF";
+        $queryBuilder = $this->em->createQueryBuilder()
+            ->from(TeamCategory::class, 'tc', 'tc.categoryid')
+            ->select('tc.color')
+            ->andWhere('tc.color IS NOT NULL');
+
+        /** @var TeamCategory[] $categories */
+        $categories = $queryBuilder->getQuery()->getResult();
+        foreach ($categories as $category) {
+            $data['backgroundColors'][] = $category['color'];
+        }
+        return $data;
+    }
+
+    /**
      * Get the teams to display on the scoreboard.
      * @return Team[]
      */
