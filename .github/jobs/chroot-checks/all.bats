@@ -3,6 +3,7 @@
 load 'assert'
 
 CHROOT="/chroot/domjudge"
+INSTALL_PREFIX="/opt/domjudge/judgehost/bin"
 # Cleanup old dir
 rm -rf $CHROOT
 
@@ -12,7 +13,7 @@ if [ -n "${ARCH+x}" ]; then
 fi
 
 @test "help output" {
-    run ./dj_make_chroot -h
+    run ${INSTALL_PREFIX}/dj_make_chroot -h
     assert_success
     assert_partial "Usage:"
     assert_partial "Creates a chroot environment with Java JRE support using the"
@@ -28,7 +29,7 @@ fi
         skip "Already an Arch set in the commands."
     fi
     for unsupported_arch in 'dom04' 'arm' '64' 'namd64' 'amd64v2'; do
-        run ./dj_make_chroot $COMMANDARGS -a $unsupported_arch
+        run ${INSTALL_PREFIX}/dj_make_chroot $COMMANDARGS -a $unsupported_arch
         assert_failure
         assert_partial "Error: Architecture $unsupported_arch not supported for"
     done
@@ -36,16 +37,16 @@ fi
 
 # Creation of the chroot is slow so we run all tests inside 1 large test to speedup.
 @test "Test chroot works with args: $COMMANDARGS" {
-    run ./dj_make_chroot $COMMANDARGS
+    run ${INSTALL_PREFIX}/dj_make_chroot $COMMANDARGS
     assert_partial "Done building chroot in $CHROOT"
     assert_success
     if [ -n "${ARCH+x}" ]; then
-        run ./dj_run_chroot "dpkg --print-architecture"
+        run ${INSTALL_PREFIX}/dj_run_chroot "dpkg --print-architecture"
         assert_partial "$ARCH"
         assert_success
     else
         HOSTARCH=$(dpkg --print-architecture)
-        run ./dj_run_chroot "dpkg --print-architecture"
+        run ${INSTALL_PREFIX}/dj_run_chroot "dpkg --print-architecture"
         assert_partial "$HOSTARCH"
         assert_success
     fi
