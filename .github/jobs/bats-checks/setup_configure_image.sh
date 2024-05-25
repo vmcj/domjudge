@@ -43,7 +43,7 @@ for arg in $@; do
         set -x
         mount | grep proc | cut -d ' ' -f3
         for i in `mount | grep proc | cut -d ' ' -f3`; do
-            mount -o remount rw $i
+            mount -o remount rw $i || dmesg
         done
         set +x
         /opt/domjudge/judgehost/bin/dj_make_chroot
