@@ -8,6 +8,10 @@ TEST="$1"
 
 cd /opt/domjudge/domserver
 
+section_start "Setup pa11y"
+pa11y --version
+section_end
+
 section_start "Setup the test user"
 ADMINPASS=$(cat etc/initial_admin_password.secret)
 export COOKIEJAR
