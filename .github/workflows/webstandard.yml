@@ -17,13 +17,20 @@ jobs:
     strategy:
       matrix:
         role: [team, balloon, jury]
+        db: [bare-install, install]
         releaseBranch:
           - ${{ contains(github.ref, 'main') }}
         exclude:
           - releaseBranch: false
         include:
           - role: public
+            db: install
+          - role: public
+            db: bare-install
           - role: admin
+            db: install
+          - role: admin
+            db: bare-install
     steps:
       - uses: actions/checkout@v4
       - name: Install DOMjudge

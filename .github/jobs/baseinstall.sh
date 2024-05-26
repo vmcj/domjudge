@@ -22,6 +22,7 @@ alias section_start='trace_off ; section_start_internal '
 alias section_end='trace_off ; section_end_internal '
 
 export version="$1"
+db=${2:-install}
 
 set -eux
 
@@ -110,9 +111,11 @@ for service in nginx php${PHPVERSION}-fpm; do
 done
 section_end
 
-section_start "Install the example data"
-/opt/domjudge/domserver/bin/dj_setup_database -uroot -proot install-examples | tee -a $ARTIFACTS/mysql.txt
-section_end
+if [ "${db}"="install" ]; then
+    section_start "Install the example data"
+    /opt/domjudge/domserver/bin/dj_setup_database -uroot -proot install-examples | tee -a $ARTIFACTS/mysql.txt
+    section_end
+fi
 
 section_start "Setup user"
 # We're using the admin user in all possible roles
