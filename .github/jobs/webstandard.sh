@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. gitlab/ci_settings.sh
+. .github/jobs/ci_settings.sh
 
 section_start_collap setup "Setup and install"
 

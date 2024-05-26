@@ -1,34 +1,11 @@
 #!/bin/sh
 
-# Functions to annotate the Github actions logs
-alias trace_on='set -x'
-alias trace_off='{ set +x; } 2>/dev/null'
-
-section_start_internal  () {
-    echo "::group::$1"
-    trace_on
-}
-
-section_end_internal () {
-    echo "::endgroup::"
-    trace_on
-}
-
-mysql_root () {
-    echo "$1" | mysql -uroot -proot "$2" | tee -a $ARTIFACTS/mysql.txt
-}
-
-alias section_start='trace_off ; section_start_internal '
-alias section_end='trace_off ; section_end_internal '
+. .github/jobs/ci_settings.sh
 
 export version="$1"
 db=${2:-install}
 
 set -eux
-
-# Store artifacts/logs
-ARTIFACTS="/tmp/artifacts"
-mkdir $ARTIFACTS
 
 section_start "Update packages"
 sudo apt update
