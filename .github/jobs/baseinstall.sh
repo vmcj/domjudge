@@ -14,6 +14,10 @@ section_end_internal () {
     trace_on
 }
 
+mysql_root () {
+    echo "$1" | mysql -uroot -proot "$2" | tee -a $ARTIFACTS/mysql.txt
+}
+
 alias section_start='trace_off ; section_start_internal '
 alias section_end='trace_off ; section_end_internal '
 
@@ -67,9 +71,9 @@ sudo systemctl start mysql.service
 
 # Show some MySQL debugging
 sudo systemctl status mysql.service
-echo "show databases" | mysql -uroot -proot | tee -a $ARTIFACTS/mysql.txt
-echo "SELECT CURRENT_USER();" | mysql -uroot -proot mysql | tee -a $ARTIFACTS/mysql.txt
-echo "SELECT USER();" | mysql -uroot -proot mysql | tee -a $ARTIFACTS/mysql.txt
+mysql_root "show databases"
+mysql_root "SELECT CURRENT_USER();"
+mysql_root "SELECT USER();"
 
 /opt/domjudge/domserver/bin/dj_setup_database -uroot -proot bare-install | tee -a $ARTIFACTS/mysql.txt
 section_end
@@ -101,20 +105,20 @@ section_end
 
 section_start "Setup user"
 # We're using the admin user in all possible roles
-echo "DELETE FROM userrole WHERE userid=1;" | mysql -uroot -proot domjudge | tee -a $ARTIFACTS/mysql.txt
+mysql_root "DELETE FROM userrole WHERE userid=1;" domjudge
 if [ "$version" = "team" ]; then
     # Add team to admin user
-    echo "INSERT INTO userrole (userid, roleid) VALUES (1, 3);" | mysql -uroot -proot domjudge | tee -a $ARTIFACTS/mysql.txt
-    echo "UPDATE user SET teamid = 1 WHERE userid = 1;" | mysql -uroot -proot domjudge | tee -a $ARTIFACTS/mysql.txt
+    mysql_root "INSERT INTO userrole (userid, roleid) VALUES (1, 3);" domjudge
+    mysql_root "UPDATE user SET teamid = 1 WHERE userid = 1;" domjudge
 elif [ "$version" = "jury" ]; then
     # Add jury to admin user
-    echo "INSERT INTO userrole (userid, roleid) VALUES (1, 2);" | mysql -uroot -proot domjudge | tee -a $ARTIFACTS/mysql.txt
+    mysql_root "INSERT INTO userrole (userid, roleid) VALUES (1, 2);" domjudge
 elif [ "$version" = "balloon" ]; then
     # Add balloon to admin user
-    echo "INSERT INTO userrole (userid, roleid) VALUES (1, 4);" | mysql -uroot -proot domjudge | tee -a $ARTIFACTS/mysql.txt
+    mysql_root "INSERT INTO userrole (userid, roleid) VALUES (1, 4);" domjudge
 elif [ "$version" = "admin" ]; then
     # Add admin to admin user
-    echo "INSERT INTO userrole (userid, roleid) VALUES (1, 1);" | mysql -uroot -proot domjudge | tee -a $ARTIFACTS/mysql.txt
+    mysql_root "INSERT INTO userrole (userid, roleid) VALUES (1, 1);" domjudge
 fi
 section_end
 
