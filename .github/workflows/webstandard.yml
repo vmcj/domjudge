@@ -16,31 +16,42 @@ jobs:
       image: domjudge/gitlabci:24.04
     strategy:
       matrix:
-        role: [team, balloon, jury]
+        role: [public, team, balloon, jury, admin]
+        test: [w3cval, WCAG2A, WCAG2AA]
         db: [bare-install, install]
         releaseBranch:
           - ${{ contains(github.ref, 'main') }}
         exclude:
           - releaseBranch: false
+          - role: jury
+            test: WCAG2AA
+          - role: jury
+            test: WCAG2A
+          - role: admin
+            test: WCAG2AA
+          - role: admin
+            test: WCAG2A
         include:
           - role: public
+            test: WCAG2AA
+            db: install
+          - role: public
+            test: w3cval
             db: install
           - role: public
             db: bare-install
           - role: admin
-            db: install
-          - role: admin
-            db: bare-install
     steps:
       - uses: actions/checkout@v4
       - name: Install DOMjudge
         run: .github/jobs/baseinstall.sh ${{ matrix.role }}
       - name: Run webstandard tests (W3C, WCAG)
-        run: .github/jobs/webstandard.sh
+        run: .github/jobs/webstandard.sh ${{ matrix.test }}
       - name: Upload all logs/artifacts
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.version }}-logs
+          name: ${{ matrix.role }}-${{ matrix.test }}-${{ matrix.db }}-logs
           path: |
             /tmp/artifacts
             /var/log/nginx
