@@ -37,7 +37,10 @@ section_end
 
 section_start "Install domserver"
 make configure
-./configure --with-baseurl='https://localhost/domjudge/' --enable-doc-build=no --prefix="/opt/domjudge" | tee $ARTIFACTS/configure.txt
+./configure \
+  --with-baseurl='https://localhost/domjudge/' \
+  --enable-doc-build=no \
+  --enable-judgehost-build=no | tee $ARTIFACTS/configure.txt
 
 make domserver
 sudo make install-domserver
