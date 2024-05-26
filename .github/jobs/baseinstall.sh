@@ -78,6 +78,11 @@ mysql_root "SELECT USER();"
 /opt/domjudge/domserver/bin/dj_setup_database -uroot -proot bare-install | tee -a $ARTIFACTS/mysql.txt
 section_end
 
+section_start "Show PHP config"
+php -v | tee -a $ARTIFACTS/php.txt
+php -m | tee -a $ARTIFACTS/php.txt
+section_end
+
 section_start "Setup webserver"
 sudo cp /opt/domjudge/domserver/etc/domjudge-fpm.conf /etc/php/$PHPVERSION/fpm/pool.d/domjudge.conf
 
