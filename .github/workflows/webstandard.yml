@@ -14,5 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: domjudge/gitlabci:24.04
+    strategy:
+      matrix:
+        role: [public, team, balloon, jury, admin]
     steps:
       - uses: actions/checkout@v4
+      - name: Install DOMjudge
+        run: .github/jobs/baseinstall.sh ${{ matrix.role }}
