@@ -1,0 +1,18 @@
+name: Webstandard (WCAG, W3C)
+on:
+  push:
+    branches:
+      - main
+      - '[0-9]+.[0-9]+'
+  pull_request:
+    branches:
+      - main
+      - '[0-9]+.[0-9]+'
+
+jobs:
+  standards:
+    runs-on: ubuntu-latest
+    container:
+      image: domjudge/gitlabci:24.04
+    steps:
+      - uses: actions/checkout@v4
