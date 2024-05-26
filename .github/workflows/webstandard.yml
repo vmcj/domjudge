@@ -16,7 +16,14 @@ jobs:
       image: domjudge/gitlabci:24.04
     strategy:
       matrix:
-        role: [public, team, balloon, jury, admin]
+        role: [team, balloon, jury]
+        releaseBranch:
+          - ${{ contains(github.ref, 'main') }}
+        exclude:
+          - releaseBranch: false
+        include:
+          - role: public
+          - role: admin
     steps:
       - uses: actions/checkout@v4
       - name: Install DOMjudge
