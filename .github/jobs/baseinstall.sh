@@ -21,6 +21,10 @@ export version="$1"
 
 set -eux
 
+# Store artifacts/logs
+ARTIFACTS="/tmp/artifacts"
+mkdir $ARTIFACTS
+
 section_start "Update packages"
 sudo apt update
 section_end
@@ -41,7 +45,7 @@ export PHPVERSION
 
 section_start "Run composer"
 export APP_ENV="dev"
-composer install --no-scripts
+composer install --no-scripts |tee $ARTIFACTS/composer_out.txt
 section_end
 
 section_start "Set simple admin password"
@@ -51,7 +55,7 @@ section_end
 
 section_start "Install domserver"
 make configure
-./configure --with-baseurl='https://localhost/domjudge/' --enable-doc-build=no --prefix="/opt/domjudge"
+./configure --with-baseurl='https://localhost/domjudge/' --enable-doc-build=no --prefix="/opt/domjudge" | tee $ARTIFACTS/configure.txt
 
 make domserver
 sudo make install-domserver
@@ -63,11 +67,11 @@ sudo systemctl start mysql.service
 
 # Show some MySQL debugging
 sudo systemctl status mysql.service
-echo "show databases" | mysql -uroot -proot
-echo "SELECT CURRENT_USER();" | mysql -uroot -proot mysql
-echo "SELECT USER();" | mysql -uroot -proot mysql
+echo "show databases" | mysql -uroot -proot | tee -a $ARTIFACTS/mysql.txt
+echo "SELECT CURRENT_USER();" | mysql -uroot -proot mysql | tee -a $ARTIFACTS/mysql.txt
+echo "SELECT USER();" | mysql -uroot -proot mysql | tee -a $ARTIFACTS/mysql.txt
 
-/opt/domjudge/domserver/bin/dj_setup_database -uroot -proot bare-install
+/opt/domjudge/domserver/bin/dj_setup_database -uroot -proot bare-install | tee -a $ARTIFACTS/mysql.txt
 section_end
 
 section_start "Setup webserver"
@@ -92,25 +96,25 @@ done
 section_end
 
 section_start "Install the example data"
-/opt/domjudge/domserver/bin/dj_setup_database -uroot -proot install-examples
+/opt/domjudge/domserver/bin/dj_setup_database -uroot -proot install-examples | tee -a $ARTIFACTS/mysql.txt
 section_end
 
 section_start "Setup user"
 # We're using the admin user in all possible roles
-echo "DELETE FROM userrole WHERE userid=1;" | mysql -uroot -proot domjudge
+echo "DELETE FROM userrole WHERE userid=1;" | mysql -uroot -proot domjudge | tee -a $ARTIFACTS/mysql.txt
 if [ "$version" = "team" ]; then
     # Add team to admin user
-    echo "INSERT INTO userrole (userid, roleid) VALUES (1, 3);" | mysql -uroot -proot domjudge
-    echo "UPDATE user SET teamid = 1 WHERE userid = 1;" | mysql -uroot -proot domjudge
+    echo "INSERT INTO userrole (userid, roleid) VALUES (1, 3);" | mysql -uroot -proot domjudge | tee -a $ARTIFACTS/mysql.txt
+    echo "UPDATE user SET teamid = 1 WHERE userid = 1;" | mysql -uroot -proot domjudge | tee -a $ARTIFACTS/mysql.txt
 elif [ "$version" = "jury" ]; then
     # Add jury to admin user
-    echo "INSERT INTO userrole (userid, roleid) VALUES (1, 2);" | mysql -uroot -proot domjudge
+    echo "INSERT INTO userrole (userid, roleid) VALUES (1, 2);" | mysql -uroot -proot domjudge | tee -a $ARTIFACTS/mysql.txt
 elif [ "$version" = "balloon" ]; then
     # Add balloon to admin user
-    echo "INSERT INTO userrole (userid, roleid) VALUES (1, 4);" | mysql -uroot -proot domjudge
+    echo "INSERT INTO userrole (userid, roleid) VALUES (1, 4);" | mysql -uroot -proot domjudge | tee -a $ARTIFACTS/mysql.txt
 elif [ "$version" = "admin" ]; then
     # Add admin to admin user
-    echo "INSERT INTO userrole (userid, roleid) VALUES (1, 1);" | mysql -uroot -proot domjudge
+    echo "INSERT INTO userrole (userid, roleid) VALUES (1, 1);" | mysql -uroot -proot domjudge | tee -a $ARTIFACTS/mysql.txt
 fi
 section_end
 

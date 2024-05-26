@@ -28,3 +28,11 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install DOMjudge
         run: .github/jobs/baseinstall.sh ${{ matrix.role }}
+      - name: Upload all logs/artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.version }}-logs
+          path: |
+            /tmp/artifacts
+            /var/log/nginx
+            /opt/domjudge/domserver/webapp/var/log/*.log
