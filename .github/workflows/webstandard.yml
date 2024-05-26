@@ -35,6 +35,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install DOMjudge
         run: .github/jobs/baseinstall.sh ${{ matrix.role }}
+      - name: Run webstandard tests (W3C, WCAG)
+        run: .github/jobs/webstandard.sh
       - name: Upload all logs/artifacts
         uses: actions/upload-artifact@v4
         with:
