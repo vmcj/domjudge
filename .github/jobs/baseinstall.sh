@@ -83,6 +83,12 @@ php -v | tee -a $ARTIFACTS/php.txt
 php -m | tee -a $ARTIFACTS/php.txt
 section_end
 
+section_start "Show general config"
+printenv | tee -a $ARTIFACTS/environment.txt
+cp /etc/os-release $ARTIFACTS/os-release.txt
+cp /proc/cmdline $ARTIFACTS/cmdline.txt
+section_end
+
 section_start "Setup webserver"
 sudo cp /opt/domjudge/domserver/etc/domjudge-fpm.conf /etc/php/$PHPVERSION/fpm/pool.d/domjudge.conf
 
