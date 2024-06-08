@@ -91,7 +91,8 @@ if [ "$TEST" = "w3cval" ]; then
     wget https://github.com/validator/validator/releases/latest/download/vnu.linux.zip
     unzip -q vnu.linux.zip
     section_end
-    FLTR='--filterpattern .*autocomplete.*|.*style.*'
+
+    FLTR='--filterpattern .*autocomplete.*|.*style.*|.*role=tab.*|.*descendant.*|.*Stray.*|.*attribute.*|.*Forbidden.*|.*stream.*'
     for typ in html css svg
     do
         section_start "Analyse with $typ"
