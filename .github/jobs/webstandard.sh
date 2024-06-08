@@ -66,8 +66,13 @@ RET=$?
 set -e
 #https://www.gnu.org/software/wget/manual/html_node/Exit-Status.html
 # Exit code 4 is network error which we can ignore
-if [ $RET -ne 4 ] && [ $RET -ne 0 ]; then
+# Exit code 8 can also be because of HTTP404 or 400
+if [ $RET -ne 4 ] && [ $RET -ne 0 ] && [ $RET -ne 8 ]; then
     exit $RET
+fi
+NUM_ERRORS=$(cat /var/log/nginx/domjudge.log | grep -v 'HTTP/1.1" 200\|302\|400\|404' | grep -v "robots.txt" | wc -l)
+if [ "$NUM_ERRORS" -ne 0 ]; then
+    cat /var/log/nginx/domjudge.log | grep -v 'HTTP/1.1" 200\|302\|400\|404' | grep -v "robots.txt"
 fi
 section_end scrape
 
