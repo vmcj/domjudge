@@ -1,8 +1,18 @@
 #!/bin/sh
 
+# Store artifacts/logs
+export ARTIFACTS="/tmp/artifacts"
+mkdir -p "$ARTIFACTS"
+
 # Functions to annotate the Github actions logs
-trace_on () { set -x }
-trace_off () { { set +x; } 2>/dev/null }
+trace_on () {
+    set -x
+}
+trace_off () {
+    {
+        set +x
+    } 2>/dev/null
+}
 
 section_start_internal () {
     echo "::group::$1"
@@ -15,7 +25,7 @@ section_end_internal () {
 }
 
 mysql_root () {
-    echo "$1" | mysql -uroot -proot "$2" | tee -a $ARTIFACTS/mysql.txt
+    echo "$1" | mysql -uroot -proot "$2" | tee -a "$ARTIFACTS"/mysql.txt
 }
 
 section_start () {
@@ -31,7 +41,3 @@ section_end () {
     trace_off
     section_end_internal
 }
-
-# Store artifacts/logs
-export ARTIFACTS="/tmp/artifacts"
-mkdir -p $ARTIFACTS

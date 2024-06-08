@@ -27,7 +27,7 @@ export PHPVERSION
 
 section_start "Run composer"
 export APP_ENV="dev"
-composer install --no-scripts |tee $ARTIFACTS/composer_out.txt
+composer install --no-scripts |tee "$ARTIFACTS"/composer_out.txt
 section_end
 
 section_start "Set simple admin password"
@@ -40,7 +40,7 @@ make configure
 ./configure \
   --with-baseurl='https://localhost/domjudge/' \
   --enable-doc-build=no \
-  --enable-judgehost-build=no | tee $ARTIFACTS/configure.txt
+  --enable-judgehost-build=no | tee "$ARTIFACTS"/configure.txt
 
 make domserver
 sudo make install-domserver
@@ -56,22 +56,22 @@ mysql_root "show databases"
 mysql_root "SELECT CURRENT_USER();"
 mysql_root "SELECT USER();"
 
-/opt/domjudge/domserver/bin/dj_setup_database -uroot -proot bare-install | tee -a $ARTIFACTS/mysql.txt
+/opt/domjudge/domserver/bin/dj_setup_database -uroot -proot bare-install | tee -a "$ARTIFACTS"/mysql.txt
 section_end
 
 section_start "Show PHP config"
-php -v | tee -a $ARTIFACTS/php.txt
-php -m | tee -a $ARTIFACTS/php.txt
+php -v | tee -a "$ARTIFACTS"/php.txt
+php -m | tee -a "$ARTIFACTS"/php.txt
 section_end
 
 section_start "Show general config"
-printenv | tee -a $ARTIFACTS/environment.txt
-cp /etc/os-release $ARTIFACTS/os-release.txt
-cp /proc/cmdline $ARTIFACTS/cmdline.txt
+printenv | tee -a "$ARTIFACTS"/environment.txt
+cp /etc/os-release "$ARTIFACTS"/os-release.txt
+cp /proc/cmdline "$ARTIFACTS"/cmdline.txt
 section_end
 
 section_start "Setup webserver"
-sudo cp /opt/domjudge/domserver/etc/domjudge-fpm.conf /etc/php/$PHPVERSION/fpm/pool.d/domjudge.conf
+sudo cp /opt/domjudge/domserver/etc/domjudge-fpm.conf /etc/php/"$PHPVERSION"/fpm/pool.d/domjudge.conf
 
 sudo rm -f /etc/nginx/sites-enabled/*
 sudo cp /opt/domjudge/domserver/etc/nginx-conf /etc/nginx/sites-enabled/domjudge
@@ -86,14 +86,14 @@ section_end
 
 section_start "Show webserver is up"
 for service in nginx php${PHPVERSION}-fpm; do
-    sudo systemctl restart $service
-    sudo systemctl status  $service
+    sudo systemctl restart "$service"
+    sudo systemctl status  "$service"
 done
 section_end
 
-if [ "${db}"="install" ]; then
+if [ "${db}" = "install" ]; then
     section_start "Install the example data"
-    /opt/domjudge/domserver/bin/dj_setup_database -uroot -proot install-examples | tee -a $ARTIFACTS/mysql.txt
+    /opt/domjudge/domserver/bin/dj_setup_database -uroot -proot install-examples | tee -a "$ARTIFACTS/mysql.txt"
     section_end
 fi
 
