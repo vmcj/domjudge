@@ -4,7 +4,12 @@
 
 DIR="$PWD"
 
+if [ "$#" -ne "2" ]; then
+    exit 2
+fi
+
 TEST="$1"
+ROLE="$2"
 
 cd /opt/domjudge/domserver
 
@@ -17,7 +22,7 @@ ADMINPASS=$(cat etc/initial_admin_password.secret)
 export COOKIEJAR
 COOKIEJAR=$(mktemp --tmpdir)
 export CURLOPTS="--fail -sq -m 30 -b $COOKIEJAR"
-if [ $ROLE = "public" ]; then
+if [ "$ROLE" = "public" ]; then
     ADMINPASS="failedlogin"
 fi
 
@@ -113,17 +118,17 @@ else
         FLTR=""
     else
         STAN="-s $TEST"
-        FLTR="-E #DataTables_Table_0 > tbody > tr > td > a,#menuDefault > a,#filter-card > div > div > div > span > span:nth-child(1) > span > ul > li > input,.problem-badge"
+        FLTR="-E '#DataTables_Table_0 > tbody > tr > td > a','#menuDefault > a','#filter-card > div > div > div > span > span:nth-child(1) > span > ul > li > input',.problem-badge"
     fi
+    chown -R domjudge:domjudge $DIR
     cd $DIR
     ACCEPTEDERR=5
     # shellcheck disable=SC2044,SC2035
     for file in `find $URL -name *.html`
     do
         section_start "$file"
-        # T is reasonable amount of errors to allow to not break
-        pa11y $STAN -r json -T $ACCEPTEDERR "$FLTR" $file | python3 -m json.tool
-        ERR=`pa11y $STAN -r csv -T $ACCEPTEDERR "$FLTR" $file | wc -l`
+        su domjudge -c "pa11y --config .github/jobs/pa11y_config.json $STAN -r json -T $ACCEPTEDERR $FLTR $file" | python3 -m json.tool
+        ERR=`su domjudge -c "pa11y --config .github/jobs/pa11y_config.json $STAN -r csv -T $ACCEPTEDERR $FLTR $file" | wc -l`
         FOUNDERR=$((ERR+FOUNDERR-1)) # Remove header row
         section_end
     done

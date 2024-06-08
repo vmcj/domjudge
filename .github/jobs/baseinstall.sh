@@ -7,21 +7,6 @@ db=${2:-install}
 
 set -eux
 
-section_start "Update packages"
-sudo apt update
-section_end
-
-section_start "Install needed packages"
-sudo apt install -y acl zip unzip nginx composer php php-fpm php-gd \
-                    php-cli php-intl php-mbstring php-mysql php-curl php-json \
-                    php-xml php-zip ntp make sudo debootstrap \
-                    libcgroup-dev lsof php-cli php-curl php-json php-xml \
-                    php-zip procps gcc g++ default-jre-headless \
-                    default-jdk-headless ghc fp-compiler autoconf automake bats \
-                    python3-sphinx python3-sphinx-rtd-theme rst2pdf fontconfig \
-                    python3-yaml latexmk curl
-section_end
-
 PHPVERSION=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION."\n";')
 export PHPVERSION
 
@@ -44,11 +29,10 @@ make configure
   --enable-judgehost-build=no | tee "$ARTIFACTS"/configure.txt
 
 make domserver
-sudo make install-domserver
+make install-domserver
 section_end
 
 section_start "SQL settings"
-# Show some MySQL debugging
 cat > ~/.my.cnf <<EOF
 [client]
 host=sqlserver
@@ -56,11 +40,27 @@ user=root
 password=root
 EOF
 cat ~/.my.cnf
+
+mysql_root "CREATE DATABASE IF NOT EXISTS \`domjudge\` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+mysql_root "CREATE USER IF NOT EXISTS \`domjudge\`@'%' IDENTIFIED BY 'domjudge';"
+mysql_root "GRANT SELECT, INSERT, UPDATE, DELETE ON \`domjudge\`.* TO 'domjudge'@'%';"
+mysql_root "FLUSH PRIVILEGES;"
+
+# Show some MySQL debugging
 mysql_root "show databases"
 mysql_root "SELECT CURRENT_USER();"
 mysql_root "SELECT USER();"
+mysql_root "SELECT user,host FROM mysql.user"
+echo "unused:sqlserver:domjudge:domjudge:domjudge:3306" > /opt/domjudge/domserver/etc/dbpasswords.secret
+mysql_user "SELECT CURRENT_USER();"
+mysql_user "SELECT USER();"
+section_end
 
-/opt/domjudge/domserver/bin/dj_setup_database -uroot -proot bare-install | tee -a "$ARTIFACTS"/mysql.txt
+section_start "Install DOMjudge database"
+/opt/domjudge/domserver/bin/dj_setup_database -uroot -proot bare-install
+#>> "$ARTIFACTS"/mysql.txt
+# We don't have -o pipefail so the `tee` eats away the potential error.
+#cat "$ARTIFACTS"/mysql.txt
 section_end
 
 section_start "Show PHP config"
@@ -75,23 +75,23 @@ cp /proc/cmdline "$ARTIFACTS"/cmdline.txt
 section_end
 
 section_start "Setup webserver"
-sudo cp /opt/domjudge/domserver/etc/domjudge-fpm.conf /etc/php/"$PHPVERSION"/fpm/pool.d/domjudge.conf
+cp /opt/domjudge/domserver/etc/domjudge-fpm.conf /etc/php/"$PHPVERSION"/fpm/pool.d/domjudge.conf
 
-sudo rm -f /etc/nginx/sites-enabled/*
-sudo cp /opt/domjudge/domserver/etc/nginx-conf /etc/nginx/sites-enabled/domjudge
+rm -f /etc/nginx/sites-enabled/*
+cp /opt/domjudge/domserver/etc/nginx-conf /etc/nginx/sites-enabled/domjudge
 
 openssl req -nodes -new -x509 -keyout /tmp/server.key -out /tmp/server.crt -subj "/C=NL/ST=Noord-Holland/L=Amsterdam/O=TestingForPR/CN=localhost"
-sudo cp /tmp/server.crt /usr/local/share/ca-certificates/
-sudo update-ca-certificates
+cp /tmp/server.crt /usr/local/share/ca-certificates/
+update-ca-certificates
 # shellcheck disable=SC2002
-cat "$(pwd)/.github/jobs/data/nginx_extra" | sudo tee -a /etc/nginx/sites-enabled/domjudge
-sudo nginx -t
+cat "$(pwd)/.github/jobs/data/nginx_extra" | tee -a /etc/nginx/sites-enabled/domjudge
+nginx -t
 section_end
 
 section_start "Show webserver is up"
 for service in nginx php${PHPVERSION}-fpm; do
-    sudo systemctl restart "$service"
-    sudo systemctl status  "$service"
+    service "$service" restart
+    service "$service" status
 done
 section_end
 
