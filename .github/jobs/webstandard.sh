@@ -52,9 +52,13 @@ wget \
     http://localhost/domjudge/$URL
 set -e
 RET=$?
+section_end
 
+section_start "Archive downloaded site"
 cp -r localhost $ARTIFACTS/
+section_end
 
+section_start "Analyse failures"
 #https://www.gnu.org/software/wget/manual/html_node/Exit-Status.html
 # Exit code 4 is network error which we can ignore
 # Exit code 8 can also be because of HTTP404 or 400
@@ -86,11 +90,13 @@ if [ "$TEST" = "w3cval" ]; then
     FLTR='--filterpattern .*autocomplete.*|.*style.*'
     for typ in html css svg
     do
+        section_start "Analyse with $typ"
         $DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-$typ --format json $FLTR $URL 2> result.json
         NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-$typ --format gnu $FLTR $URL 2>&1 | wc -l`
         FOUNDERR=$((NEWFOUNDERRORS+FOUNDERR))
         python3 -m "json.tool" < result.json > $ARTIFACTS/w3c$typ$URL.json
         trace_off; python3 gitlab/jsontogitlab.py $ARTIFACTS/w3c$typ$URL.json; trace_on
+        section_end
     done
 else
     section_start "Remove files from upstream with problems"
