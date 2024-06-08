@@ -47,12 +47,15 @@ make domserver
 sudo make install-domserver
 section_end
 
-section_start "Explicit start mysql + install DB"
-# See: https://github.com/actions/runner-images/blob/ubuntu22/20240516.1/images/ubuntu/Ubuntu2404-Readme.md#mysql
-sudo systemctl start mysql.service
-
+section_start "SQL settings"
 # Show some MySQL debugging
-sudo systemctl status mysql.service
+cat > ~/.my.cnf <<EOF
+[client]
+host=sqlserver
+user=root
+password=root
+EOF
+cat ~/.my.cnf
 mysql_root "show databases"
 mysql_root "SELECT CURRENT_USER();"
 mysql_root "SELECT USER();"
