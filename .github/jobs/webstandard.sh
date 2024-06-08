@@ -50,12 +50,11 @@ wget \
     --no-parent \
     --load-cookies cookies.txt \
     http://localhost/domjudge/$URL
-
+set -e
 RET=$?
 
 cp -r localhost $ARTIFACTS/
 
-set -e
 #https://www.gnu.org/software/wget/manual/html_node/Exit-Status.html
 # Exit code 4 is network error which we can ignore
 # Exit code 8 can also be because of HTTP404 or 400
