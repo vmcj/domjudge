@@ -75,9 +75,10 @@ section_start "Analyse failures"
 if [ $RET -ne 4 ] && [ $RET -ne 0 ] && [ $RET -ne 8 ]; then
     exit $RET
 fi
-NUM_ERRORS=$(grep -v 'HTTP/1.1" 200\|302\|400\|404' /var/log/nginx/domjudge.log | grep -v "robots.txt" -c)
+NUM_ERRORS=$(grep -v 'HTTP/1.1" \(200\|302\|400\|404\)' /var/log/nginx/domjudge.log | grep -v "robots.txt" -c)
 if [ "$NUM_ERRORS" -ne 0 ]; then
-    grep -v 'HTTP/1.1" 200\|302\|400\|404' /var/log/nginx/domjudge.log | grep -v "robots.txt"
+	grep -v 'HTTP/1.1" \(200\|302\|400\|404\)' /var/log/nginx/domjudge.log | grep -v "robots.txt"
+    exit 1
 fi
 section_end
 
