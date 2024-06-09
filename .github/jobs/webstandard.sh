@@ -29,12 +29,13 @@ fi
 # Make an initial request which will get us a session id, and grab the csrf token from it
 CSRFTOKEN=$(curl $CURLOPTS -c $COOKIEJAR "http://localhost/domjudge/login" 2>/dev/null | sed -n 's/.*_csrf_token.*value="\(.*\)".*/\1/p')
 # Make a second request with our session + csrf token to actually log in
-curl $CURLOPTS -c $COOKIEJAR -F "_csrf_token=$CSRFTOKEN" -F "_username=admin" -F "_password=$ADMINPASS" "http://localhost/domjudge/login"
+# shellcheck disable=SC2086
+curl $CURLOPTS -c "$COOKIEJAR" -F "_csrf_token=$CSRFTOKEN" -F "_username=admin" -F "_password=$ADMINPASS" "http://localhost/domjudge/login"
 
 # Move back to the default directory
-cd $DIR
+cd "$DIR"
 
-cp $COOKIEJAR cookies.txt
+cp "$COOKIEJAR" cookies.txt
 sed -i 's/#HttpOnly_//g' cookies.txt
 sed -i 's/\t0\t/\t1999999999\t/g' cookies.txt
 section_end
@@ -42,9 +43,9 @@ section_end
 # Could try different entrypoints
 FOUNDERR=0
 URL=public
-mkdir $URL
-cd $URL
-cp $DIR/cookies.txt ./
+mkdir "$URL"
+cd "$URL"
+cp "$DIR"/cookies.txt ./
 section_start "Scrape the site with the rebuild admin user"
 set +e
 wget \
@@ -58,7 +59,7 @@ wget \
     --domains localhost \
     --no-parent \
     --load-cookies cookies.txt \
-    http://localhost/domjudge/$URL
+    http://localhost/domjudge/"$URL"
 set -e
 RET=$?
 section_end
@@ -74,9 +75,9 @@ section_start "Analyse failures"
 if [ $RET -ne 4 ] && [ $RET -ne 0 ] && [ $RET -ne 8 ]; then
     exit $RET
 fi
-NUM_ERRORS=$(cat /var/log/nginx/domjudge.log | grep -v 'HTTP/1.1" 200\|302\|400\|404' | grep -v "robots.txt" | wc -l)
+NUM_ERRORS=$(grep -v 'HTTP/1.1" 200\|302\|400\|404' /var/log/nginx/domjudge.log | grep -v "robots.txt" -c)
 if [ "$NUM_ERRORS" -ne 0 ]; then
-    cat /var/log/nginx/domjudge.log | grep -v 'HTTP/1.1" 200\|302\|400\|404' | grep -v "robots.txt"
+    grep -v 'HTTP/1.1" 200\|302\|400\|404' /var/log/nginx/domjudge.log | grep -v "robots.txt"
 fi
 section_end
 
@@ -92,7 +93,7 @@ if [ "$TEST" = "w3cval" ]; then
     section_end
 
     section_start "Install testsuite"
-    cd $DIR
+    cd "$DIR"
     wget https://github.com/validator/validator/releases/latest/download/vnu.linux.zip
     unzip -q vnu.linux.zip
     section_end
@@ -101,11 +102,13 @@ if [ "$TEST" = "w3cval" ]; then
     for typ in html css svg
     do
         section_start "Analyse with $typ"
-        $DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-$typ --format json $FLTR $URL 2> result.json
-        NEWFOUNDERRORS=`$DIR/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-$typ --format gnu $FLTR $URL 2>&1 | wc -l`
+	# shellcheck disable=SC2086
+        "$DIR"/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-$typ --format json $FLTR "$URL" 2> result.json
+	# shellcheck disable=SC2086
+	NEWFOUNDERRORS=$("$DIR"/vnu-runtime-image/bin/vnu --errors-only --exit-zero-always --skip-non-$typ --format gnu $FLTR "$URL" 2>&1 | wc -l)
         FOUNDERR=$((NEWFOUNDERRORS+FOUNDERR))
-        python3 -m "json.tool" < result.json > $ARTIFACTS/w3c$typ$URL.json
-        trace_off; python3 gitlab/jsontogitlab.py $ARTIFACTS/w3c$typ$URL.json; trace_on
+        python3 -m "json.tool" < result.json > "$ARTIFACTS/w3c$typ$URL.json"
+        trace_off; python3 gitlab/jsontogitlab.py "$ARTIFACTS/w3c$typ$URL.json"; trace_on
         section_end
     done
 else
@@ -120,15 +123,15 @@ else
         STAN="-s $TEST"
         FLTR="-E '#DataTables_Table_0 > tbody > tr > td > a','#menuDefault > a','#filter-card > div > div > div > span > span:nth-child(1) > span > ul > li > input',.problem-badge"
     fi
-    chown -R domjudge:domjudge $DIR
-    cd $DIR
+    chown -R domjudge:domjudge "$DIR"
+    cd "$DIR"
     ACCEPTEDERR=5
     # shellcheck disable=SC2044,SC2035
-    for file in `find $URL -name *.html`
+    for file in $(find $URL -name "*.html")
     do
         section_start "$file"
         su domjudge -c "pa11y --config .github/jobs/pa11y_config.json $STAN -r json -T $ACCEPTEDERR $FLTR $file" | python3 -m json.tool
-        ERR=`su domjudge -c "pa11y --config .github/jobs/pa11y_config.json $STAN -r csv -T $ACCEPTEDERR $FLTR $file" | wc -l`
+	ERR=$(su domjudge -c "pa11y --config .github/jobs/pa11y_config.json $STAN -r csv -T $ACCEPTEDERR $FLTR $file" | wc -l)
         FOUNDERR=$((ERR+FOUNDERR-1)) # Remove header row
         section_end
     done
