@@ -25,11 +25,13 @@ section_end_internal () {
 }
 
 mysql_root () {
-    echo "$1" | mysql -uroot -proot "${2+''}" | tee -a "$ARTIFACTS"/mysql.txt
+    # shellcheck disable=SC2086
+    echo "$1" | mysql -uroot -proot ${2} | tee -a "$ARTIFACTS"/mysql.txt
 }
 
 mysql_user () {
-    echo "$1" | mysql -udomjudge -pdomjudge "${2+''}" | tee -a "$ARTIFACTS"/mysql.txt
+    # shellcheck disable=SC2086
+    echo "$1" | mysql -udomjudge -pdomjudge ${2} | tee -a "$ARTIFACTS"/mysql.txt
 }
 
 section_start () {
