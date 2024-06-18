@@ -82,8 +82,12 @@ if [ "$ROLE" = "public" ]; then
     EXPECTED_HTTP_CODES="$EXPECTED_HTTP_CODES\|401"
 fi
 NUM_ERRORS=$(grep -v "HTTP/1.1\" \($EXPECTED_HTTP_CODES\)" /var/log/nginx/domjudge.log | grep -v "robots.txt" -c)
+
+echo "$NUM_ERRORS"
+
 if [ "$NUM_ERRORS" -ne 0 ]; then
-	grep -v "HTTP/1.1\" \($EXPECTED_HTTP_CODES\)" /var/log/nginx/domjudge.log | grep -v "robots.txt"
+    echo "Entered the if"
+    grep -v "HTTP/1.1\" \($EXPECTED_HTTP_CODES\)" /var/log/nginx/domjudge.log | grep -v "robots.txt"
     exit 1
 fi
 section_end
