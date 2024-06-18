@@ -75,9 +75,15 @@ section_start "Analyse failures"
 if [ $RET -ne 4 ] && [ $RET -ne 0 ] && [ $RET -ne 8 ]; then
     exit $RET
 fi
-NUM_ERRORS=$(grep -v 'HTTP/1.1" \(200\|302\|400\|404\)' /var/log/nginx/domjudge.log | grep -v "robots.txt" -c)
+
+EXPECTED_HTTP_CODES="200\|302\|400\|404"
+if [ "$ROLE" = "public" ]; then
+    # It's expected to encounter a 401 for the login page as we supply the wrong password
+    EXPECTED_HTTP_CODES="$EXPECTED_HTTP_CODES\|401"
+fi
+NUM_ERRORS=$(grep -v "HTTP/1.1\" ($EXPECTED_HTTP_CODES)" /var/log/nginx/domjudge.log | grep -v "robots.txt" -c)
 if [ "$NUM_ERRORS" -ne 0 ]; then
-	grep -v 'HTTP/1.1" \(200\|302\|400\|404\)' /var/log/nginx/domjudge.log | grep -v "robots.txt"
+	grep -v "HTTP/1.1\" ($EXPECTED_HTTP_CODES)" /var/log/nginx/domjudge.log | grep -v "robots.txt"
     exit 1
 fi
 section_end
