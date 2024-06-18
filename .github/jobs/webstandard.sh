@@ -81,9 +81,9 @@ if [ "$ROLE" = "public" ]; then
     # It's expected to encounter a 401 for the login page as we supply the wrong password
     EXPECTED_HTTP_CODES="$EXPECTED_HTTP_CODES\|401"
 fi
-NUM_ERRORS=$(grep -v "HTTP/1.1\" ($EXPECTED_HTTP_CODES)" /var/log/nginx/domjudge.log | grep -v "robots.txt" -c)
+NUM_ERRORS=$(grep -v "HTTP/1.1\" \($EXPECTED_HTTP_CODES\)" /var/log/nginx/domjudge.log | grep -v "robots.txt" -c)
 if [ "$NUM_ERRORS" -ne 0 ]; then
-	grep -v "HTTP/1.1\" ($EXPECTED_HTTP_CODES)" /var/log/nginx/domjudge.log | grep -v "robots.txt"
+	grep -v "HTTP/1.1\" \($EXPECTED_HTTP_CODES\)" /var/log/nginx/domjudge.log | grep -v "robots.txt"
     exit 1
 fi
 section_end
