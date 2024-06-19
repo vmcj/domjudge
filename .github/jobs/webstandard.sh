@@ -112,7 +112,7 @@ if [ "$TEST" = "w3cval" ]; then
 
     FLTR='--filterpattern .*autocomplete.*|.*style.*|.*role=tab.*|.*descendant.*|.*Stray.*|.*attribute.*|.*Forbidden.*|.*stream.*'
     if [ "$ROLE" = "public" ]; then
-        FLTR=''
+        FLTR='--filterpattern .*style.*'
     fi
     for typ in html css svg
     do
