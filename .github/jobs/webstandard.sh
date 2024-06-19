@@ -111,6 +111,9 @@ if [ "$TEST" = "w3cval" ]; then
     section_end
 
     FLTR='--filterpattern .*autocomplete.*|.*style.*|.*role=tab.*|.*descendant.*|.*Stray.*|.*attribute.*|.*Forbidden.*|.*stream.*'
+    if [ "$ROLE" = "public" ]; then
+        FLTR=''
+    fi
     for typ in html css svg
     do
         section_start "Analyse with $typ"
