@@ -82,7 +82,7 @@ if [ "$ROLE" = "public" ]; then
     EXPECTED_HTTP_CODES="$EXPECTED_HTTP_CODES\|401"
 fi
 set +e
-NUM_ERRORS=$(grep -v "HTTP/1.1\" \($EXPECTED_HTTP_CODES\)" /var/log/nginx/domjudge.log | grep -v "robots.txt" -c; if [ "$?" -gt 1]; then exit 127; fi)
+NUM_ERRORS=$(grep -v "HTTP/1.1\" \($EXPECTED_HTTP_CODES\)" /var/log/nginx/domjudge.log | grep -v "robots.txt" -c; if [ "$?" -gt 1 ]; then exit 127; fi)
 set -e
 echo "$NUM_ERRORS"
 
