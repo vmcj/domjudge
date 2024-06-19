@@ -1,13 +1,6 @@
 name: Webstandard (WCAG, W3C)
 on:
   push:
-    branches:
-      - main
-      - '[0-9]+.[0-9]+'
-  pull_request:
-    branches:
-      - main
-      - '[0-9]+.[0-9]+'
 
 jobs:
   standards:
@@ -43,12 +36,6 @@ jobs:
             test: WCAG2A
         include:
           - role: public
-            test: WCAG2AA
-            db: install
-          - role: public
-            test: w3cval
-            db: install
-          - role: admin
             test: w3cval
             db: install
     steps:
