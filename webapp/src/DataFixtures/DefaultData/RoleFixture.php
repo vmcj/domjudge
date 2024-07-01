@@ -29,7 +29,7 @@ class RoleFixture extends AbstractDefaultDataFixture
             'api_writer'         => 'API writer',
             'api_source_reader'  => 'Source code reader',
             'clarification_rw'   => 'Clarification handler',
-            'api_problem_change' => 'API Problem Changer'
+            'api_problem_change' => 'API Problem Changer',
             'api_contest_change' => 'API Contest Changer'
         ];
         foreach ($roles as $roleName => $description) {
