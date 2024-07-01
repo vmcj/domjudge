@@ -373,4 +373,10 @@ abstract class BaseTestCase extends BaseBaseTestCase
             yield [$id];
         }
     }
+
+    protected function provideAllowedUsers(): Generator
+    {
+        yield ['admin', ['admin']];
+        yield ['team', ['api_problem_change']];
+    }
 }
