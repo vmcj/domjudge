@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. gitlab/ci_settings.sh
+. .github/jobs/ci_settings.sh
 
 export version=$1
 unittest=$2

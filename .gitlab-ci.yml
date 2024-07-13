@@ -1,10 +1,8 @@
 include:
-  - '/gitlab/ci/unit.yml'
   - '/gitlab/ci/integration.yml'
   - '/gitlab/ci/template.yml'
 
 stages:
   - integration
-  - unit
 
 image: domjudge/gitlabci:24.04
