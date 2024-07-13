@@ -2,13 +2,17 @@
 
 load 'assert'
 
-CHROOT="/chroot/domjudge"
+CHROOT="${DIR}/chroot/domjudge"
 # Cleanup old dir
 rm -rf $CHROOT
 
 COMMANDARGS=""
-if [ -n "${ARCH+x}" ] && [ "${ARCH}" != "empty" ]; then
-    COMMANDARGS="-a $ARCH $COMMANDARGS"
+if [ -n "${ARCH+x}" ]; then
+    if [ "${ARCH}" = "empty" ]; then
+        unset ARCH
+    else
+        COMMANDARGS="-a $ARCH $COMMANDARGS"
+    fi
 fi
 
 @test "help output" {
