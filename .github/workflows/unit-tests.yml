@@ -31,6 +31,8 @@ jobs:
             db: mariadb
             test: "Unit"
             crawl_shadow_mode: 0
+    container:
+      image: domjudge/gitlabci:24.04
     services:
       sqlserver:
         image: ${{ matrix.db }}
