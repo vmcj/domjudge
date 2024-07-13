@@ -43,10 +43,24 @@ section_start () {
         exit 1
     fi
     trace_off
+    export IN_SECTION="1"
     section_start_internal "$1"
 }
 
 section_end () {
     trace_off
     section_end_internal
+    unset IN_SECTION
+}
+
+finish () {
+    if [ ! -z ${IN_SECTION+x} ];
+        section_end
+    fi
+    section_start "Storing artifacts"
+    set +e
+    cp /proc/cmdline "$ARTIFACTS/cmdline"
+    cp /chroot/domjudge/etc/apt/sources.list "$ARTIFACTS/sources.list"
+    cp /chroot/domjudge/debootstrap/debootstrap.log "$ARTIFACTS/debootstrap.log"
+    section_end
 }
