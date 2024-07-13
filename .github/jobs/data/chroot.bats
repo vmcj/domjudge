@@ -42,7 +42,7 @@ fi
 }
 
 # Creation of the chroot is slow so we run all tests inside 1 large test to speedup.
-@test "Test chroot works with args: ${COMMANDARGS-_none given_}" {
+@test "Test chroot works with args: '${COMMANDARGS}'" {
     run ./dj_make_chroot $COMMANDARGS
     assert_partial "Done building chroot in $CHROOT"
     assert_success
