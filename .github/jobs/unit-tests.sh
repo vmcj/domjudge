@@ -2,9 +2,11 @@
 
 . .github/jobs/ci_settings.sh
 
+set -euxo pipefail
+
 export version=$1
 unittest=$2
-[ "$version" = "8.1" ] && CODECOVERAGE=1 || CODECOVERAGE=0
+[ "$version" = "8.3" ] && CODECOVERAGE=1 || CODECOVERAGE=0
 
 show_phpinfo $version
 
