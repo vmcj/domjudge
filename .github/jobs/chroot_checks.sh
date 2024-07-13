@@ -36,4 +36,5 @@ section_start "Test chroot contents"
 cp ${DIR}/submit/assert.bash ./
 cp ${DIR}/.github/jobs/data/chroot.bats ./
 bats ./chroot.bats
+echo $?
 section_end
