@@ -4,11 +4,7 @@ include:
   - '/gitlab/ci/template.yml'
 
 stages:
-  - test
   - integration
-  - chroot_checks
   - unit
-  - style
-  - ci_checks
 
 image: domjudge/gitlabci:24.04
