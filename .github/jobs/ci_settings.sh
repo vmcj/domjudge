@@ -4,6 +4,9 @@
 export ARTIFACTS="/tmp/artifacts"
 mkdir -p "$ARTIFACTS"
 
+DIR=$(pwd)
+export DIR
+
 # Functions to annotate the Github actions logs
 trace_on () {
     set -x

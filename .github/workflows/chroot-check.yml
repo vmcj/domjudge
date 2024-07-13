@@ -1,0 +1,31 @@
+name: Check chroot creation
+on:
+  push:
+    #branches:
+    #  - main
+    #  - '[0-9]+.[0-9]+'
+  pull_request:
+    branches:
+      - main
+      - '[0-9]+.[0-9]+'
+
+jobs:
+  debian-family:
+    strategy:
+      matrix:
+        version: [empty, amd64, arm64, armhf, i386]
+    runs-on: ubuntu-latest
+    container:
+      image: domjudge/gitlabci:24.04
+      options: --privileged
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup image and test the chroots
+        run: .github/jobs/chroot_checks.sh ${{ matrix.version }}
+      - name: Upload all logs/artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.version }}-logs
+          path: |
+            /tmp/artifacts
