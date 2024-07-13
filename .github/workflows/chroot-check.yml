@@ -22,7 +22,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Setup image and test the chroots
         run: |
-          .github/jobs/chroot_checks.sh ${{ matrix.version }}
+          export ARCH=${{ matrix.version }}
+          .github/jobs/chroot_checks.sh
           echo $?
       - name: Upload all logs/artifacts
         if: ${{ !cancelled() }}
