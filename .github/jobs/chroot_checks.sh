@@ -2,6 +2,8 @@
 
 . .github/jobs/ci_settings.sh
 
+set -euxo pipefail
+
 function finish() {
     echo -e "\\n\\n=======================================================\\n"
     echo "Storing artifacts..."
