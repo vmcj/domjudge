@@ -54,7 +54,7 @@ section_end () {
 }
 
 finish () {
-    if [ ! -z ${IN_SECTION+x} ];
+    if [ ! -z ${IN_SECTION+x} ]; then
         section_end
     fi
     section_start "Storing artifacts"

@@ -4,15 +4,6 @@
 
 set -euxo pipefail
 
-function finish() {
-    echo -e "\\n\\n=======================================================\\n"
-    echo "Storing artifacts..."
-    trace_on
-    set +e
-    cp /proc/cmdline "$ARTIFACTS/cmdline"
-    cp /chroot/domjudge/etc/apt/sources.list "$ARTIFACTS/sources.list"
-    cp /chroot/domjudge/debootstrap/debootstrap.log "$ARTIFACTS/debootstrap.log"
-}
 trap finish EXIT
 
 section_start "Setup and install"
