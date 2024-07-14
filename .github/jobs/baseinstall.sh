@@ -2,10 +2,16 @@
 
 . .github/jobs/ci_settings.sh
 
+set -eux
+
 export version="$1"
 db=${2:-install}
 
-set -eux
+# If this script is called for the unit tests, we use the test environment
+export APP_ENV="${3:-prod}"
+
+# In the test environment, we need to use a different database
+[ "$APP_ENV" = "prod" ] && DATABASE_NAME=domjudge || DATABASE_NAME=domjudge_test
 
 PHPVERSION=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION."\n";')
 export PHPVERSION
