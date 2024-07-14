@@ -53,6 +53,15 @@ section_end () {
     unset IN_SECTION
 }
 
+show_phpinfo () {
+    phpversion=$1
+    section_start "Show the new PHP info"
+    update-alternatives --set php /usr/bin/php"${phpversion}"
+    php -v
+    php -m
+    section_end
+}
+
 finish () {
     if [ ! -z ${IN_SECTION+x} ]; then
         section_end
