@@ -46,7 +46,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install DOMjudge
-        run: .github/jobs/baseinstall.sh admin
+        run: .github/jobs/baseinstall.sh admin install test
       - name: Run the unit tests
         run: |
           export CRAWL_SHADOW_MODE=${{ matrix.crawl_shadow_mode }}
