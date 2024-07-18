@@ -888,8 +888,8 @@ class ScoreboardService
                 'after' => 30,
                 'url' => $refreshUrl,
                 'ajax' => true,
-             ],
-             'static' => $static,
+            ],
+            'static' => $static,
         ];
         if ($static && $contest && ($forceUnfrozen || $contest->getFreezeData()->showFinal())) {
             unset($data['refresh']);
