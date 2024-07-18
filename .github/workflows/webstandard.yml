@@ -40,6 +40,12 @@ jobs:
             test: WCAG2A
         include:
           - role: public
+            test: WCAG2AAA
+            db: install
+          - role: public
+            test: WCAG2AAA
+            db: bare-install
+          - role: public
             test: WCAG2AA
             db: install
           - role: public
