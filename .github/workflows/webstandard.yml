@@ -51,9 +51,12 @@ jobs:
           - role: public
             test: w3cval
             db: install
-          - role: admin
+          - role: public
+            test: WCAG2AA
+            db: bare-install
+          - role: public
             test: w3cval
-            db: install
+            db: bare-install
     steps:
       - uses: actions/checkout@v4
       - name: Install DOMjudge
