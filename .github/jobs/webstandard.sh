@@ -142,11 +142,13 @@ else
         STAN="-s $TEST"
         FLTR0="-E '#DataTables_Table_0 > tbody > tr > td > a','#menuDefault > a','#filter-card > div > div > div > span > span:nth-child(1) > span > ul > li > input',.problem-badge"
         FLTR1="'html > body > div > div > div > div > div > div > table > tbody > tr > td > a > span','html > body > div > div > div > div > div > div > form > div > div > div > label'"
-        # Problembadges can have any color so also combinations where the contrast ratio is not doable
+        # Problembadges can have any color so also combinations where the contrast ratio is not doable.
         FLTRPROBBADGE="'.skipped-problembadge > span'"
+        # Team categories can have any color so there will always be ratios which can't be fixed.
+        FLTRTEAMCAT="'.ignore-category-test *'"
         # Ignore the contrast as it is not always properly detected
         IGNORERULES="--ignore WCAG2AAA.Principle1.Guideline1_4.1_4_6.G18.Fail --ignore WCAG2AAA.Principle1.Guideline1_4.1_4_6.G17.Fail"
-        FLTR="$IGNORERULES -E $FLTRPROBBADGE"
+        FLTR="$IGNORERULES -E $FLTRPROBBADGE,$FLTRTEAMCAT"
     fi
     chown -R domjudge:domjudge "$DIR"
     cd "$DIR"

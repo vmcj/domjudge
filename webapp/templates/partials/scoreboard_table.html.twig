@@ -188,7 +188,7 @@
                 {% set colorClass = color | replace({"#": "_"}) %}
                 {% set backgroundColors = backgroundColors | merge({(color): 1}) %}
             {% endif %}
-            <td class="scoretn cl{{ colorClass }}" title="{{ score.team.effectiveName }}">
+            <td class="scoretn cl{{ colorClass }} ignore-category-test" title="{{ score.team.effectiveName }}">
                 {% set link = null %}
                 {% set extra = null %}
                 {% if static %}
