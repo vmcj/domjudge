@@ -4,6 +4,18 @@
     --text-color: black;
 }
 
+:root, .nav-link, .navbar-text {
+    --bs-navbar-color: black;
+}
+
+:root, .btn-outline-secondary {
+    --bs-btn-color: black;
+}
+
+body {
+    --bs-body-font-size: 1.3rem;
+}
+
 /** WCAG fixes start **/
 .btn-primary {
     background-color: #0072ed;
@@ -655,7 +667,7 @@ blockquote {
 }
 
 #contesttimer {
-    color: DimGray;
+    color: black;
     margin-left: auto;
 }
 
