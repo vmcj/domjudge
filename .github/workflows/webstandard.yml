@@ -46,14 +46,8 @@ jobs:
             test: WCAG2AAA
             db: bare-install
           - role: public
-            test: WCAG2AA
-            db: install
-          - role: public
             test: w3cval
             db: install
-          - role: public
-            test: WCAG2AA
-            db: bare-install
           - role: public
             test: w3cval
             db: bare-install
