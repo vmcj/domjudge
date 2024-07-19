@@ -144,7 +144,7 @@ else
     do
         section_start "$file"
         su domjudge -c "pa11y --config .github/jobs/pa11y_config.json $STAN -r json -T $ACCEPTEDERR $FLTR $file" | python3 -m json.tool
-	ERR=$(su domjudge -c "pa11y --config .github/jobs/pa11y_config.json $STAN -r csv -T $ACCEPTEDERR $FLTR $file" | wc -l)
+        ERR=$(su domjudge -c "pa11y --config .github/jobs/pa11y_config.json $STAN -r csv -T $ACCEPTEDERR $FLTR $file" | wc -l)
         FOUNDERR=$((ERR+FOUNDERR-1)) # Remove header row
         section_end
     done
