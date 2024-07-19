@@ -146,9 +146,11 @@ else
         FLTRPROBBADGE="'.skipped-problembadge > span'"
         # Team categories can have any color so there will always be ratios which can't be fixed.
         FLTRTEAMCAT="'.ignore-category-test *'"
+        # Ignore Font-Awesome icons
+        FLTRFAS="'.fas'"
         # Ignore the contrast as it is not always properly detected
         IGNORERULES="--ignore WCAG2AAA.Principle1.Guideline1_4.1_4_6.G18.Fail --ignore WCAG2AAA.Principle1.Guideline1_4.1_4_6.G17.Fail"
-        FLTR="$IGNORERULES -E $FLTRPROBBADGE,$FLTRTEAMCAT"
+        FLTR="$IGNORERULES -E $FLTRPROBBADGE,$FLTRTEAMCAT,$FLTRFAS"
     fi
     chown -R domjudge:domjudge "$DIR"
     cd "$DIR"
