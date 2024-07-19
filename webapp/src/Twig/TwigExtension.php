@@ -1075,13 +1075,96 @@ EOF;
 
         // Pick the foreground text color based on the background color.
         $foreground = ($background[0] + $background[1] + $background[2] > 450) ? '#000000' : '#ffffff';
-        return sprintf(
-            '<span class="badge problem-badge" style="background-color: %s; border: 1px solid %s"><span style="color: %s;">%s</span></span>',
+        $originalBadge = sprintf(
+            '<span class="badge problem-badge skipped-problembadge" id="original%4$s" style="background-color: %s; border: 1px solid %s"><span style="color: %s;">%s</span></span>',
             $rgb,
             $border,
             $foreground,
             $problem->getShortname()
         );
+
+        // Pick the foreground text color based on the background color. Inverted from above.
+        $foreground = ($background[0] + $background[1] + $background[2] > 450) ? '#ffffff' : '#000000';
+        $invertedBadge = sprintf(
+            '<span class="badge problem-badge skipped-problembadge" id="inverted%4$s" style="background-color: %s; border: 1px solid %s"><span style="color: %s;">%s</span></span>',
+            $rgb,
+            $border,
+            $foreground,
+            $problem->getShortname()
+        );
+
+        // Pick the foreground text color based on the background color and luminance ratio.
+        // See: https://medium.muz.li/the-science-of-color-contrast-an-expert-designers-guide-33e84c41d156
+        // It seems that some colors have more impact.
+        $nR = $background[0] / 255;
+        $nR = ($nR <= 0.03928) ? $nR/12.92 : pow((($nR+0.055)/1.055), 2.4);
+        $nG = $background[1] / 255;
+        $nG = ($nG <= 0.03928) ? $nG/12.92 : pow((($nG+0.055)/1.055), 2.4);
+        $nB = $background[2] / 255;
+        $nB = ($nB <= 0.03928) ? $nB/12.92 : pow((($nB+0.055)/1.055), 2.4);
+
+        // See: https://www.w3.org/TR/WCAG20/#relativeluminancedef
+        $luminance = 0.2126 * $nR + 0.7152 * $nG + 0.0722 * $nB;
+        // Verified by hand, and seems to make sense with the math above.
+        if ($luminance > 0.17912878474779198) {
+            $foreground = '#000000';
+        } else {
+            $foreground = '#ffffff';
+        }
+        $contrastBadge = sprintf(
+            '<span class="badge problem-badge skipped-problembadge" id="contrast%4$s" style="background-color: %s; border: 1px solid %s"><span style="color: %s;">c%s</span></span>',
+            $rgb,
+            $border,
+            $foreground,
+            $problem->getShortname()
+        );
+
+        $foreground = ($background[0] + $background[1] + $background[2] > 450) ? '#000000' : '#ffffff';
+        $borderLetter = ($background[0] + $background[1] + $background[2] > 450) ? '#ffffff' : '#000000';
+        $strokebadge = sprintf(
+            '<span class="badge problem-badge skipped-problembadge" id="stroke%5$s" style="background-color: %s; border: 1px solid %s"><span style="-webkit-text-stroke: 1px %s; color: %s;">%s</span></span>',
+            $rgb,
+            $border,
+            $borderLetter,
+            $foreground,
+            $problem->getShortname()
+        );
+        // See: https://stackoverflow.com/questions/2570972/css-font-border
+        $shadow = sprintf("text-shadow: -1px 0 %1\$s, 0 1px %1\$s, 1px 0 %1\$s, 0 -1px %1\$s;", $borderLetter);
+        $shadowbadge = sprintf(
+            '<span class="badge problem-badge skipped-problembadge" id="shadow%5$s" style="background-color: %s; border: 1px solid %s"><span style="%s; color: %s;">%s</span></span>',
+            $rgb,
+            $border,
+            $shadow,
+            $foreground,
+            $problem->getShortname()
+        );
+        if ($luminance > 0.17912878474779198) {
+            $foreground = '#000000';
+            $borderLetter = '#ffffff';
+        } else {
+            $foreground = '#ffffff';
+            $borderLetter = '#000000';
+        }
+        // See: https://stackoverflow.com/questions/2570972/css-font-border
+        $shadow = sprintf("text-shadow: -1px 0 %1\$s, 0 1px %1\$s, 1px 0 %1\$s, 0 -1px %1\$s;", $borderLetter);
+        $shadowContrastbadge = sprintf(
+            '<span class="badge problem-badge skipped-problembadge" id="shadowcontrast%5$s" style="background-color: %s; border: 1px solid %s"><span style="%s; color: %s;">%s</span></span>',
+            $rgb,
+            $border,
+            $shadow,
+            $foreground,
+            $problem->getShortname()
+        );
+        return $originalBadge . $invertedBadge . $contrastBadge . $strokebadge . $shadowbadge . $shadowContrastbadge;
+        /*(
+            '%s<span class="badge problem-badge" style="background-color: %s; border: 1px solid %s"><span style="color: %s;">%s</span></span>',
+            $newbadge,
+            $rgb,
+            $border,
+            $foreground,
+            $problem->getShortname()
+        );*/
     }
 
     public function problemBadgeForContest(Problem $problem, ?Contest $contest = null): string
