@@ -127,6 +127,11 @@ else
     rm -rf localhost/domjudge/{doc,api}
     section_end
 
+    section_start "Store the captured screenshots"
+    mkdir "$ARTIFACTS/wcag-screenshot"
+    chown -R domjudge "$ARTIFACTS/wcag-screenshot"
+    section_end
+
     if [ "$TEST" == "axe" ]; then
         STAN="-e $TEST"
         FLTR=""
@@ -143,7 +148,7 @@ else
     for file in $(find $URL -name "*.html")
     do
         section_start "$file"
-        su domjudge -c "pa11y --config .github/jobs/pa11y_config.json $STAN -r json -T $ACCEPTEDERR $FLTR $file" | python3 -m json.tool
+        su domjudge -c "pa11y --config .github/jobs/pa11y_config.json $STAN -r json -T $ACCEPTEDERR $FLTR -S $ARTIFACTS/wcag-screenshot/${file//\//_} $file" | python3 -m json.tool
         ERR=$(su domjudge -c "pa11y --config .github/jobs/pa11y_config.json $STAN -r csv -T $ACCEPTEDERR $FLTR $file" | wc -l)
         FOUNDERR=$((ERR+FOUNDERR-1)) # Remove header row
         section_end
