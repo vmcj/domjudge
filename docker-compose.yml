@@ -8,9 +8,9 @@ services:
   mariadb:
     image: docker.io/mariadb
     environment:
-      - MYSQL_ROOT_PASSWORD=domjudge
+      - MYSQL_ROOT_PASSWORD=domjudgeroot.
       - MYSQL_USER=domjudge
-      - MYSQL_PASSWORD=domjudge
+      - MYSQL_PASSWORD=domjudge.
       - MYSQL_DATABASE=domjudge
     ports:
       # Useful to connect a local MySQL client / GUI
@@ -33,3 +33,5 @@ services:
     working_dir: ${PWD}
     environment:
       - PROJECT_DIR=${PWD}
+      - MYSQL_ROOT_PASSWORD=domjudgeroot.
+      - MYSQL_PASSWORD=domjudge.
