@@ -45,6 +45,8 @@ cd /opt/domjudge/domserver/example_problems
 if [ "$STATE" = "original" ]; then
     # Contest yaml
     /opt/domjudge/domserver/example_problems/generate-contest-yaml
+    cat /opt/domjudge/domserver/etc/initial_admin_password.secret
+    cat ~/.netrc
     ls
     pwd
     http --check-status -b -f POST "$API_URL/contests" yaml@contest.yaml
