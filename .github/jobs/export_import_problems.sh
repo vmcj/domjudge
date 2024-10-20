@@ -38,20 +38,28 @@ sed -i 's/#HttpOnly_//g' cookies.txt
 sed -i 's/\t0\t/\t1999999999\t/g' cookies.txt
 section_end
 
+if [ "$STATE" = "original" ]; then
+    section_start "Creating the needed files"
+    cd /opt/domjudge/domserver/example_problems
+    
+    # Contest yaml
+    ./generate-contest-yaml
+    # Problems in contest
+    grep fltcmp -A4 problems.yaml > problems.yml
+    mv problems.y{,a}ml
+    # Problem content
+    (cd "$PROBLEM"; zip -r "../problem$PROBLEM.zip" .)
+    cd "$DIR"
+    section_end
+fi
+
 section_start "Import the problem into DOMjudge"
 # We use the steps from the manual to test those as a side effect.
 cd /opt/domjudge/domserver/example_problems
 
 if [ "$STATE" = "original" ]; then
-    # Contest yaml
-    ./generate-contest-yaml
     myhttp "$API_URL/contests" "yaml@contest.yaml"
-    # Problems in contest
-    grep fltcmp -A4 problems.yaml > problems.yml
-    mv problems.y{,a}ml
     myhttp "$CONTEST_URL/problems/add-data" "data@problems.yaml"
-    # Problem content
-    (cd "$PROBLEM"; zip -r "../problem$PROBLEM.zip" .)
     myhttp "$CONTEST_URL/problems" "zip@problem"$PROBLEM".zip" problem="$PROBLEM"
 else
     "$WEBAPP_DIR"/bin/console api:call -m POST -f yaml=contest.yaml contests
