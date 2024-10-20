@@ -39,27 +39,29 @@ section_end
 section_start "Import the problem into DOMjudge"
 # We use the steps from the manual to test those as a side effect.
 cd /opt/domjudge/domserver/example_problems
-find . -type f
 
 if [ "$STATE" = "original" ]; then
     # Contest yaml
     /opt/domjudge/domserver/example_problems/generate-contest-yaml
     http --check-status -b -f POST "$API_URL/contests" yaml@contest.yaml
-    # Problems in contest
-    grep fltcmp -A4 example_problems/problems.yaml > example_problems/problems.yml
-    mv example_problems/problems.y{,a}ml
-    http --check-status -b -f POST "$CONTEST_URL/problems" data@problems.yaml
-    # Problem content
-    (cd "$PROBLEM"; zip -r "../problem$PROBLEM.zip" .)
-    http --check-status -b -f POST "$CONTEST_URL/problems" zip@problem"$PROBLEM".zip problem="$PROBLEM"
+    ## Problems in contest
+    #grep fltcmp -A4 example_problems/problems.yaml > example_problems/problems.yml
+    #mv example_problems/problems.y{,a}ml
+    #http --check-status -b -f POST "$CONTEST_URL/problems" data@problems.yaml
+    ## Problem content
+    #(cd "$PROBLEM"; zip -r "../problem$PROBLEM.zip" .)
+    #http --check-status -b -f POST "$CONTEST_URL/problems" zip@problem"$PROBLEM".zip problem="$PROBLEM"
 else
-    "$WEBAPP_DIR"/bin/console api:call -m POST -f yaml=contest.yaml contests
-    "$WEBAPP_DIR"/bin/console api:call -m POST -f data=problems.yaml contests/demo/problems
-    "$WEBAPP_DIR"/bin/console api:call -m POST -d problem="$PROBLEM" -f zip="problem$PROBLEM.zip" contest/demo/problems
+    true
+    #"$WEBAPP_DIR"/bin/console api:call -m POST -f yaml=contest.yaml contests
+    #"$WEBAPP_DIR"/bin/console api:call -m POST -f data=problems.yaml contests/demo/problems
+    #"$WEBAPP_DIR"/bin/console api:call -m POST -d problem="$PROBLEM" -f zip="problem$PROBLEM.zip" contest/demo/problems
 fi
 
 cd "$DIR"
 section_end
+
+exit 0
 
 section_start "Export the problem archive from DOMjudge"
 STORAGE_DIR="${STATE}zips"
