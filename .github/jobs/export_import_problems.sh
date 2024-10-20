@@ -51,7 +51,7 @@ if [ "$STATE" = "original" ]; then
     pwd
     http --version
     http --check-status "$API_URL/contests"
-    http --check-status -b -f POST "$API_URL/contests" "yaml@contest.yaml"
+    http --check-status --ignore-stdin -b -f POST "$API_URL/contests" "yaml@contest.yaml"
     ## Problems in contest
     #grep fltcmp -A4 example_problems/problems.yaml > example_problems/problems.yml
     #mv example_problems/problems.y{,a}ml
