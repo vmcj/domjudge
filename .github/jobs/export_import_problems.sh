@@ -50,7 +50,7 @@ if [ "$STATE" = "original" ]; then
     ls
     pwd
     http --version
-    http --check-status "$API_URL/contests"
+    http --check-status GET "$API_URL/contests"
     http --check-status --ignore-stdin -b -f POST "$API_URL/contests" "yaml@contest.yaml"
     ## Problems in contest
     #grep fltcmp -A4 example_problems/problems.yaml > example_problems/problems.yml
