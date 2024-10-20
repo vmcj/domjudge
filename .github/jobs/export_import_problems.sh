@@ -58,9 +58,17 @@ section_start "Import the problem into DOMjudge"
 cd /opt/domjudge/domserver/example_problems
 
 if [ "$STATE" = "original" ]; then
+    http --check-status --ignore-stdin GET "$API_URL/contests"
     myhttp "$API_URL/contests" "yaml@contest.yaml"
+    http --check-status --ignore-stdin GET "$API_URL/contests"
+    
+    http --check-status --ignore-stdin GET "$CONTEST_URL/problems"
     myhttp "$CONTEST_URL/problems/add-data" "data@problems.yaml"
+    http --check-status --ignore-stdin GET "$CONTEST_URL/problems"
+    
+    http --check-status --ignore-stdin GET "$CONTEST_URL/problems"
     myhttp "$CONTEST_URL/problems" "zip@problem"$PROBLEM".zip" problem="$PROBLEM"
+    http --check-status --ignore-stdin GET "$CONTEST_URL/problems"
 else
     "$WEBAPP_DIR"/bin/console api:call -m POST -f yaml=contest.yaml contests
     "$WEBAPP_DIR"/bin/console api:call -m POST -f data=problems.yaml contests/demo/problems
