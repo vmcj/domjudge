@@ -49,7 +49,7 @@ if [ "$STATE" = "original" ]; then
     # Problems in contest
     grep fltcmp -A4 problems.yaml > problems.yml
     mv problems.y{,a}ml
-    myhttp "$CONTEST_URL/problems" "data@problems.yaml"
+    myhttp "$CONTEST_URL/problems/add-data" "data@problems.yaml"
     # Problem content
     (cd "$PROBLEM"; zip -r "../problem$PROBLEM.zip" .)
     myhttp "$CONTEST_URL/problems" "zip@problem"$PROBLEM".zip" problem="$PROBLEM"
