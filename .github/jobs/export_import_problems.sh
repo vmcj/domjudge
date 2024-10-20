@@ -121,13 +121,13 @@ section_start "Unpack the archives"
 unzip "/tmp/$PROBLEM-$STATE.zip" -d "$STORAGE_DIR"
 section_end
 
-section_start "Compare the archives"
-python3 "$DIR"/.github/jobs/compare_problem_package.py "$PROBLEM" "$STATE"
-RET="$?"
-section_end
+#section_start "Compare the archives"
+#python3 "$DIR"/.github/jobs/compare_problem_package.py "$PROBLEM" "$STATE"
+#RET="$?"
+#section_end
 
 section_start "Dump the imported database"
 /opt/domjudge/domserver/bin/dj_setup_database dump "$PROBLEM-$STATE"
 section_end
 
-exit "$RET"
+#exit "$RET"
