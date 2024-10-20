@@ -2,6 +2,8 @@
 
 . .github/jobs/ci_settings.sh
 
+set -euxo pipefail
+
 DIR="$PWD"
 PROBLEM="$1"
 STATE="$2"
