@@ -35,7 +35,7 @@ mysql_user () {
 }
 
 myhttp () {
-    http --check-status --ignore-stdin -b -f "$@"
+    http --check-status --ignore-stdin -b -f POST "$@"
 }
 
 section_start () {

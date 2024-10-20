@@ -44,15 +44,15 @@ cd /opt/domjudge/domserver/example_problems
 
 if [ "$STATE" = "original" ]; then
     # Contest yaml
-    /opt/domjudge/domserver/example_problems/generate-contest-yaml
-    myhttp --check-status --ignore-stdin -b -f POST "$API_URL/contests" "yaml@contest.yaml"
+    ./generate-contest-yaml
+    myhttp "$API_URL/contests" "yaml@contest.yaml"
     # Problems in contest
-    grep fltcmp -A4 example_problems/problems.yaml > example_problems/problems.yml
-    mv example_problems/problems.y{,a}ml
-    myhttp --check-status -b -f POST "$CONTEST_URL/problems" data@problems.yaml
+    grep fltcmp -A4 problems.yaml > problems.yml
+    mv problems.y{,a}ml
+    myhttp "$CONTEST_URL/problems" "data@problems.yaml"
     # Problem content
     (cd "$PROBLEM"; zip -r "../problem$PROBLEM.zip" .)
-    myhttp --check-status -b -f POST "$CONTEST_URL/problems" zip@problem"$PROBLEM".zip problem="$PROBLEM"
+    myhttp "$CONTEST_URL/problems" "zip@problem"$PROBLEM".zip" problem="$PROBLEM"
 else
     "$WEBAPP_DIR"/bin/console api:call -m POST -f yaml=contest.yaml contests
     "$WEBAPP_DIR"/bin/console api:call -m POST -f data=problems.yaml contests/demo/problems
