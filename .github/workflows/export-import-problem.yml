@@ -1,0 +1,54 @@
+name: Compare content of problem archive after export
+on:
+  push:
+    #branches:
+    #  - main
+    #  - '[0-9]+.[0-9]+'
+  #pull_request:
+  #  branches:
+  #    - main
+  #    - '[0-9]+.[0-9]+'
+
+jobs:
+  standards:
+    runs-on: ubuntu-latest
+    container:
+      image: domjudge/gitlabci:24.04
+    services:
+      sqlserver:
+        image: mariadb
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_USER: domjudge
+          MYSQL_PASSWORD: domjudge
+        options: --health-cmd="healthcheck.sh --connect --innodb_initialized" --health-interval=10s --health-timeout=5s --health-retries=3
+    strategy:
+      matrix:
+        problem: [hello, boolfind, fltcmp]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install DOMjudge
+        run: .github/jobs/baseinstall.sh admin bare-install
+      - name: Allow every language
+        run: |
+          . .github/jobs/ci_settings.sh
+          set -eu
+          mysql_root "update language set allow_submit=1;" domjudge
+      - name: Store the initial state to revert to
+        run: /opt/domjudge/domserver/bin/dj_setup_database -uroot -proot dump "initial"
+      - name: Check difference between original import and our export
+        run: .github/jobs/export_import_problems.sh "${{ matrix.problem }}" "original"
+      - name: Check difference between our export and the second export
+        run: .github/jobs/export_import_problems.sh "${{ matrix.problem }}" "reimport"
+      - name: Upload all logs/artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.problem }}-logs
+          path: |
+            /tmp/artifacts
+            /var/log/nginx
+            /opt/domjudge/domserver/webapp/var/log/*.log
+            /opt/domjudge/domserver/db-dumps/*.sql.gz
