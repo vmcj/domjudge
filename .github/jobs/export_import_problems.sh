@@ -45,31 +45,22 @@ cd /opt/domjudge/domserver/example_problems
 if [ "$STATE" = "original" ]; then
     # Contest yaml
     /opt/domjudge/domserver/example_problems/generate-contest-yaml
-    cat /opt/domjudge/domserver/etc/initial_admin_password.secret
-    cat ~/.netrc
-    ls
-    pwd
-    http --version
-    http --check-status GET "$API_URL/contests"
-    http --check-status --ignore-stdin -b -f POST "$API_URL/contests" "yaml@contest.yaml"
-    ## Problems in contest
-    #grep fltcmp -A4 example_problems/problems.yaml > example_problems/problems.yml
-    #mv example_problems/problems.y{,a}ml
-    #http --check-status -b -f POST "$CONTEST_URL/problems" data@problems.yaml
-    ## Problem content
-    #(cd "$PROBLEM"; zip -r "../problem$PROBLEM.zip" .)
-    #http --check-status -b -f POST "$CONTEST_URL/problems" zip@problem"$PROBLEM".zip problem="$PROBLEM"
+    myhttp --check-status --ignore-stdin -b -f POST "$API_URL/contests" "yaml@contest.yaml"
+    # Problems in contest
+    grep fltcmp -A4 example_problems/problems.yaml > example_problems/problems.yml
+    mv example_problems/problems.y{,a}ml
+    myhttp --check-status -b -f POST "$CONTEST_URL/problems" data@problems.yaml
+    # Problem content
+    (cd "$PROBLEM"; zip -r "../problem$PROBLEM.zip" .)
+    myhttp --check-status -b -f POST "$CONTEST_URL/problems" zip@problem"$PROBLEM".zip problem="$PROBLEM"
 else
-    true
-    #"$WEBAPP_DIR"/bin/console api:call -m POST -f yaml=contest.yaml contests
-    #"$WEBAPP_DIR"/bin/console api:call -m POST -f data=problems.yaml contests/demo/problems
-    #"$WEBAPP_DIR"/bin/console api:call -m POST -d problem="$PROBLEM" -f zip="problem$PROBLEM.zip" contest/demo/problems
+    "$WEBAPP_DIR"/bin/console api:call -m POST -f yaml=contest.yaml contests
+    "$WEBAPP_DIR"/bin/console api:call -m POST -f data=problems.yaml contests/demo/problems
+    "$WEBAPP_DIR"/bin/console api:call -m POST -d problem="$PROBLEM" -f zip="problem$PROBLEM.zip" contest/demo/problems
 fi
 
 cd "$DIR"
 section_end
-
-exit 0
 
 section_start "Export the problem archive from DOMjudge"
 STORAGE_DIR="${STATE}zips"

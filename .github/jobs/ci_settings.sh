@@ -34,6 +34,10 @@ mysql_user () {
     echo "$1" | mysql -udomjudge -pdomjudge ${2:-} | tee -a "$ARTIFACTS"/mysql.txt
 }
 
+myhttp () {
+    http --check-status --ignore-stdin -b -f "$@"
+}
+
 section_start () {
     if [ "$#" -ne 1 ]; then
         echo "Only 1 argument is needed for GHA, 2 was needed for GitLab."
