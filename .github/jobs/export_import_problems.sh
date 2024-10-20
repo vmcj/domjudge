@@ -38,41 +38,48 @@ sed -i 's/#HttpOnly_//g' cookies.txt
 sed -i 's/\t0\t/\t1999999999\t/g' cookies.txt
 section_end
 
-if [ "$STATE" = "original" ]; then
-    section_start "Creating the needed files"
-    cd /opt/domjudge/domserver/example_problems
-    
+section_start "Creating the needed files"
+cd /opt/domjudge/domserver/example_problems
+if [ "$STATE" = "original" ]; then    
     # Contest yaml
     ./generate-contest-yaml
     # Problems in contest
-    grep fltcmp -A4 problems.yaml > problems.yml
+    grep "$PROBLEM" -A4 problems.yaml > problems.yml
     mv problems.y{,a}ml
     # Problem content
-    (cd "$PROBLEM"; zip -r "../problem$PROBLEM.zip" .)
+    (cd "$PROBLEM"; zip -r "../$PROBLEM.zip" .)
     cd "$DIR"
-    section_end
+else
+    cp "/tmp/$PROBLEM-original.zip" "./${PROBLEM}.zip" 
 fi
+section_end
 
 section_start "Import the problem into DOMjudge"
 # We use the steps from the manual to test those as a side effect.
 cd /opt/domjudge/domserver/example_problems
 
 if [ "$STATE" = "original" ]; then
-    http --check-status --ignore-stdin GET "$API_URL/contests"
+    #http --check-status --ignore-stdin GET "$API_URL/contests"
     myhttp "$API_URL/contests" "yaml@contest.yaml"
+    echo
     http --check-status --ignore-stdin GET "$API_URL/contests"
+    echo
     
-    http --check-status --ignore-stdin GET "$CONTEST_URL/problems"
+    #http --check-status --ignore-stdin GET "$CONTEST_URL/problems"
     myhttp "$CONTEST_URL/problems/add-data" "data@problems.yaml"
+    echo
     http --check-status --ignore-stdin GET "$CONTEST_URL/problems"
+    echo
     
+    #http --check-status --ignore-stdin GET "$CONTEST_URL/problems"
+    myhttp "$CONTEST_URL/problems" "zip@"$PROBLEM".zip" problem="$PROBLEM"
+    echo
     http --check-status --ignore-stdin GET "$CONTEST_URL/problems"
-    myhttp "$CONTEST_URL/problems" "zip@problem"$PROBLEM".zip" problem="$PROBLEM"
-    http --check-status --ignore-stdin GET "$CONTEST_URL/problems"
+    echo
 else
     "$WEBAPP_DIR"/bin/console api:call -m POST -f yaml=contest.yaml contests
-    "$WEBAPP_DIR"/bin/console api:call -m POST -f data=problems.yaml contests/demo/problems
-    "$WEBAPP_DIR"/bin/console api:call -m POST -d problem="$PROBLEM" -f zip="problem$PROBLEM.zip" contest/demo/problems
+    "$WEBAPP_DIR"/bin/console api:call -m POST -f data=problems.yaml contests/demo/problems/add-data
+    "$WEBAPP_DIR"/bin/console api:call -m POST -d problem="$PROBLEM" -f zip="${PROBLEM}.zip" contests/demo/problems
 fi
 
 cd "$DIR"
@@ -110,12 +117,16 @@ if [ "$NUM_ERRORS" -ne 0 ]; then
 fi
 section_end
 
-section_start "Compare the archives"
+section_start "Unpack the archives"
 unzip "/tmp/$PROBLEM-$STATE.zip" -d "$STORAGE_DIR"
+section_end
 
+section_start "Compare the archives"
 python3 "$DIR"/.github/jobs/compare_problem_package.py "$PROBLEM" "$STATE"
 RET="$?"
+section_end
 
+section_start "Dump the imported database"
 /opt/domjudge/domserver/bin/dj_setup_database dump "$PROBLEM-$STATE"
 section_end
 

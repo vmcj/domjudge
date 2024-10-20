@@ -49,6 +49,7 @@ jobs:
           name: ${{ matrix.problem }}-logs
           path: |
             /tmp/artifacts
+            /tmp/*-*.zip
             /var/log/nginx
             /opt/domjudge/domserver/webapp/var/log/*.log
             /opt/domjudge/domserver/db-dumps/*.sql.gz

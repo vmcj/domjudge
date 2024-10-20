@@ -38,13 +38,14 @@ def get_full_file(root: str, dirs: list, files: list) -> str:
         else:
             res.append(f"{croot}/{f}")
     for d in dirs:
-        if d in ['check_manually', 'multiple', 'bogus-filename']:
+        if d in ['check_manually', 'multiple', 'bogus-filename', 'output_validators']:
             continue
         nroot, ndirs, nfiles = next(os.walk(f"{root}/{d}"))
         res += get_full_file(nroot, ndirs, nfiles)
     return res
 
 def compare_problem_zip(dirL: str, dirR: str) -> None:
+    global error
     (root, dirs, files) = next(os.walk(dirL))
     for f in get_full_file(root, dirs, files):
         all_files_left.append(f)
@@ -66,10 +67,53 @@ def compare_problem_zip(dirL: str, dirR: str) -> None:
         # We know submission names get lost during import
         if 'submissions' in difference:
             continue
+        elif 'output_validators' in difference:
+            continue
         print(f"Found lost file: {difference}.")
+    output_validatorsL = {}
+    output_validatorsR = {}
+    for validator in differenceL:
+        if 'output_validators' not in validator:
+            continue
+        tmp = validator.split('/')
+        file = '/'.join(tmp[2:])
+        new_hash = None
+        with open(f"{dirL}/{validator}", 'rb', buffering=0) as f:
+            new_hash = hashlib.file_digest(f, 'sha512').hexdigest()
+        try:
+            output_validatorsL[tmp[1]].append({'n': file, 'h': new_hash})
+        except KeyError:
+            output_validatorsL[tmp[1]] = [{'n': file, 'h': new_hash}]
+    for validator in differenceR:
+        if 'output_validators' not in validator:
+            continue
+        tmp = validator.split('/')
+        file = '/'.join(tmp[2:])
+        new_hash = None
+        with open(f"{dirR}/{validator}", 'rb', buffering=0) as f:
+            new_hash = hashlib.file_digest(f, 'sha512').hexdigest()
+        try:
+            output_validatorsR[tmp[1]].append({'n': file, 'h': new_hash})
+        except KeyError:
+            output_validatorsR[tmp[1]] = [{'n': file, 'h': new_hash}]
+    # Now compare that the same files are in the same solution folder
+    for oval in output_validatorsL:
+        missing = True
+        try:
+            for oval2 in output_validatorsR:
+                if oval['h'] == oval2['h']:
+                    missing = False
+                    break
+        except KeyError:
+            continue
+        if missing:
+            print(f"Lost {oval['n']}.")
+            error += 1
     submissionsL = {}
     submissionsR = {}
     for submission in differenceL:
+        if 'submissions' not in submission:
+            continue
         tmp = submission.split('/')
         file = '/'.join(tmp[2:])
         new_hash = None
@@ -80,6 +124,8 @@ def compare_problem_zip(dirL: str, dirR: str) -> None:
         except KeyError:
             submissionsL[tmp[1]] = [{'n': file, 'h': new_hash}]
     for submission in differenceR:
+        if 'submissions' not in submission:
+            continue
         tmp = submission.split('/')
         file = '/'.join(tmp[2:])
         new_hash = None
@@ -109,14 +155,14 @@ def compare_problem_zip(dirL: str, dirR: str) -> None:
                 error += 1
     exit(error)
 
-if state == "initial":
+if state == "original":
     dirL = f"./example_problems/{problem}"
     dirR = f"./{state}zips"
 elif state == "reimport":
     dirL = "./initialzips"
     dirR = "./reimportzips"
 else:
-    print("Unknown option.")
+    print(f"Unknown option: {state}.")
     exit(1)
 compare_problem_zip(dirL, dirR)
 
