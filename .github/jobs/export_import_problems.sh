@@ -48,14 +48,14 @@ if [ "$STATE" = "original" ]; then
     mv problems.y{,a}ml
     # Problem content
     (cd "$PROBLEM"; zip -r "../$PROBLEM.zip" .)
-    cd "$DIR"
 else
     cp "/tmp/$PROBLEM-original.zip" "./${PROBLEM}.zip" 
 fi
+cd "$DIR"
 section_end
 
 section_start "Show problem contents"
-ls -l "$PROBLEM.zip"
+(cd /opt/domjudge/domserver/example_problems; ls -l "$PROBLEM.zip")
 section_end
 
 section_start "Import the problem into DOMjudge"
