@@ -55,7 +55,7 @@ cd "$DIR"
 section_end
 
 section_start "Show problem contents"
-(cd /opt/domjudge/domserver/example_problems; ls -l "$PROBLEM.zip")
+(cd /opt/domjudge/domserver/example_problems; unzip -l "$PROBLEM.zip")
 section_end
 
 section_start "Import the problem into DOMjudge"
