@@ -49,7 +49,10 @@ if [ "$STATE" = "original" ]; then
     # Problem content
     (cd "$PROBLEM"; zip -r "../$PROBLEM.zip" .)
 else
-    cp "/tmp/$PROBLEM-original.zip" "./${PROBLEM}.zip" 
+    mkdir /tmp/repack
+    unzip /tmp/$PROBLEM-original.zip -d /tmp/repack
+    (cd /tmp/repack; zip ../$PROBLEM-original.zip .)
+    cp $PROBLEM-original.zip "./${PROBLEM}.zip" 
 fi
 cd "$DIR"
 section_end
