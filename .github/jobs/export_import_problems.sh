@@ -51,7 +51,7 @@ if [ "$STATE" = "original" ]; then
 else
     mkdir /tmp/repack
     unzip /tmp/$PROBLEM-original.zip -d /tmp/repack
-    (cd /tmp/repack; zip ../$PROBLEM-original-repack.zip .)
+    (cd /tmp/repack; zip -r ../$PROBLEM-original-repack.zip .)
     cp /tmp/$PROBLEM-original-repack.zip "./${PROBLEM}.zip"
     unzip -l /tmp/$PROBLEM-original.zip
     unzip -l /tmp/$PROBLEM-original-repack.zip
