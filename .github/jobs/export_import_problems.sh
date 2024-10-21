@@ -68,9 +68,12 @@ if [ "$STATE" = "original" ]; then
     myhttp "$CONTEST_URL/problems/add-data" "data@problems.yaml"
     myhttp "$CONTEST_URL/problems" "zip@"$PROBLEM".zip" problem="$PROBLEM"
 else
-    "$WEBAPP_DIR"/bin/console api:call -m POST -f yaml=contest.yaml contests
-    "$WEBAPP_DIR"/bin/console api:call -m POST -f data=problems.yaml contests/demo/problems/add-data
-    "$WEBAPP_DIR"/bin/console api:call -m POST -d problem="$PROBLEM" -f zip="${PROBLEM}.zip" contests/demo/problems
+    myhttp "$API_URL/contests" "yaml@contest.yaml"
+    myhttp "$CONTEST_URL/problems/add-data" "data@problems.yaml"
+    myhttp "$CONTEST_URL/problems" "zip@"$PROBLEM".zip" problem="$PROBLEM"
+    #"$WEBAPP_DIR"/bin/console api:call -m POST -f yaml=contest.yaml contests
+    #"$WEBAPP_DIR"/bin/console api:call -m POST -f data=problems.yaml contests/demo/problems/add-data
+    #"$WEBAPP_DIR"/bin/console api:call -m POST -d problem="$PROBLEM" -f zip="${PROBLEM}.zip" contests/demo/problems
 fi
 
 cd "$DIR"
