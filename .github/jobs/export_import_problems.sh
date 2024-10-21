@@ -54,9 +54,14 @@ else
 fi
 section_end
 
+section_start "Show problem contents"
+ls -l "$PROBLEM.zip"
+section_end
+
 section_start "Import the problem into DOMjudge"
 # We use the steps from the manual to test those as a side effect.
 cd /opt/domjudge/domserver/example_problems
+
 
 if [ "$STATE" = "original" ]; then
     myhttp "$API_URL/contests" "yaml@contest.yaml"
