@@ -88,6 +88,10 @@ wget \
 RET="$?"
 section_end
 
+section_start "Show problem contents"
+unzip -l /tmp/$PROBLEM-$STATE.zip
+section_end
+
 #section_start "Analyse failures"
 ##https://www.gnu.org/software/wget/manual/html_node/Exit-Status.html
 ## Exit code 4 is network error which we can ignore
