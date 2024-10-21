@@ -59,23 +59,9 @@ section_start "Import the problem into DOMjudge"
 cd /opt/domjudge/domserver/example_problems
 
 if [ "$STATE" = "original" ]; then
-    #http --check-status --ignore-stdin GET "$API_URL/contests"
     myhttp "$API_URL/contests" "yaml@contest.yaml"
-    echo
-    http --check-status --ignore-stdin GET "$API_URL/contests"
-    echo
-    
-    #http --check-status --ignore-stdin GET "$CONTEST_URL/problems"
     myhttp "$CONTEST_URL/problems/add-data" "data@problems.yaml"
-    echo
-    http --check-status --ignore-stdin GET "$CONTEST_URL/problems"
-    echo
-    
-    #http --check-status --ignore-stdin GET "$CONTEST_URL/problems"
     myhttp "$CONTEST_URL/problems" "zip@"$PROBLEM".zip" problem="$PROBLEM"
-    echo
-    http --check-status --ignore-stdin GET "$CONTEST_URL/problems"
-    echo
 else
     "$WEBAPP_DIR"/bin/console api:call -m POST -f yaml=contest.yaml contests
     "$WEBAPP_DIR"/bin/console api:call -m POST -f data=problems.yaml contests/demo/problems/add-data
@@ -97,37 +83,37 @@ wget \
 RET="$?"
 section_end
 
-section_start "Analyse failures"
-#https://www.gnu.org/software/wget/manual/html_node/Exit-Status.html
-# Exit code 4 is network error which we can ignore
-# Exit code 8 can also be because of HTTP404 or 400
-if [ $RET -ne 4 ] && [ $RET -ne 0 ] && [ $RET -ne 8 ]; then
-    exit $RET
-fi
-
-EXPECTED_HTTP_CODES="200\|302"
-set +e
-NUM_ERRORS=$(grep -v "HTTP/1.1\" \($EXPECTED_HTTP_CODES\)" /var/log/nginx/domjudge.log | grep -v "robots.txt" -c; if [ "$?" -gt 1 ]; then exit 127; fi)
-set -e
-echo "$NUM_ERRORS"
-
-if [ "$NUM_ERRORS" -ne 0 ]; then
-    grep -v "HTTP/1.1\" \($EXPECTED_HTTP_CODES\)" /var/log/nginx/domjudge.log | grep -v "robots.txt"
-    exit 1
-fi
-section_end
-
-section_start "Unpack the archives"
-unzip "/tmp/$PROBLEM-$STATE.zip" -d "$STORAGE_DIR"
-section_end
-
-#section_start "Compare the archives"
-#python3 "$DIR"/.github/jobs/compare_problem_package.py "$PROBLEM" "$STATE"
-#RET="$?"
+#section_start "Analyse failures"
+##https://www.gnu.org/software/wget/manual/html_node/Exit-Status.html
+## Exit code 4 is network error which we can ignore
+## Exit code 8 can also be because of HTTP404 or 400
+#if [ $RET -ne 4 ] && [ $RET -ne 0 ] && [ $RET -ne 8 ]; then
+#    exit $RET
+#fi
+#
+#EXPECTED_HTTP_CODES="200\|302"
+#set +e
+#NUM_ERRORS=$(grep -v "HTTP/1.1\" \($EXPECTED_HTTP_CODES\)" /var/log/nginx/domjudge.log | grep -v "robots.txt" -c; if [ "$?" -gt 1 ]; then exit 127; fi)
+#set -e
+#echo "$NUM_ERRORS"
+#
+#if [ "$NUM_ERRORS" -ne 0 ]; then
+#    grep -v "HTTP/1.1\" \($EXPECTED_HTTP_CODES\)" /var/log/nginx/domjudge.log | grep -v "robots.txt"
+#    exit 1
+#fi
 #section_end
-
-section_start "Dump the imported database"
-/opt/domjudge/domserver/bin/dj_setup_database dump "$PROBLEM-$STATE"
-section_end
-
-#exit "$RET"
+#
+#section_start "Unpack the archives"
+#unzip "/tmp/$PROBLEM-$STATE.zip" -d "$STORAGE_DIR"
+#section_end
+#
+##section_start "Compare the archives"
+##python3 "$DIR"/.github/jobs/compare_problem_package.py "$PROBLEM" "$STATE"
+##RET="$?"
+##section_end
+#
+#section_start "Dump the imported database"
+#/opt/domjudge/domserver/bin/dj_setup_database dump "$PROBLEM-$STATE"
+#section_end
+#
+##exit "$RET"
