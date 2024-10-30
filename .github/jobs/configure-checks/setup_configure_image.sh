@@ -8,10 +8,11 @@ distro_id=$(grep "^ID=" /etc/os-release)
 case $distro_id in
     "ID=fedora")
         dnf install pkg-config make bats autoconf automake util-linux composer \
-                    python3-yaml -y ;;
+                    python3-{yaml,sphinx} -y ;;
     *)
         apt-get update; apt-get full-upgrade -y
-        apt-get install pkg-config make bats autoconf composer python3-yaml -y ;;
+        apt-get install pkg-config make bats autoconf composer \
+                        python3-{yaml,sphinx} -y ;;
 esac
 
 # Build the configure file
