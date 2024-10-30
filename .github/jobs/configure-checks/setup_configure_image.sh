@@ -7,14 +7,14 @@ distro_id=$(grep "^ID=" /etc/os-release)
 # Install everything for configure and testing
 case $distro_id in
     "ID=fedora")
-        dnf install pkg-config make bats autoconf automake util-linux -y ;;
+        dnf install pkg-config make bats autoconf automake util-linux composer -y ;;
     *)
         apt-get update; apt-get full-upgrade -y
-        apt-get install pkg-config make bats autoconf -y ;;
+        apt-get install pkg-config make bats autoconf composer -y ;;
 esac
 
 # Build the configure file
-make configure
+make dist
 
 # Install extra assert statements for bots
 cp submit/assert.bash .github/jobs/configure-checks/
