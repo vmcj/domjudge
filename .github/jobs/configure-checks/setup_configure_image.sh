@@ -13,7 +13,7 @@ case $distro_id in
                     python3-{yaml,sphinx{,_rtd_theme}} -y ;;
     *)
         apt-get update; apt-get full-upgrade -y
-        apt-get install $shared \
+        apt-get install $shared latexmk \
                         python3-{yaml,sphinx{,-rtd-theme}} -y ;;
 esac
 
