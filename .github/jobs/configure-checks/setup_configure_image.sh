@@ -5,16 +5,17 @@ set -eux
 distro_id=$(grep "^ID=" /etc/os-release)
 
 # Install everything for configure and testing
-shared="pkg-config make rst2pdf autoconf composer bats"
+shared="pkg-config make rst2pdf autoconf composer bats latexmk"
+shared2="$shared python3-{yaml,sphinx}"
 
 case $distro_id in
     "ID=fedora")
         dnf install $shared automake util-linux \
-                    python3-{yaml,sphinx{,_rtd_theme}} -y ;;
+                    python3-sphinx_rtd_theme -y ;;
     *)
         apt-get update; apt-get full-upgrade -y
-        apt-get install $shared latexmk \
-                        python3-{yaml,sphinx{,-rtd-theme}} -y ;;
+        apt-get install $shared  \
+                        python3-rtd-theme -y ;;
 esac
 
 # Build the configure file
