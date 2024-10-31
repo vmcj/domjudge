@@ -5,13 +5,15 @@ set -eux
 distro_id=$(grep "^ID=" /etc/os-release)
 
 # Install everything for configure and testing
+shared="pkg-config make rst2pdf autoconf composer bats"
+
 case $distro_id in
     "ID=fedora")
-        dnf install pkg-config make bats autoconf automake util-linux composer \
+        dnf install $shared automake util-linux \
                     python3-{yaml,sphinx{,_rtd_theme}} -y ;;
     *)
         apt-get update; apt-get full-upgrade -y
-        apt-get install pkg-config make bats autoconf composer \
+        apt-get install $shared \
                         python3-{yaml,sphinx{,-rtd-theme}} -y ;;
 esac
 
