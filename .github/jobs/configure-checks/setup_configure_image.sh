@@ -11,11 +11,11 @@ shared2="$shared python3-{yaml,sphinx}"
 case $distro_id in
     "ID=fedora")
         dnf install $shared automake util-linux \
-                    python3-sphinx_rtd_theme -y ;;
+                    python3-sphinx_rtd_theme texlive-cmap -y ;;
     *)
         apt-get update; apt-get full-upgrade -y
         apt-get install $shared  \
-                        python3-rtd-theme texlive-latex-{recommended,extra} tex-gyre -y ;;
+                        python3-sphinx-rtd-theme texlive-latex-{recommended,extra} tex-gyre -y ;;
 esac
 
 # Build the configure file
