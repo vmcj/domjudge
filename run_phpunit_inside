@@ -1,0 +1,15 @@
+set -euxo pipefail
+phpcov="-dpcov.enabled=1 -dpcov.directory=webapp/src"
+#CRAWL_DATASOURCES=2 DATABASE_URL="mysql://domjudge:domjudge@mariadb:3306/domjudge_test?serverVersion=mariadb-10.5.9" php $phpcov lib/vendor/bin/phpunit --stop-on-failure -c webapp/phpunit.xml.dist --testsuite 'End to end tests (slow)' --filter 'testRoleAccess#0'
+#testTeamOnlyGeneralAndRelatedToTeam
+#exit 0
+#CRAWL_DATASOURCES=2 
+#DATABASE_URL="mysql://domjudge:domjudge@mariadb:3306/domjudge_test?serverVersion=mariadb-10.5.9" php $phpcov lib/vendor/bin/phpunit -c webapp/phpunit.xml.dist webapp/tests/Unit/Service --stop-on-failure
+#DATABASE_URL="mysql://domjudge:domjudge@mariadb:3306/domjudge?serverVersion=mariadb-10.5.9" php $phpcov lib/vendor/bin/phpunit -c webapp/phpunit.xml.dist webapp/tests/Unit/Controller/API/AccountControllerTest.php --stop-on-failure
+#DATABASE_URL="mysql://domjudge:domjudge@mariadb:3306/domjudge?serverVersion=mariadb-10.5.9" php $phpcov lib/vendor/bin/phpunit -c webapp/phpunit.xml.dist webapp/tests/Unit/Controller/Jury/ --stop-on-failure
+DATABASE_URL="mysql://domjudge:domjudge@mariadb:3306/domjudge?serverVersion=mariadb-10.5.9" php $phpcov lib/vendor/bin/phpunit -c webapp/phpunit.xml.dist webapp/tests/Unit/ --stop-on-failure
+#DATABASE_URL="mysql://domjudge:domjudge@mariadb:3306/domjudge?serverVersion=mariadb-10.5.9" php $phpcov lib/vendor/bin/phpunit -c webapp/phpunit.xml.dist webapp/tests/Unit/Controller/API/OrganizationControllerTest.php --stop-on-failure
+# --filter testCheckEditEntityAdmin
+#DATABASE_URL="mysql://domjudge:domjudge@mariadb:3306/domjudge?serverVersion=mariadb-10.5.9" php $phpcov lib/vendor/bin/phpunit -c webapp/phpunit.xml.dist webapp/tests/Unit/Integration/QueuetaskIntegrationTest.php --stop-on-failure
+#/GeneralAvailabilityTest.php
+# --filter testNewAddedAccount
