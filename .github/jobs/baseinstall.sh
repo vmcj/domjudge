@@ -30,33 +30,11 @@ MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root}
 
 set -eux
 
-section_start "Update packages"
-sudo apt update
-section_end
-
-section_start "Install needed packages"
-sudo apt install -y acl zip unzip nginx php php-fpm php-gd \
-                    php-cli php-intl php-mbstring php-mysql php-curl php-json \
-                    php-xml php-zip ntp make sudo debootstrap \
-                    libcgroup-dev lsof php-cli php-curl php-json php-xml \
-                    php-zip procps gcc g++ default-jre-headless \
-                    default-jdk-headless ghc fp-compiler autoconf automake bats \
-                    python3-sphinx python3-sphinx-rtd-theme rst2pdf fontconfig \
-                    python3-yaml latexmk curl
-section_end
-
 if [ -z "$phpversion" ]; then
-phpversion=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION."\n";')
+PHPVERSION=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION."\n";')
 fi
 
-show_phpinfo "$phpversion"
-
-section_start "Install composer"
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-HASH="$(wget -q -O - https://composer.github.io/installer.sig)"
-php -r "if (hash_file('SHA384', 'composer-setup.php') === '$HASH') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-section_end
+show_phpinfo "$PHPVERSION"
 
 section_start "Run composer"
 export APP_ENV="dev"
