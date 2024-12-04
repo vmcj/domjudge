@@ -4,11 +4,15 @@
 
 export version="$1"
 db=${2:-install}
+phpversion="${3}"
 
 set -eux
 
+if [ -z "$phpversion" ]; then
 PHPVERSION=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION."\n";')
-export PHPVERSION
+fi
+
+show_phpinfo "$PHPVERSION"
 
 section_start "Run composer"
 export APP_ENV="dev"
