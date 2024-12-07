@@ -6,6 +6,8 @@ export version="$1"
 db=${2:-install}
 phpversion="${3}"
 
+MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root}
+
 # If this script is called from unit-tests.sh, we use the test environment
 export APP_ENV="${3:-prod}"
 
@@ -86,11 +88,11 @@ section_end
 
 if [ "${db}" = "install" ]; then
     section_start "Install DOMjudge database"
-    /opt/domjudge/domserver/bin/dj_setup_database -uroot -proot bare-install
+    /opt/domjudge/domserver/bin/dj_setup_database -uroot -p${MYSQL_ROOT_PASSWORD} bare-install
     section_end
 elif [ "${db}" = "upgrade" ]; then
     section_start "Upgrade DOMjudge database"
-    /opt/domjudge/domserver/bin/dj_setup_database -uroot -proot upgrade
+    /opt/domjudge/domserver/bin/dj_setup_database -uroot -p${MYSQL_ROOT_PASSWORD} upgrade
     section_end
 fi
 
@@ -132,7 +134,7 @@ if [ "${db}" = "install" ]; then
 	    # Make sure admin has no team associated so we will not insert submissions during unit tests.
 	    mysql_root "UPDATE user SET teamid=null WHERE userid=1;" $DATABASE_NAME
     fi
-    /opt/domjudge/domserver/bin/dj_setup_database -uroot -proot install-examples | tee -a "$ARTIFACTS/mysql.txt"
+    /opt/domjudge/domserver/bin/dj_setup_database -uroot -p${MYSQL_ROOT_PASSWORD} install-examples | tee -a "$ARTIFACTS/mysql.txt"
     section_end
 fi
 
