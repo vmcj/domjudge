@@ -67,7 +67,41 @@ section_end
 section_start "Explicit start mysql + install DB"
 sudo /etc/init.d/mysql start
 
-/opt/domjudge/domserver/bin/dj_setup_database -uroot -proot bare-install
+mysql_root "CREATE DATABASE IF NOT EXISTS \`domjudge\` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+mysql_root "CREATE USER IF NOT EXISTS \`domjudge\`@'%' IDENTIFIED BY 'domjudge';"
+mysql_root "GRANT SELECT, INSERT, UPDATE, DELETE ON \`domjudge\`.* TO 'domjudge'@'%';"
+mysql_root "FLUSH PRIVILEGES;"
+
+# Show some MySQL debugging
+mysql_root "show databases"
+mysql_root "SELECT CURRENT_USER();"
+mysql_root "SELECT USER();"
+mysql_root "SELECT user,host FROM mysql.user"
+mysql_root "SET GLOBAL max_allowed_packet=1073741824"
+echo "unused:sqlserver:domjudge:domjudge:domjudge:3306" > /opt/domjudge/domserver/etc/dbpasswords.secret
+mysql_user "SELECT CURRENT_USER();"
+mysql_user "SELECT USER();"
+section_end
+
+if [ "${db}" = "install" ]; then
+    section_start "Install DOMjudge database"
+    /opt/domjudge/domserver/bin/dj_setup_database -uroot -proot bare-install
+    section_end
+elif [ "${db}" = "upgrade" ]; then
+    section_start "Upgrade DOMjudge database"
+    /opt/domjudge/domserver/bin/dj_setup_database -uroot -proot upgrade
+    section_end
+fi
+
+section_start "Show PHP config"
+php -v | tee -a "$ARTIFACTS"/php.txt
+php -m | tee -a "$ARTIFACTS"/php.txt
+section_end
+
+section_start "Show general config"
+printenv | tee -a "$ARTIFACTS"/environment.txt
+cp /etc/os-release "$ARTIFACTS"/os-release.txt
+cp /proc/cmdline "$ARTIFACTS"/cmdline.txt
 section_end
 
 section_start "Setup webserver"
