@@ -70,7 +70,6 @@ if [ $UNITSUCCESS -eq 0 ]; then
 else
     STATE=failure
 fi
-cp webapp/var/log/test.log "$ARTIFACTS"/test.log
 
 curl https://api.github.com/repos/domjudge/domjudge/statuses/$CI_COMMIT_SHA \
     -X POST \
