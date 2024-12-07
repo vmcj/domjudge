@@ -86,6 +86,6 @@ if [ $CODECOVERAGE -eq 1 ]; then
     # Only upload when we got working unit-tests.
     set +u # Uses some variables which are not set
     # shellcheck disable=SC1090
-    . $DIR/.github/jobs/uploadcodecov.sh 1>/dev/zero 2>/dev/zero
+    . $DIR/.github/jobs/uploadcodecov.sh &>> "$ARTIFACTS"/codecov.log
     section_end
 fi
