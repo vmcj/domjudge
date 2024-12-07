@@ -8,8 +8,6 @@ export version=$1
 unittest=$2
 [ "$version" = "8.1" ] && CODECOVERAGE=1 || CODECOVERAGE=0
 
-show_phpinfo $version
-
 # Set up
 export unit=1
 

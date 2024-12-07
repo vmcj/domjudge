@@ -50,7 +50,7 @@ jobs:
       - name: pstree
         run: pstree -p
       - name: Install DOMjudge
-        run: .github/jobs/baseinstall.sh unit install test
+        run: .github/jobs/baseinstall.sh unit install ${{ matrix.PHPVERSION }} test
       - name: Check nginx
         run: curl -v https://localhost/domjudge/
       - name: Run the unit-tests
