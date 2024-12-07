@@ -49,33 +49,8 @@ CNT=0
 THRESHOLD=32
 if [ $CODECOVERAGE -eq 1 ]; then
     CNT=$(sed -n '/Generating code coverage report/,$p' "$ARTIFACTS"/phpunit.out | grep -v DoctrineTestBundle | grep -cv ^$)
-    FILE=deprecation.txt
-    sed -n '/Generating code coverage report/,$p' "$ARTIFACTS"/phpunit.out > ${DIR}/$FILE
-    if [ $CNT -le $THRESHOLD ]; then
-        STATE=success
-    else
-        STATE=failure
-    fi
-    ORIGINAL="gitlab.com/DOMjudge"
-    REPLACETO="domjudge.gitlab.io/-"
-    # Copied from CCS
-    curl https://api.github.com/repos/domjudge/domjudge/statuses/$CI_COMMIT_SHA \
-      -X POST \
-      -H "Authorization: token $GH_BOT_TOKEN_OBSCURED" \
-      -H "Accept: application/vnd.github.v3+json" \
-      -d "{\"state\": \"$STATE\", \"target_url\": \"${CI_JOB_URL/$ORIGINAL/$REPLACETO}/artifacts/$FILE\", \"description\":\"Symfony deprecations ($version)\", \"context\": \"Symfony deprecation ($version)\"}"
-fi
-if [ $UNITSUCCESS -eq 0 ]; then
-    STATE=success
-else
-    STATE=failure
 fi
 
-curl https://api.github.com/repos/domjudge/domjudge/statuses/$CI_COMMIT_SHA \
-    -X POST \
-    -H "Authorization: token $GH_BOT_TOKEN_OBSCURED" \
-    -H "Accept: application/vnd.github.v3+json" \
-    -d "{\"state\": \"$STATE\", \"target_url\": \"${CI_PIPELINE_URL}/test_report\", \"description\":\"Unit tests\", \"context\": \"unit_tests ($version)\"}"
 if [ $UNITSUCCESS -ne 0 ] || [ $CNT -gt $THRESHOLD ]; then
     exit 1
 fi
