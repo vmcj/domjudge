@@ -33,6 +33,7 @@ if [ "$CODECOVERAGE" -eq 1 ]; then
     pcov="--coverage-html=${DIR}/coverage-html --coverage-clover coverage.xml"
 fi
 set +e
+echo "unused:sqlserver:domjudge:domjudge:domjudge:3306" > /opt/domjudge/domserver/etc/dbpasswords.secret
 php $phpcov webapp/bin/phpunit -c webapp/phpunit.xml.dist webapp/tests/$unittest --log-junit ${ARTIFACTS}/unit-tests.xml --colors=never $pcov > "$ARTIFACTS"/phpunit.out
 UNITSUCCESS=$?
 
