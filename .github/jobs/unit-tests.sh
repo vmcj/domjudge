@@ -10,7 +10,6 @@ show_phpinfo $version
 
 # Set up
 export unit=1
-"$( dirname "${BASH_SOURCE[0]}" )"/base.sh test
 
 # Add team to admin user
 echo "UPDATE user SET teamid = 1 WHERE userid = 1;" | mysql domjudge_test
