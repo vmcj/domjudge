@@ -16,3 +16,58 @@ jobs:
       - name: Detect changes to manually verify
         run: diff newcodecov .github/jobs/uploadcodecov.sh
 
+  integration:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    container:
+      image: domjudge/gitlabci:24.04
+    services:
+      sqlserver:
+        image: mariadb
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_USER: domjudge
+          MYSQL_PASSWORD: domjudge
+        options: --health-cmd="healthcheck.sh --connect --innodb_initialized" --health-interval=10s --health-timeout=5s --health-retries=3
+    steps:
+      - uses: actions/checkout@v4
+      - name: info
+        run: |
+          cat /proc/cmdline && echo &&
+          cat /proc/mounts && echo &&
+          ls -al /sys/fs/cgroup && echo &&
+          uname -a && echo &&
+          stat -fc %T /sys/fs/cgroup && echo &&
+          cat /proc/self/cgroup && echo &&
+          cat /proc/cpuinfo
+      - name: pstree
+        run: pstree -p
+      - name: Install DOMjudge
+        run: .github/jobs/baseinstall.sh all
+      - name: Check nginx
+        run: curl -v https://localhost/domjudge/
+      - name: Get SQL logs
+        run: docker logs "${{ job.services.sqlserver.id }}"
+      - name: Collect docker logs on failure
+        if: ${{ !cancelled() }}
+        uses: jwalton/gh-docker-logs@v1
+        with:
+          dest: '/tmp/docker-logs'
+      - name: Upload all logs/artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Logs
+          path: |
+            /var/log/nginx
+            /opt/domjudge/domserver/webapp/var/log/*.log
+            /tmp/docker-logs
+            /tmp/artifacts
+      - name: Verify no errors in symfony {prod,test,dev}.log
+        shell: bash
+        run: |
+          if cat /opt/domjudge/domserver/webapp/var/log/*.log | egrep '(CRITICAL|ERROR):'; then
+             exit 1
+          fi
