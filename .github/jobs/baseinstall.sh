@@ -46,7 +46,6 @@ else
     make domserver
     make install-domserver
 fi
-
 section_end
 
 section_start "SQL settings"
@@ -146,4 +145,3 @@ elif [ "$version" = "all" ]; then
     mysql_root "UPDATE user SET teamid = 1 WHERE userid = 1;" domjudge
 fi
 section_end
-
