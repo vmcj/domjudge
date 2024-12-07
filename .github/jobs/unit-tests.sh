@@ -33,15 +33,15 @@ if [ "$CODECOVERAGE" -eq 1 ]; then
     pcov="--coverage-html=${DIR}/coverage-html --coverage-clover coverage.xml"
 fi
 set +e
-php $phpcov webapp/bin/phpunit -c webapp/phpunit.xml.dist webapp/tests/$unittest --log-junit ${DIR}/unit-tests.xml --colors=never $pcov > "$GITLABARTIFACTS"/phpunit.out
+php $phpcov webapp/bin/phpunit -c webapp/phpunit.xml.dist webapp/tests/$unittest --log-junit ${DIR}/unit-tests.xml --colors=never $pcov > "$ARTIFACTS"/phpunit.out
 UNITSUCCESS=$?
 set -e
 CNT=0
 THRESHOLD=32
 if [ $CODECOVERAGE -eq 1 ]; then
-    CNT=$(sed -n '/Generating code coverage report/,$p' "$GITLABARTIFACTS"/phpunit.out | grep -v DoctrineTestBundle | grep -cv ^$)
+    CNT=$(sed -n '/Generating code coverage report/,$p' "$ARTIFACTS"/phpunit.out | grep -v DoctrineTestBundle | grep -cv ^$)
     FILE=deprecation.txt
-    sed -n '/Generating code coverage report/,$p' "$GITLABARTIFACTS"/phpunit.out > ${DIR}/$FILE
+    sed -n '/Generating code coverage report/,$p' "$ARTIFACTS"/phpunit.out > ${DIR}/$FILE
     if [ $CNT -le $THRESHOLD ]; then
         STATE=success
     else
@@ -61,7 +61,7 @@ if [ $UNITSUCCESS -eq 0 ]; then
 else
     STATE=failure
 fi
-cp webapp/var/log/test.log "$GITLABARTIFACTS"/test.log
+cp webapp/var/log/test.log "$ARTIFACTS"/test.log
 
 curl https://api.github.com/repos/domjudge/domjudge/statuses/$CI_COMMIT_SHA \
     -X POST \
