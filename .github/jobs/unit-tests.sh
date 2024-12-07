@@ -2,6 +2,8 @@
 
 . .github/jobs/ci_settings.sh
 
+DIR="$PWD"
+
 export version=$1
 unittest=$2
 [ "$version" = "8.1" ] && CODECOVERAGE=1 || CODECOVERAGE=0
@@ -28,10 +30,10 @@ pcov=""
 phpcov=""
 if [ "$CODECOVERAGE" -eq 1 ]; then
     phpcov="-dpcov.enabled=1 -dpcov.directory=webapp/src"
-    pcov="--coverage-html=${CI_PROJECT_DIR}/coverage-html --coverage-clover coverage.xml"
+    pcov="--coverage-html=${DIR}/coverage-html --coverage-clover coverage.xml"
 fi
 set +e
-php $phpcov webapp/bin/phpunit -c webapp/phpunit.xml.dist webapp/tests/$unittest --log-junit ${CI_PROJECT_DIR}/unit-tests.xml --colors=never $pcov > "$GITLABARTIFACTS"/phpunit.out
+php $phpcov webapp/bin/phpunit -c webapp/phpunit.xml.dist webapp/tests/$unittest --log-junit ${DIR}/unit-tests.xml --colors=never $pcov > "$GITLABARTIFACTS"/phpunit.out
 UNITSUCCESS=$?
 set -e
 CNT=0
@@ -39,7 +41,7 @@ THRESHOLD=32
 if [ $CODECOVERAGE -eq 1 ]; then
     CNT=$(sed -n '/Generating code coverage report/,$p' "$GITLABARTIFACTS"/phpunit.out | grep -v DoctrineTestBundle | grep -cv ^$)
     FILE=deprecation.txt
-    sed -n '/Generating code coverage report/,$p' "$GITLABARTIFACTS"/phpunit.out > ${CI_PROJECT_DIR}/$FILE
+    sed -n '/Generating code coverage report/,$p' "$GITLABARTIFACTS"/phpunit.out > ${DIR}/$FILE
     if [ $CNT -le $THRESHOLD ]; then
         STATE=success
     else
