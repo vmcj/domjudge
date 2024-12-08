@@ -33,8 +33,16 @@ if [ "$CODECOVERAGE" -eq 1 ]; then
     pcov="--coverage-html=${DIR}/coverage-html --coverage-clover coverage.xml"
 fi
 set +e
-php $phpcov webapp/bin/phpunit -c webapp/phpunit.xml.dist webapp/tests/$unittest --log-junit ${DIR}/unit-tests.xml --colors=never $pcov > "$ARTIFACTS"/phpunit.out
+php $phpcov webapp/bin/phpunit -c webapp/phpunit.xml.dist webapp/tests/$unittest --log-junit ${ARTIFACTS}/unit-tests.xml --colors=never $pcov > "$ARTIFACTS"/phpunit.out
 UNITSUCCESS=$?
+
+# Store the unit tests also in the root for the GHA
+cp $ARTIFACTS/unit-tests.xml $DIR/
+
+# Make sure the log exists before copy
+touch ${DIR}/webapp/var/log/test.log
+cp ${DIR}/webapp/var/log/*.log "$ARTIFACTS"/
+
 set -e
 CNT=0
 THRESHOLD=32
