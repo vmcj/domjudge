@@ -45,6 +45,9 @@ else
       --enable-judgehost-build=no | tee "$ARTIFACTS"/configure.txt
     make domserver
     make install-domserver
+    rm -rf /opt/domjudge/domserver/webapp/public/doc
+    cp -r doc /opt/domjudge/domserver/webapp/public/
+    find /opt/domjudge/domserver -name DOMjudgelogo.pdf
 fi
 section_end
 
