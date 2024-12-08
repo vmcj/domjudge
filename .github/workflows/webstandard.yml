@@ -1,5 +1,6 @@
 name: Webstandard (WCAG, W3C)
 on:
+  push:
   merge_group:
   pull_request:
     branches:
@@ -29,7 +30,6 @@ jobs:
         releaseBranch:
           - ${{ contains(github.ref, 'gh-readonly-queue') }}
         exclude:
-          - releaseBranch: false
           - role: jury
             test: WCAG2AA
           - role: jury
