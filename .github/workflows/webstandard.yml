@@ -30,7 +30,6 @@ jobs:
         releaseBranch:
           - ${{ contains(github.ref, 'gh-readonly-queue') }}
         exclude:
-          - releaseBranch: false
           - role: jury
             test: WCAG2AA
           - role: jury
