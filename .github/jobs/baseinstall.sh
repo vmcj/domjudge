@@ -4,7 +4,7 @@
 
 export version="$1"
 db=${2:-install}
-phpversion="${3:-8.4}"
+phpversion="${3:-8.1}"
 # If this script is called from unit-tests.sh, we use the test environment
 export APP_ENV="${4:-prod}"
 
