@@ -19,6 +19,8 @@ alias section_end='trace_off ; section_end_internal '
 
 export version="$1"
 
+MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root}
+
 set -eux
 
 section_start "Update packages"
@@ -85,11 +87,11 @@ section_end
 
 if [ "${db}" = "install" ]; then
     section_start "Install DOMjudge database"
-    /opt/domjudge/domserver/bin/dj_setup_database -uroot -proot bare-install
+    /opt/domjudge/domserver/bin/dj_setup_database -uroot -p${MYSQL_ROOT_PASSWORD} bare-install
     section_end
 elif [ "${db}" = "upgrade" ]; then
     section_start "Upgrade DOMjudge database"
-    /opt/domjudge/domserver/bin/dj_setup_database -uroot -proot upgrade
+    /opt/domjudge/domserver/bin/dj_setup_database -uroot -p${MYSQL_ROOT_PASSWORD} upgrade
     section_end
 fi
 
@@ -125,9 +127,11 @@ for service in nginx php${PHPVERSION}-fpm; do
 done
 section_end
 
-section_start "Install the example data"
-/opt/domjudge/domserver/bin/dj_setup_database -uroot -proot install-examples
-section_end
+if [ "${db}" = "install" ]; then
+    section_start "Install the example data"
+    /opt/domjudge/domserver/bin/dj_setup_database -uroot -p${MYSQL_ROOT_PASSWORD} install-examples | tee -a "$ARTIFACTS/mysql.txt"
+    section_end
+fi
 
 section_start "Setup user"
 # We're using the admin user in all possible roles
