@@ -31,10 +31,10 @@ MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root}
 set -eux
 
 if [ -z "$phpversion" ]; then
-PHPVERSION=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION."\n";')
+phpversion=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION."\n";')
 fi
 
-show_phpinfo "$PHPVERSION"
+show_phpinfo "$phpversion"
 
 section_start "Run composer"
 export APP_ENV="dev"
