@@ -1,5 +1,7 @@
 #!/bin/sh
 
+. .github/jobs/ci_settings.sh
+
 # Functions to annotate the Github actions logs
 alias trace_on='set -x'
 alias trace_off='{ set +x; } 2>/dev/null'
