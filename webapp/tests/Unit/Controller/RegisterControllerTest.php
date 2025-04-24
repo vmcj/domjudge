@@ -26,7 +26,7 @@ class RegisterControllerTest extends BaseTestCase
         $this->verifyPageResponse('GET', '/public', 200);
         self::assertSelectorExists('a.btn:contains("Register")');
 
-        $this->verifyPageResponse('GET', '/register', 200);
+        $this->verifyPageResponse('GET', '/register_na', 200);
         self::assertSelectorExists('a:contains("Login")');
 
         $this->verifyPageResponse('GET', '/login', 200);
