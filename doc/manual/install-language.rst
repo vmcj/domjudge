@@ -63,6 +63,10 @@ packages for Ubuntu as that is the most used at the moment of writing.
    * - POSIX shell
      - `dash`
      - Default installed in the chroot
+   * - Powershell
+     - 'powershell`
+     - See `Microsoft Learn <https://learn.microsoft.com/en-us/powershell/scripting/install/install-ubuntu?view=powershell-7.5>`_ for installation instructions, the repository file can be passed to `dj_make_chroot`.
+       The example run file has additional remarks for syntax checkers.
    * - Prolog
      - `swi-prolog-core-packages`
      -

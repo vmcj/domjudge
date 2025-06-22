@@ -1,0 +1,81 @@
+#!/bin/sh
+
+# PowerShell shell compile wrapper-script for 'compile.sh'.
+# See that script for syntax and more info.
+#
+# This script does not actually "compile" the source, but writes a
+# shell script that will function as the executable: when called, it
+# will execute the source with the correct interpreter syntax, thus
+# allowing this interpreted source to be used transparently as if it
+# was compiled to a standalone binary.
+
+DEST="$1" ; shift
+MEMLIMIT="$1" ; shift
+MAINSOURCE="${ENTRY_POINT:-$1}"
+
+RUNOPTIONS=""
+
+# Report the entry point, so it can be saved, e.g. for later replay:
+if [ -z "$ENTRY_POINT" ]; then
+	echo "Info: detected entry_point: $MAINSOURCE"
+fi
+
+# Consider installing syntax checker
+# pwsh "Install-PSResource -Name PSScriptAnalyzer -Reinstall"
+# pwsh "Install-Module -Name PSScriptAnalyzer -Force"
+
+check_syntax () {
+	local script="$1"
+	pwsh -Command "
+		\$found = \$false
+		if (Get-Module -ListAvailable -Name PSScriptAnalyzer) {
+			\$results = Invoke-ScriptAnalyzer -Path '${script}' | Where-Object { \$_.Severity -eq 'Error' | Out-Null }
+			if (\$results.Count -gt 0) {
+				\$results | Format-Table -AutoSize
+				\$found = \$true
+			}
+		}
+		\$errors = @()
+		[System.Management.Automation.Language.Parser]::ParseFile('${script}', [ref]\$null, [ref]\$errors) | Out-Null
+		if (\$errors.Count -eq 0 -and -not \$found) {
+			exit 0
+		}
+		if (\$errors.Count -ne 0) {
+			Write-Host '[${script}] Syntax errors:'
+			\$errors | ForEach-Object {
+				Write-Host \"Line \$(\$_.Extent.StartLineNumber): \$(\$_.Message)\"
+    			}
+		}
+		exit 1
+	"
+}
+
+if command -v pwsh >/dev/null 2>&1 ; then
+	# Check syntax:
+	for i in "$@" ; do
+		check_syntax "$i"
+		EXITCODE=$?
+		[ "$EXITCODE" -ne 0 ] && exit $EXITCODE
+	done
+fi
+
+# Write executing script:
+cat > "$DEST" <<EOF
+#!/bin/sh
+# Generated shell-script to execute shell interpreter on source.
+
+# Detect dirname and change dir to prevent file not found errors.
+if [ "\${0%/*}" != "\$0" ]; then
+	cd "\${0%/*}"
+fi
+
+# Uncomment the line below if you want to make it easier for teams to do local
+# debugging.
+# export ONLINE_JUDGE=1 DOMJUDGE=1
+
+exec pwsh $RUNOPTIONS "$MAINSOURCE" "\$@"
+EOF
+
+chmod a+x "$DEST"
+
+exit 0
