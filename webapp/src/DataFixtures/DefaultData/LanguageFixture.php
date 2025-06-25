@@ -23,8 +23,8 @@ class LanguageFixture extends AbstractDefaultDataFixture
     public function load(ObjectManager $manager): void
     {
         $data = [
-            // ID      external ID   name           extensions                 require  entry point   allow   allow   time   compile              compiler version      runner version
-            //                                                             entry point  description   submit  judge   factor script               command               command
+		// ID      external ID   name           extensions                 require  entry point   allow   allow   time   compile              compiler version      runner version
+		//                                                             entry point  description   submit  judge   factor script               command               command
             ['adb',    'ada',        'Ada',         ['adb', 'ads'],              false, null,         false,  true,   1,     'adb',               'gnatmake --version', ''],
             ['awk',    'awk',        'AWK',         ['awk'],                     false, null,         false,  true,   1,     'awk',               'awk --version',      'awk --version'],
             ['bash',   'bash',       'Bash shell',  ['bash'],                    false, 'Main file',  false,  true,   1,     'bash',              'bash --version',     'bash --version'],
@@ -40,6 +40,7 @@ class LanguageFixture extends AbstractDefaultDataFixture
             ['pas',    'pascal',     'Pascal',      ['pas', 'p'],                false, 'Main file',  false,  true,   1,     'pas',               'fpc -iW',            ''],
             ['pl',     'pl',         'Perl',        ['pl'],                      false, 'Main file',  false,  true,   1,     'pl',                'perl -v',            'perl -v'],
             ['plg',    'prolog',     'Prolog',      ['plg'],                     false, 'Main file',  false,  true,   1,     'plg',               'swipl --version',    ''],
+            ['pwsh',   'powershell', 'Powershell',  ['ps1'],                     false, 'Main file',  false,  true,   1,     'pwsh',              'pwsh --version',    'pwsh --version'],
             ['py3',    'python3',    'Python 3',    ['py'],                      false, 'Main file',  true,   true,   1,     'py3',               'pypy3 --version',    'pypy3 --version'],
             ['ocaml',  'ocaml',      'OCaml',       ['ml'],                      false, null,         false,  true,   1,     'ocaml',             'ocamlopt --version', ''],
             ['r',      'r',          'R',           ['R'],                       false, 'Main file',  false,  true,   1,     'r',                 'Rscript --version',  'Rscript --version'],

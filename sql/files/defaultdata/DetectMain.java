@@ -22,8 +22,12 @@ public class DetectMain {
 		// Load classes from specific directory
 		URL dir;
 		try {
-			dir = new URL("file://" + args[0] + "/");
+			dir = new URI("file://" + args[0] + "/").parseServerAuthority().toURL();
 		} catch ( MalformedURLException e ) {
+			System.err.println("Error: malformed directory '" + args[0] + "'");
+			System.exit(1);
+			return;
+		} catch ( URISyntaxException e ) {
 			System.err.println("Error: malformed directory '" + args[0] + "'");
 			System.exit(1);
 			return;
