@@ -89,6 +89,9 @@ packages for Ubuntu as that is the most used at the moment of writing.
    * - Rust
      - `rustc`
      -
+   * - Sage
+     - 'sagemath`
+     - Not supported for Ubuntu 24.04
    * - Scala
      - `scala`
      -

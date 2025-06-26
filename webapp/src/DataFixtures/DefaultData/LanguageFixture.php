@@ -46,6 +46,7 @@ class LanguageFixture extends AbstractDefaultDataFixture
             ['r',      'r',          'R',           ['R'],                       false, 'Main file',  false,  true,   1,     'r',                 'Rscript --version',  'Rscript --version'],
             ['rb',     'ruby',       'Ruby',        ['rb'],                      false, 'Main file',  false,  true,   1,     'rb',                'ruby --version',     'ruby --version'],
             ['rs',     'rust',       'Rust',        ['rs'],                      false, null,         false,  true,   1,     'rs',                'rustc --version',    ''],
+            ['sage',   'sage',       'SageMath',    ['sage'],                    false, null,         false,  true,   1,     'sage',              'sage --version',    'sage --version'],
             ['scala',  'scala',      'Scala',       ['scala'],                   false, null,         false,  true,   1,     'scala',             'scalac -version',    'scala -version'],
             ['sh',     'sh',         'POSIX shell', ['sh'],                      false, 'Main file',  false,  true,   1,     'sh',                'md5sum /bin/sh',                   'md5sum /bin/sh'],
             ['swift',  'swift',      'Swift',       ['swift'],                   false, 'Main file',  false,  true,   1,     'swift',             'swiftc --version',   ''],
