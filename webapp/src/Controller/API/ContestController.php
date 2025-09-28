@@ -144,7 +144,7 @@ class ContestController extends AbstractRestController
     )]
     public function listAction(Request $request): Response
     {
-        return parent::performListAction($request);
+        return parent::performListAction($request, false);
     }
 
     /**
@@ -160,7 +160,7 @@ class ContestController extends AbstractRestController
     #[OA\Parameter(ref: '#/components/parameters/cid')]
     public function singleAction(Request $request, string $cid): Response
     {
-        return parent::performSingleAction($request, $cid);
+        return parent::performSingleAction($request, $cid, false);
     }
 
     /**

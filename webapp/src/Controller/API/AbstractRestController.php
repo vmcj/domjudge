@@ -24,22 +24,22 @@ abstract class AbstractRestController extends AbstractApiController
      * Get all objects for this endpoint.
      * @throws NonUniqueResultException
      */
-    protected function performListAction(Request $request): Response
+    protected function performListAction(Request $request, bool $filterBeforeContest=true): Response
     {
-        return $this->renderData($request, $this->listActionHelper($request));
+        return $this->renderData($request, $this->listActionHelper($request, $filterBeforeContest));
     }
 
     /**
      * Get a single object for this endpoint.
      * @throws NonUniqueResultException
      */
-    protected function performSingleAction(Request $request, string $id): Response
+    protected function performSingleAction(Request $request, string $id, bool $filterBeforeContest=true): Response
     {
         // Make sure we clear the entity manager class, for when this method is called multiple times
         // by internal requests.
         $this->em->clear();
 
-        $object = $this->getQueryBuilder($request)
+        $object = $this->getQueryBuilder($request, $filterBeforeContest)
             ->andWhere(sprintf('%s = :id', $this->getIdField()))
             ->setParameter('id', $id)
             ->getQuery()
@@ -134,12 +134,12 @@ abstract class AbstractRestController extends AbstractApiController
      * @return array<U>
      * @throws NonUniqueResultException
      */
-    protected function listActionHelper(Request $request): array
+    protected function listActionHelper(Request $request, bool $filterBeforeContest=true): array
     {
         // Make sure we clear the entity manager class, for when this method is called multiple times
         // by internal requests.
         $this->em->clear();
-        $queryBuilder = $this->getQueryBuilder($request);
+        $queryBuilder = $this->getQueryBuilder($request, $filterBeforeContest);
 
         if ($request->query->has('ids')) {
             $ids = $request->query->all('ids');
