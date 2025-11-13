@@ -14,8 +14,10 @@ class ExecutableUploadType extends AbstractType
     {
         $builder->add('type', ChoiceType::class, [
             'choices' => [
+                'chroot_check' => 'chroot_check',
                 'compare' => 'compare',
                 'compile' => 'compile',
+                'judgehost_check' => 'judgehost_check',
                 'run' => 'run',
             ],
         ]);

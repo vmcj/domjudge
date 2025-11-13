@@ -60,6 +60,7 @@ class ExecutableController extends BaseController
             ->addOrderBy('e.type', 'ASC')
             ->addOrderBy('e.execid', 'ASC')
             ->getQuery()->getResult();
+
         // PhpStorm doesn't pick this up without,
         // based on a dump this is `"c" => App\Entity\Executable`.
         /** @var Executable[] $executables */
@@ -74,7 +75,7 @@ class ExecutableController extends BaseController
 
         $propertyAccessor  = PropertyAccess::createPropertyAccessor();
         $configScripts = [];
-        foreach (['compare', 'run', 'full_debug'] as $config_script) {
+        foreach (['chroot_check', 'compare', 'judgehost_check', 'run', 'full_debug'] as $config_script) {
             try {
                 $configScripts[] = (string)$this->config->get('default_' . $config_script);
             } catch (PHPInvalidArgumentException $e) {
@@ -133,6 +134,9 @@ class ExecutableController extends BaseController
             $execdata['execid']['cssclass'] = 'execid';
             $type = $execdata['type']['value'];
             switch ($type) {
+                case 'chroot_check':
+                    $execdata['icon']['icon'] = 'magnifying-glass-chart';
+                    break;
                 case 'compare':
                     $execdata['icon']['icon'] = 'code-compare';
                     break;
@@ -144,6 +148,9 @@ class ExecutableController extends BaseController
                     break;
                 case 'generic_task':
                     $execdata['icon']['icon'] = 'check-double';
+                    break;
+                case 'judgehost_check':
+                    $execdata['icon']['icon'] = 'magnifying-glass';
                     break;
                 case 'run':
                     $execdata['icon']['icon'] = 'person-running';
@@ -377,6 +384,8 @@ class ExecutableController extends BaseController
             'default_compare' => (string)$this->config->get('default_compare'),
             'default_run' => (string)$this->config->get('default_run'),
             'default_full_debug' => (string)$this->config->get('default_full_debug'),
+            'default_judgehost_check' => (string)$this->config->get('default_judgehost_check'),
+            'default_chroot_check' => (string)$this->config->get('default_chroot_check'),
         ]));
     }
 

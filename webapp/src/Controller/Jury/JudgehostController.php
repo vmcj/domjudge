@@ -4,6 +4,7 @@ namespace App\Controller\Jury;
 
 use App\Controller\BaseController;
 use App\Doctrine\DBAL\Types\JudgeTaskType;
+use App\Entity\Executable;
 use App\Entity\Judgehost;
 use App\Entity\JudgeTask;
 use App\Entity\Judging;
@@ -458,6 +459,37 @@ class JudgehostController extends BaseController
 
         return $this->render('jury/judgehosts_edit_multiple.html.twig', [
             'form' => $form,
+        ]);
+    }
+
+    #[Route(path: '/{judgehostid}/request-judgehost-check', name: 'jury_request_judgehost_check')]
+    public function requestJudgehostCheck(Request $request, int $judgehostid): RedirectResponse
+    {
+        $judgehost = $this->em->getRepository(Judgehost::class)->find($judgehostid);
+        if (!$judgehost) {
+            throw new NotFoundHttpException(sprintf('Judgehost with ID %d not found', $judgehostid));
+        }
+        $defaultJudgehostCheckExecutable = $this->em
+            ->getRepository(Executable::class)
+            ->findOneBy(['execid' => $this->config->get('default_judgehost_check')]);
+        if ($defaultJudgehostCheckExecutable === null) {
+            // This flash is not actually displayed?
+            $this->addFlash('error', 'No default judgehost_check executable specified, please configure one.');
+        } else {
+            $executable = $defaultJudgehostCheckExecutable->getImmutableExecutable();
+            $judgeTask = new JudgeTask();
+            $judgeTask
+                ->setType(JudgeTaskType::JUDGEHOST_CHECK)
+                ->setJudgehost($judgehost)
+                ->setPriority(JudgeTask::PRIORITY_HIGH)
+                ->setRunScriptId($executable->getImmutableExecId())
+                ->setRunConfig(Utils::jsonEncode(['hash' => $executable->getHash()]));
+            $this->em->persist($judgeTask);
+            dump($judgeTask);
+            $this->em->flush();
+        }
+        return $this->redirectToRoute('jury_judgehost', [
+            'judgehostid' => $judgehostid
         ]);
     }
 }

@@ -162,6 +162,16 @@
             default_value: full_debug
             public: false
             description: The script used to compile a full debug package.
+        -   name: default_judgehost_check
+            type: string
+            default_value: judgehost_check
+            public: false
+            description: The script used to verify judgehost configuration.
+        -   name: default_chroot_check
+            type: string
+            default_value: chroot_check
+            public: false
+            description: The script used to verify the chroot configuration.
         -   name: enable_parallel_judging
             type: bool
             default_value: true

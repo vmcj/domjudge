@@ -57,6 +57,7 @@
             {%- endif -%}
             {{ button(url, action, class, icon) }}
             {{ button(path('jury_judgehost_delete', {'judgehostid': judgehost.judgehostid}), 'Delete judgehost', 'danger', 'trash-alt', true) }}
+            {{ button(path('jury_request_judgehost_check', {'judgehostid': judgehost.judgehostid}), 'Get running judgehost info', 'info', 'magnifying-glass') }}
         {% endif %}
         {% include 'jury/partials/rejudge_form.html.twig' with {table: 'judgehost', id: judgehost.judgehostid, buttonClass: 'btn-primary'} %}
     </div>

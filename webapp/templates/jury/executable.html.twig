@@ -45,6 +45,12 @@
                         {% elseif executable.type == 'debug' and default_full_debug == executable.execid %}
                             <em>default full debug</em>
                             {% set used = true %}
+                        {% elseif executable.type == 'judgehost_check' and default_judgehost_check == executable.execid %}
+                            <em>default judgehost check</em>
+                            {% set used = true %}
+                        {% elseif executable.type == 'chroot_check' and default_chroot_check == executable.execid %}
+                            <em>default chroot check</em>
+                            {% set used = true %}
                         {% endif %}
                         {% if executable.type == 'compare' %}
                             {% for problem in executable.problemsCompare %}

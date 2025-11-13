@@ -11,12 +11,16 @@ class JudgeTaskType extends Type
     final public const CONFIG_CHECK = 'config_check';
     final public const DEBUG_INFO = 'debug_info';
     final public const GENERIC_TASK = 'generic_task';
+    final public const JUDGEHOST_CHECK = 'judgehost_check';
+    final public const CHROOT_CHECK = 'chroot_check';
     final public const JUDGING_RUN = 'judging_run';
     final public const PREFETCH = 'prefetch';
     final public const ALL_TYPES = [
         self::CONFIG_CHECK,
         self::DEBUG_INFO,
         self::GENERIC_TASK,
+        self::JUDGEHOST_CHECK,
+        self::CHROOT_CHECK,
         self::JUDGING_RUN,
         self::PREFETCH,
     ];
