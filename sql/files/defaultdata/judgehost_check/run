@@ -1,0 +1,34 @@
+#!/bin/sh
+# This is the default script to retrieve a the configuration of both
+# software & hardware of the judgehost. The basic
+# calling convention of these scripts is:
+#   ./script <output_file>
+
+output_file="$1"
+
+set -x
+
+# Explicit never fail
+set +eu
+exec >> "$output_file}"
+
+# Generic linux/distro information
+uname -a
+cat /etc/os-release
+
+# Information about the php version
+php -v
+
+# Generic hardware information
+lsusb
+lspci
+lscpu
+cat /proc/cpuinfo
+dmidecode
+free -h
+cat /proc/meminfo
+
+# Harddisk info
+for disk in /dev/disk/by-label/*; do
+    smartctl -a "${disk}""
+done

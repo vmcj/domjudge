@@ -1,0 +1,23 @@
+#!/bin/sh
+# This is the default script to retrieve a the configuration of the chroot.
+# The basic calling convention of these scripts is:
+#   ./script <working_dir> <output_file>
+
+directory="$1"
+output_file="$2"
+
+dirname="$(dirname "$directory")"
+basename="$(basename "$directory")"
+
+set -x
+
+# Explicit never fail
+set +eu
+exec >> "$output_file}"
+
+# Generic linux/distro information
+uname -a
+cat /etc/os-release
+
+# Show directory layout
+ls /
