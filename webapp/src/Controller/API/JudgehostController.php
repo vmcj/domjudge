@@ -1238,7 +1238,7 @@ class JudgehostController extends AbstractFOSRestController
         return match ($type) {
             'source' => $this->getSourceFiles($id),
             'testcase' => $this->getTestcaseFiles($id),
-            'compare', 'compile', 'debug', 'run' => $this->getExecutableFiles($id),
+            'compare', 'compile', 'debug', 'run', 'judgehost_check', 'chroot_check' => $this->getExecutableFiles($id),
             default => throw new BadRequestHttpException('Unknown type requested.'),
         };
     }
@@ -1581,9 +1581,10 @@ class JudgehostController extends AbstractFOSRestController
             ->andWhere('jt.judgehost = :judgehost')
             ->andWhere('jt.starttime IS NULL')
             ->andWhere('jt.valid = 1')
-            ->andWhere('jt.type = :type')
+            ->andWhere('jt.type in (:type)')
             ->setParameter('judgehost', $judgehost)
-            ->setParameter('type', JudgeTaskType::DEBUG_INFO)
+            ->setParameter('type', [JudgeTaskType::DEBUG_INFO, JudgeTaskType::JUDGEHOST_CHECK],
+                           ArrayParameterType::STRING)
             ->addOrderBy('jt.priority')
             ->addOrderBy('jt.judgetaskid')
             ->setMaxResults(1)

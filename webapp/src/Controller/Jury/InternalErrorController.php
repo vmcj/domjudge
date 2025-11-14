@@ -159,6 +159,68 @@ class InternalErrorController extends BaseController
 
         // Action is resolve now, use AJAX to do this
 
+        $affectedJudgings = $internalError->getAffectedJudgings();
+        dump($internalError, $affectedJudgings);
+
+        /* Temporary
+        */
+
+        $progressReporter = function (int $progress, string $log, ?string $message = null) {
+            echo Utils::jsonEncode(['progress' => $progress, 'log' => htmlspecialchars($log), 'message' => $message]);
+            ob_flush();
+            flush();
+        };
+
+        $internalError->setStatus(InternalErrorStatusType::STATUS_RESOLVED);
+        $this->dj->setInternalError(
+            $internalError->getDisabled(),
+            $internalError->getContest(),
+            true
+        );
+        $this->em->flush();
+
+        $this->dj->auditlog('internal_error', $internalError->getErrorid(),
+            sprintf('internal error: %s', InternalErrorStatusType::STATUS_RESOLVED));
+
+        $affectedJudgings = $internalError->getAffectedJudgings();
+        dump($internalError, $affectedJudgings);
+        if (!$affectedJudgings->isEmpty()) {
+            $skipped          = [];
+            $rejudging        = $this->rejudgingService->createRejudging(
+                'Internal Error ' . $internalError->getErrorid() . ' resolved',
+                JudgeTask::PRIORITY_DEFAULT,
+                $affectedJudgings->getValues(),
+                false,
+                0,
+                0,
+                null,
+                $skipped,
+                $progressReporter);
+            if ($rejudging === null) {
+                $this->addFlash('warning', 'All submissions that are affected by this internal error are already part of another rejudging.');
+            } else {
+                $rejudgingUrl = $this->generateUrl('jury_rejudging', ['rejudgingId' => $rejudging->getRejudgingid()]);
+                $internalErrorUrl = $this->generateUrl('jury_internal_error', ['errorId' => $internalError->getErrorid()]);
+                $message = sprintf(
+                    'Rejudging <a href="%s">r%d</a> created for internal error <a href="%s">%d</a>.',
+                    $rejudgingUrl,
+                    $rejudging->getRejudgingid(),
+                    $internalErrorUrl,
+                    $internalError->getErrorid()
+                );
+                $progressReporter(100, '', $message);
+            }
+        } else {
+            $progressReporter(100, '', 'No affected judgings.');
+        }
+
+        /* Temporary remove
+        */
+
+
+
+
+
         if ($request->isXmlHttpRequest()) {
             $profiler?->disable();
             $progressReporter = function (int $progress, string $log, ?string $message = null) {
@@ -179,6 +241,7 @@ class InternalErrorController extends BaseController
                     sprintf('internal error: %s', InternalErrorStatusType::STATUS_RESOLVED));
 
                 $affectedJudgings = $internalError->getAffectedJudgings();
+                dump($internalError, $affectedJudgings);
                 if (!$affectedJudgings->isEmpty()) {
                     $skipped          = [];
                     $rejudging        = $this->rejudgingService->createRejudging(

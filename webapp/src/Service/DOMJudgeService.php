@@ -585,6 +585,8 @@ class DOMJudgeService
                     ->getQuery()
                     ->execute();
                 break;
+            case 'judgehost_check_script':
+                break;
             case 'executable':
                 /** @var Executable $executable */
                 $executable = $this->em->getRepository(Executable::class)
