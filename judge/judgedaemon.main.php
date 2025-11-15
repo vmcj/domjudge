@@ -912,30 +912,17 @@ while (true) {
             if (!run_command_safe([$runpath, $tmpfile])) {
                 disable('run_script', 'run_script_id', $judgeTask['run_script_id'], "Running '$runpath' failed.");
             }
-            /*
 
-                request(
-                    sprintf('judgehosts/add-debug-info/%s/%s', urlencode($myhost),
-                        urlencode((string)$judgeTask['judgetaskid'])),
-                    'POST',
-                    ['full_debug' => rest_encode_file($tmpfile, false)],
-                    false
-                );
-                unlink($tmpfile);
+            request(
+                sprintf('judgehosts/add-judgehost-check-info/%s/%s', urlencode($myhost),
+                    urlencode((string)$judgeTask['judgetaskid'])),
+                'POST',
+                ['judgehost_check' => rest_encode_file($tmpfile, false)],
+                false
+            );
+            unlink($tmpfile);
 
-                logmsg(LOG_INFO, "  ⇡ Uploading debug package of workdir $workdir.");
-            } else {
-                // Retrieving full team output for a particular testcase.
-                $testcasedir = $workdir . "/testcase" . sprintf('%05d', $judgeTask['testcase_id']);
-                request(
-                    sprintf('judgehosts/add-debug-info/%s/%s', urlencode($myhost),
-                        urlencode((string)$judgeTask['judgetaskid'])),
-                    'POST',
-                    ['output_run' => rest_encode_file($testcasedir . '/program.out', false)],
-                    false
-                );
-                logmsg(LOG_INFO, "  ⇡ Uploading full output of testcase $judgeTask[testcase_id].");
-            }*/
+            logmsg(LOG_INFO, "  ⇡ Uploading output of judgehost_check.");
         }
         logmsg(LOG_INFO, "  🔥 Checking judgehost configuration completed.");
         continue;
