@@ -863,11 +863,12 @@ while (true) {
     logmsg(LOG_INFO,
         "⇝ Received " . sizeof($row) . " '" . $type . "' judge tasks (endpoint $endpointID)");
 
+    if (in_array($type, ['prefetch', 'judgehost_check', 'debug_info']) && $lastWorkdir !== null) {
+        cleanup_judging($lastWorkdir);
+        $lastWorkdir = null;
+    }
+
     if ($type == 'prefetch') {
-        if ($lastWorkdir !== null) {
-            cleanup_judging($lastWorkdir);
-            $lastWorkdir = null;
-        }
         foreach ($row as $judgeTask) {
             foreach (['compile', 'run', 'compare'] as $script_type) {
                 if (!empty($judgeTask[$script_type . '_script_id']) && !empty($judgeTask[$script_type . '_config'])) {
@@ -898,10 +899,6 @@ while (true) {
     logmsg(LOG_INFO, "  Working directory: $workdir");
 
     if ($type == 'debug_info') {
-        if ($lastWorkdir !== null) {
-            cleanup_judging($lastWorkdir);
-            $lastWorkdir = null;
-        }
         foreach ($row as $judgeTask) {
             if (isset($judgeTask['run_script_id'])) {
                 // Full debug package requested.
