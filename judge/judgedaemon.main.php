@@ -870,6 +870,7 @@ while (true) {
 
     if ($type == 'prefetch') {
         foreach ($row as $judgeTask) {
+            logmsg(LOG_DEBUG, "Prefetching judge task " . print_r($judgeTask));
             foreach (['compile', 'run', 'compare'] as $script_type) {
                 if (!empty($judgeTask[$script_type . '_script_id']) && !empty($judgeTask[$script_type . '_config'])) {
                     $config = dj_json_decode($judgeTask[$script_type . '_config']);
@@ -900,6 +901,7 @@ while (true) {
 
     if ($type == 'debug_info') {
         foreach ($row as $judgeTask) {
+            logmsg(LOG_DEBUG, "Prefetching judge task " . print_r($judgeTask));
             if (isset($judgeTask['run_script_id'])) {
                 // Full debug package requested.
                 $run_config = dj_json_decode($judgeTask['run_config']);
