@@ -16,6 +16,7 @@ use App\Entity\JudgingRun;
 use App\Entity\JudgingRunOutput;
 use App\Entity\QueueTask;
 use App\Entity\Rejudging;
+use App\Entity\ScriptRunOutput;
 use App\Entity\Submission;
 use App\Entity\SubmissionFile;
 use App\Entity\TestcaseContent;
@@ -579,9 +580,8 @@ class JudgehostController extends AbstractFOSRestController
         }
 
         $outputCheck = base64_decode($request->request->get('judgehost_check'));
-        /** @var ScriptOutput $judgehostCheckOutput */
-        $judgingRunOutput = $judgingRun->getOutput();
-        $judgingRunOutput->setOutputRun($outputRun);
+        $scriptOutput = new ScriptRunOutput();
+        $scriptOutput->setOutputRun($outputCheck);
         $this->em->flush();
     }
 

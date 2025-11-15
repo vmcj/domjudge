@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
     'comment' => 'Stores output of judging run',
 ])]
 #[ORM\Index(columns: ['runid'], name: 'runid')]
-class ScriptOutput
+class ScriptRunOutput
 {
     /**
      * We use a ManyToOne instead of a OneToOne here, because otherwise the
@@ -75,7 +75,7 @@ class ScriptOutput
     )]
     private ?string $validatorMetadata = null;
 
-    public function setRun(JudgingRun $run): ScriptOutput
+    public function setRun(JudgingRun $run): ScriptRunOutput
     {
         $this->run = $run;
         return $this;
@@ -86,7 +86,7 @@ class ScriptOutput
         return $this->run;
     }
 
-    public function setOutputRun(?string $outputRun): ScriptOutput
+    public function setOutputRun(?string $outputRun): ScriptRunOutput
     {
         $this->output_run = $outputRun;
         return $this;
@@ -97,7 +97,7 @@ class ScriptOutput
         return $this->output_run;
     }
 
-    public function setOutputDiff(string $outputDiff): ScriptOutput
+    public function setOutputDiff(string $outputDiff): ScriptRunOutput
     {
         $this->output_diff = $outputDiff;
         return $this;
@@ -108,7 +108,7 @@ class ScriptOutput
         return $this->output_diff;
     }
 
-    public function setOutputError(string $outputError): ScriptOutput
+    public function setOutputError(string $outputError): ScriptRunOutput
     {
         $this->output_error = $outputError;
         return $this;
@@ -119,7 +119,7 @@ class ScriptOutput
         return $this->output_error;
     }
 
-    public function setOutputSystem(string $outputSystem): ScriptOutput
+    public function setOutputSystem(string $outputSystem): ScriptRunOutput
     {
         $this->output_system = $outputSystem;
         return $this;
@@ -130,7 +130,7 @@ class ScriptOutput
         return $this->output_system;
     }
 
-    public function setTeamMessage(string $teamMessage) : ScriptOutput
+    public function setTeamMessage(string $teamMessage) : ScriptRunOutput
     {
         $this->team_message = $teamMessage;
         return $this;
