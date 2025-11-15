@@ -569,23 +569,8 @@ class JudgehostController extends AbstractFOSRestController
                 'Inconsistent data, no judgetask known with judgetaskid = ' . $judgeTaskId . '.');
         }
 
-        if ($judgeTask->getRunScriptId() === null) {
-            $full_debug = false;
-            $required = [
-                'output_run',
-            ];
-        } else {
-            $full_debug = true;
-            $required = [
-                'full_debug',
-            ];
-        }
-
-        foreach ($required as $argument) {
-            if (!$request->request->has($argument)) {
-                throw new BadRequestHttpException(
-                    sprintf("Argument '%s' is mandatory", $argument));
-            }
+        if (!$request->request->has('judgehost_check')) {
+            throw new BadRequestHttpException("Argument 'judgehost_check' is mandatory", $argument);
         }
 
         $judgehost = $this->em->getRepository(Judgehost::class)->findOneBy(['hostname' => $hostname]);
@@ -593,41 +578,10 @@ class JudgehostController extends AbstractFOSRestController
             throw new BadRequestHttpException("Who are you and why are you sending us any data?");
         }
 
-        if ($full_debug) {
-            $judging = $this->em->getRepository(Judging::class)->find($judgeTask->getJobId());
-            if ($judging === null) {
-                throw new BadRequestHttpException(
-                    'Inconsistent data, no judging known with judgingid = ' . $judgeTask->getJobId() . '.');
-            }
-            if ($tempFilename = tempnam($this->dj->getDomjudgeTmpDir(), "full-debug-")) {
-                $debug_package = base64_decode($request->request->get('full_debug'));
-                file_put_contents($tempFilename, $debug_package);
-            }
-            // FIXME: error checking
-            $debug_package = new DebugPackage();
-            $debug_package
-                ->setJudgehost($judgehost)
-                ->setJudging($judging)
-                ->setFilename($tempFilename);
-            $this->em->persist($debug_package);
-        } else {
-            $judgingRun = $this->em->getRepository(JudgingRun::class)->findOneBy(
-                [
-                    'judging' => $judgeTask->getJobId(),
-                    'testcase' => $judgeTask->getTestcaseId(),
-                ]
-            );
-            if ($judgingRun === null) {
-                throw new BadRequestHttpException(
-                    'Inconsistent data, no judging run known with jid = ' . $judgeTask->getJobId() . '.');
-            }
-
-            $outputRun = base64_decode($request->request->get('output_run'));
-
-            /** @var JudgingRunOutput $judgingRunOutput */
-            $judgingRunOutput = $judgingRun->getOutput();
-            $judgingRunOutput->setOutputRun($outputRun);
-        }
+        $outputCheck = base64_decode($request->request->get('judgehost_check'));
+        /** @var ScriptOutput $judgehostCheckOutput */
+        $judgingRunOutput = $judgingRun->getOutput();
+        $judgingRunOutput->setOutputRun($outputRun);
         $this->em->flush();
     }
 
