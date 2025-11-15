@@ -893,6 +893,52 @@ while (true) {
         }
         logmsg(LOG_INFO, "  🔥 Pre-heating judgehost completed.");
         continue;
+    } elseif ($type == 'judgehost_check') {
+        foreach ($row as $judgeTask) {
+            if (!(isset($judgeTask['run_script_id']) && isset($judgeTask['run_config']))) {
+                logmsg(LOG_ERR, "Received judgehost_check task without run_script_id.");
+                continue;
+            }
+            $run_config = dj_json_decode($judgeTask['run_config']);
+            $tmpfile = tempnam(TMPDIR, 'judgehost_check_');
+            [$runpath, $error] = fetch_executable(
+                $workdirpath,
+                'judgehost_check',
+                $judgeTask['run_script_id'],
+                $run_config['hash'],
+                $judgeTask['judgetaskid']
+            );
+
+            if (!run_command_safe([$runpath, $tmpfile])) {
+                disable('run_script', 'run_script_id', $judgeTask['run_script_id'], "Running '$runpath' failed.");
+            }
+            /*
+
+                request(
+                    sprintf('judgehosts/add-debug-info/%s/%s', urlencode($myhost),
+                        urlencode((string)$judgeTask['judgetaskid'])),
+                    'POST',
+                    ['full_debug' => rest_encode_file($tmpfile, false)],
+                    false
+                );
+                unlink($tmpfile);
+
+                logmsg(LOG_INFO, "  ⇡ Uploading debug package of workdir $workdir.");
+            } else {
+                // Retrieving full team output for a particular testcase.
+                $testcasedir = $workdir . "/testcase" . sprintf('%05d', $judgeTask['testcase_id']);
+                request(
+                    sprintf('judgehosts/add-debug-info/%s/%s', urlencode($myhost),
+                        urlencode((string)$judgeTask['judgetaskid'])),
+                    'POST',
+                    ['output_run' => rest_encode_file($testcasedir . '/program.out', false)],
+                    false
+                );
+                logmsg(LOG_INFO, "  ⇡ Uploading full output of testcase $judgeTask[testcase_id].");
+            }*/
+        }
+        logmsg(LOG_INFO, "  🔥 Checking judgehost configuration completed.");
+        continue;
     }
 
     // Create workdir for judging.
@@ -941,52 +987,6 @@ while (true) {
                 logmsg(LOG_INFO, "  ⇡ Uploading full output of testcase $judgeTask[testcase_id].");
             }
         }
-        continue;
-    } elseif ($type == 'judgehost_check') {
-        foreach ($row as $judgeTask) {
-            if (!(isset($judgeTask['run_script_id']) && isset($judgeTask['run_config']))) {
-                logmsg(LOG_ERR, "Received judgehost_check task without run_script_id.");
-                continue;
-            }
-            $run_config = dj_json_decode($judgeTask['run_config']);
-            $tmpfile = tempnam(TMPDIR, 'judgehost_check_');
-            [$runpath, $error] = fetch_executable(
-                $workdirpath,
-                'judgehost_check',
-                $judgeTask['run_script_id'],
-                $run_config['hash'],
-                $judgeTask['judgetaskid']
-            );
-
-            if (!run_command_safe([$runpath, $workdirPath, $tmpfile])) {
-                disable('run_script', 'run_script_id', $judgeTask['run_script_id'], "Running '$runpath' failed.");
-            }
-            /*
-
-                request(
-                    sprintf('judgehosts/add-debug-info/%s/%s', urlencode($myhost),
-                        urlencode((string)$judgeTask['judgetaskid'])),
-                    'POST',
-                    ['full_debug' => rest_encode_file($tmpfile, false)],
-                    false
-                );
-                unlink($tmpfile);
-
-                logmsg(LOG_INFO, "  ⇡ Uploading debug package of workdir $workdir.");
-            } else {
-                // Retrieving full team output for a particular testcase.
-                $testcasedir = $workdir . "/testcase" . sprintf('%05d', $judgeTask['testcase_id']);
-                request(
-                    sprintf('judgehosts/add-debug-info/%s/%s', urlencode($myhost),
-                        urlencode((string)$judgeTask['judgetaskid'])),
-                    'POST',
-                    ['output_run' => rest_encode_file($testcasedir . '/program.out', false)],
-                    false
-                );
-                logmsg(LOG_INFO, "  ⇡ Uploading full output of testcase $judgeTask[testcase_id].");
-            }*/
-        }
-        logmsg(LOG_INFO, "  🔥 Checking judgehost configuration completed.");
         continue;
     }
 
