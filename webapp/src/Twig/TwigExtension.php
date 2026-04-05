@@ -426,9 +426,10 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
 
         $results = '';
         $lastTypeSample = true;
+        $separator = ' | ';
         foreach ($testcases as $key => $testcase) {
             if ($testcase['sample'] != $lastTypeSample) {
-                $results        .= ' | ';
+                $results        .= $separator;
                 $lastTypeSample = $testcase['sample'];
             }
             $class = $submissionDone ? 'secondary' : 'primary';
@@ -457,6 +458,9 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
 
             $results .= sprintf('<span class="badge text-bg-%s badge-testcase" title="%s">%s</span>', $class, $title,
                                 $text);
+        }
+        if (!str_contains($results, $separator)) {
+            $results .= $separator;
         }
 
         return $results;
