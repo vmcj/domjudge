@@ -43,6 +43,9 @@
                                         <h3 class="card-subtitle mb-2 text-muted">
                                             {{ problem.problem.name }}
                                         </h3>
+                                        {% if clarifications is defined and clarifications %}
+                                            <button>This</button>
+                                        {% endif %}
                                         {% if showLimits %}
                                             <h4 class="card-subtitle mb-2 text-muted">
                                                 Limits: {{ problem.problem.timelimit }}
