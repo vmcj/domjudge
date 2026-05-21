@@ -530,7 +530,7 @@ function postVerifyCommentToICAT(url, user, teamid, probid, submissionid)
         field.setAttribute("id",   name);
         field.setAttribute("value", value);
         form.appendChild(field);
-    };
+    }
 
     addField("user", user);
     addField("priority", 1);
