@@ -73,6 +73,8 @@ assert_failure() {
 
 assert_equal() {
   if [[ "$1" != "$2" ]]; then
+    echo "Left: $1" >&2
+    echo "Right: $2" >&2
     echo "Values should be equal but got:"
     diff <(printf "%s\n" $1) <(printf "%s\n" $2)
     echo "Left: $1"
