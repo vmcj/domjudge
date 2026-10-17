@@ -6,7 +6,7 @@ source .github/jobs/configure-checks/functions.sh
 
 @test "Show that 'make maintainer-clean' reverts to the git checkout keeping custom modifications/secrets" {
   # Start clean
-  run make maintainer-clean
+  run make maintainer-clean distclean clean
   assert_success
   expected_custom_files=$(echo ./etc/{dbpasswords,initial_admin_password,restapi,symfony_app}.secret ./webapp/.env.local | tr ' ' '\n')
   files_bare_git=$(find . -type f)
